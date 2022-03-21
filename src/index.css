@@ -1,0 +1,32 @@
+:root {
+  --background-color: #003459;
+  --primary-color: #2acff5;
+  --secondary-color: #21a4c2;
+  --border: 3px solid white;
+}
+
+* {
+  user-select: none;
+  box-sizing: content-box;
+}
+
+body {
+  margin: 0;
+  background: #123;
+  font-family: 'ZCOOL QingKe HuangYou', 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 62.5%;
+  overflow: hidden;
+}
+
+button {
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

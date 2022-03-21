@@ -1,0 +1,87 @@
+.Stage {
+  background: white;
+  outline: 0.5rem solid #f2f5f7;
+  border-radius: 0.1rem;
+}
+
+.Row {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+
+  .Cell {
+    width: 100%;
+    height: 2rem;
+    border: 0.1rem outset rgba(255, 255, 255, 0.3);
+    background: var(--background-color);
+    line-height: 2rem;
+
+    &[data-color='0'] {
+      border: 0.05rem outset white;
+    }
+  }
+}
+
+.Cell {
+  background: transparent;
+  color: white;
+  text-align: center;
+  box-sizing: border-box;
+  border: 0.1rem outset rgba(255, 255, 255, 0.2);
+  border-radius: 0.2rem;
+
+  &[data-color='0'] {
+    border-style: none;
+  }
+
+  &[data-color='1'] {
+    background: #ffa826;
+    border-color: adjust-color(#ffa826, $lightness: 20%);
+  }
+  &[data-color='2'] {
+    background: #e96ccd;
+    border-color: adjust-color(#e96ccd, $lightness: 20%);
+  }
+  &[data-color='3'] {
+    background: #ff5f63;
+    border-color: adjust-color(#ff5f63, $lightness: 20%);
+  }
+  &[data-color='4'] {
+    background: #49bca1;
+    border-color: adjust-color(#49bca1, $lightness: 20%);
+  }
+  &[data-color='5'] {
+    background: #fed546;
+    border-color: adjust-color(#fed546, $lightness: 20%);
+  }
+  &[data-color='6'] {
+    background: #b770ff;
+    border-color: adjust-color(#b770ff, $lightness: 20%);
+  }
+  &[data-color='7'] {
+    background: #29cff5;
+    border-color: adjust-color(#29cff5, $lightness: 20%);
+  }
+
+  &[data-color='201'],
+  &[data-color='202'],
+  &[data-color='203'],
+  &[data-color='204'],
+  &[data-color='205'],
+  &[data-color='206'],
+  &[data-color='207'] {
+    background: var(--background-color);
+    border: var(--border);
+    filter: drop-shadow(0 0 8px var(--secondary-color));
+    opacity: 1;
+    z-index: 10;
+  }
+
+  &[data-color='254'] {
+    background: #ffffff;
+    border-color: #ffffff;
+  }
+
+  &[data-color='255'] {
+    opacity: 0;
+  }
+}

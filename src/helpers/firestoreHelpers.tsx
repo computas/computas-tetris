@@ -9,7 +9,6 @@ export const fetchHighScores = async () => {
 
   docSnap.forEach((entry) => {
     const score = getScoreFromEntry(entry.data());
-    console.log(score);
   });
 };
 

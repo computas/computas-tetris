@@ -13,7 +13,8 @@ import {
   calculateLandingRow,
   canMove,
   createStage,
-  detectCollision
+  detectCollision,
+  saveScore
 } from 'helpers';
 import { ReactComponent as ComputasLogo } from '../../svg/computas.svg';
 import { ReactComponent as TetrisVertical } from '../../svg/tetrisVertical.svg';
@@ -60,6 +61,7 @@ export default function Tetris() {
     rows,
     level,
     newHighScore,
+    storableScore,
     tetrominos,
     resetGame,
     generateNextTetromino
@@ -136,6 +138,7 @@ export default function Tetris() {
           gameOver: true,
           startScreen: false
         });
+        saveScore(storableScore);
         if (newHighScore) {
           playYouWin();
         } else {

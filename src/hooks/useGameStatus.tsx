@@ -1,12 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import {
-  fetchHighScores,
-  randomTetromino,
-  saveScore,
-  Tetromino
-} from '../helpers';
-import { Score } from 'models';
+import { fetchHighScores, randomTetromino, Tetromino } from '../helpers';
+import { Score } from '../models';
 
 const LEVEL_INCREASE_COUNT = 2;
 const pointsTable: number[] = [0, 40, 100, 300, 1200];
@@ -14,6 +9,15 @@ const initialTetrominosList: Tetromino[] = [
   randomTetromino(),
   randomTetromino()
 ];
+
+const initialStorableScore: Score = {
+  duration: 0,
+  level: 0,
+  name: '',
+  rows: 0,
+  score: 0,
+  tetrominos: 0
+};
 
 const initialHighScore = (): number => {
   const tempHighScore = localStorage.getItem('highScores');
@@ -38,6 +42,7 @@ export const useGameStatus = (
   number,
   number,
   boolean,
+  Score,
   Tetromino[],
   () => void,
   () => void
@@ -47,6 +52,7 @@ export const useGameStatus = (
   const [newHighScore, setNewHighScore] = useState(false);
   const [rows, setRows] = useState(0);
   const [level, setLevel] = useState(1);
+  const [storableScore, setSetstorableScore] = useState(initialStorableScore);
   const [tetrominos, setTetrominos] = useState(initialTetrominosList);
 
   useEffect(() => {
@@ -56,31 +62,33 @@ export const useGameStatus = (
   useEffect(() => {
     if (rowsCleared) {
       const newScore = score + pointsTable[rowsCleared] * level;
-      setRows(rows + rowsCleared);
-      setScore(newScore);
+      const newRows = rows + rowsCleared;
+      let newLevel = level;
 
-      const storableScore: Score = {
-        duration: 0,
-        level,
-        name: 'Chubby Chub',
-        rows: rows + rowsCleared,
-        score: newScore,
-        tetrominos: 0
-      };
-      saveScore(storableScore);
+      setRows(newRows);
+      setScore(newScore);
 
       if (newScore >= highScore) {
         setHighScore(newScore);
         setNewHighScore(true);
       }
 
-      if (rows + rowsCleared >= level * LEVEL_INCREASE_COUNT) {
-        setLevel(1 + Math.ceil((rows + rowsCleared) / LEVEL_INCREASE_COUNT));
+      if (newRows >= level * LEVEL_INCREASE_COUNT) {
+        newLevel = 1 + Math.ceil(newRows / LEVEL_INCREASE_COUNT);
+        setLevel(newLevel);
       }
+
+      setSetstorableScore({
+        ...storableScore,
+        score: newScore,
+        rows: newRows,
+        level: newLevel
+      });
     }
   }, [rowsCleared]);
 
   const resetGame = (): void => {
+    setSetstorableScore(initialStorableScore);
     setScore(0);
     setNewHighScore(false);
     setRows(0);
@@ -88,6 +96,7 @@ export const useGameStatus = (
   };
 
   const generateNextTetromino = (): void => {
+    // TODO: increase tertomino count
     setTetrominos([tetrominos[1], randomTetromino()]);
   };
 
@@ -97,6 +106,7 @@ export const useGameStatus = (
     rows,
     level,
     newHighScore,
+    storableScore,
     tetrominos,
     resetGame,
     generateNextTetromino

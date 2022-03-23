@@ -1,36 +1,44 @@
 import React, { createContext, useEffect, useReducer } from 'react';
 import { DocumentData } from 'firebase/firestore';
 
-import { GameContextActionType } from '../enums/GameContextActionTypes';
 import { getScoreFromEntry } from '../helpers';
 import { Score } from '../models';
+import { GameStateActionType } from '../enums/GameStateActionTypes';
 
-interface GameContextState {
+interface GameState {
   scoreList: Score[];
 }
 
-interface GameContextAction {
-  type: GameContextActionType;
+interface GameStateAction {
+  type: GameStateActionType;
   payload?: any;
 }
 
-const initialGameContextState: GameContextState = {
+const initialGameState: GameState = {
   scoreList: []
 };
 
-const stateReducer = (state: GameContextState, action: GameContextAction) => {
+const stateReducer = (state: GameState, action: GameStateAction) => {
   switch (action.type) {
-    case GameContextActionType.ScoreListChanged:
+    case GameStateActionType.ResetScoreList:
+      return {
+        ...initialGameState
+      };
+
+    case GameStateActionType.ScoreListChanged:
       return {
         ...state,
         scoreList: updatedScoreList(action.payload.changes, state)
       };
+
+    default:
+      return state;
   }
 };
 
 const updatedScoreList = (
   entries: DocumentData[],
-  state: GameContextState
+  state: GameState
 ): Score[] => {
   let newScoreList: Score[] = [...state.scoreList];
 
@@ -51,37 +59,34 @@ const updatedScoreList = (
 };
 
 interface contextValue {
-  gameState: GameContextState;
+  gameState: GameState;
   gameDispatch: any;
 }
 
 const initialValue: contextValue = {
-  gameState: initialGameContextState,
+  gameState: initialGameState,
   gameDispatch: null
 };
 
-const GameStatusContext = createContext(initialValue);
+const GameStateContext = createContext(initialValue);
 
 const GameStatusProvider = (props: any) => {
   const { children } = props;
-  const [gameState, gameDispatch] = useReducer(
-    stateReducer,
-    initialGameContextState
-  );
+  const [gameState, gameDispatch] = useReducer(stateReducer, initialGameState);
   const value = { gameState, gameDispatch };
 
   useEffect(() => {
-    //gameDispatch({
-    //  type: GameContextActionType.Reset
-    //});
-    console.log('GAME STATUS INIT', gameState.scoreList);
+    gameDispatch({
+      type: GameStateActionType.ResetScoreList
+    });
+    console.log('GAME STATUS CONTEXT INIT', gameState.scoreList);
   }, []);
 
   return (
-    <GameStatusContext.Provider value={value}>
+    <GameStateContext.Provider value={value}>
       {children}
-    </GameStatusContext.Provider>
+    </GameStateContext.Provider>
   );
 };
 
-export { GameStatusContext, GameStatusProvider };
+export { GameStateContext, GameStatusProvider };

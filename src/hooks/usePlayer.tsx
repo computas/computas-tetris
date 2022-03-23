@@ -12,7 +12,7 @@ import { STAGE_WIDTH } from 'components/stage/Stage';
 
 const initialPlayerState: Player = {
   position: { x: STAGE_WIDTH / 2 - 2, y: -4 },
-  tetromino: randomTetromino(),
+  tetromino: randomTetromino(true),
   collided: false
 };
 

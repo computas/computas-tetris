@@ -1,0 +1,18 @@
+.Highscores {
+  padding: 2rem;
+  color: var(--primary-color);
+  font-size: 2rem;
+
+  h1 {
+    margin: 0;
+  }
+
+  li {
+    padding: 0.5rem;
+    background: var(--tertiary-color);
+
+    + li {
+      margin-top: 0.3rem;
+    }
+  }
+}

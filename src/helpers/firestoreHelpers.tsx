@@ -9,7 +9,7 @@ import {
 
 import { firestore } from '../index';
 import { Score } from '../models';
-import { GameContextActionType } from '../enums/GameContextActionTypes';
+import { GameStateActionType } from '../enums/GameStateActionTypes';
 
 export const fetchRealTimeScoreList = (dispatch: any): any => {
   const collRef = collection(firestore, 'Scores');
@@ -20,7 +20,7 @@ export const fetchRealTimeScoreList = (dispatch: any): any => {
     });
 
     dispatch({
-      type: GameContextActionType.ScoreListChanged,
+      type: GameStateActionType.ScoreListChanged,
       payload: { changes: changeList }
     });
   });

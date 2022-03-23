@@ -1,12 +1,15 @@
 import React from 'react';
-import { initializeApp } from 'firebase/app';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { getAnalytics } from 'firebase/analytics';
 import { getFirestore } from 'firebase/firestore';
+import { initializeApp } from 'firebase/app';
 import { render } from 'react-dom';
 
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import Highscores from './pages/highscores';
+import { GameStatusProvider } from './contexts/GameStateContext';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyA0gvBuEPaccE2sW5ybIANcmPomKbDkkmA',
@@ -22,7 +25,14 @@ const firebaseConfig = {
 
 render(
   <React.StrictMode>
-    <App />
+    <GameStatusProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/highscores" element={<Highscores />} />
+        </Routes>
+      </BrowserRouter>
+    </GameStatusProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

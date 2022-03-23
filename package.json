@@ -16,6 +16,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-easy-swipe": "^0.0.22",
+    "react-router-dom": "6",
     "react-scripts": "5.0.0",
     "typescript": "^4.5.5",
     "use-sound": "^4.0.1",

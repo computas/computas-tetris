@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import css from './GameOver.module.scss';
 import ScorePage from './scorepage/ScorePage';
-import { GameStatusContext } from '../../contexts/GameStatusContext';
+import { GameStateContext } from '../../contexts/GameStateContext';
 
 interface GameOverProps {
   gameOver: boolean;
@@ -12,7 +12,7 @@ interface GameOverProps {
 
 const GameOver = (props: GameOverProps) => {
   const { gameOver, score, restart } = props;
-  const { gameState } = useContext(GameStatusContext);
+  const { gameState } = useContext(GameStateContext);
   const [showScores, setShowScores] = useState(false);
   const [currentRank, setCurrentRank] = useState(1);
 

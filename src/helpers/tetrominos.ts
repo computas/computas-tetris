@@ -68,8 +68,9 @@ export const Tetrominos: Tetromino[] = [
   }
 ];
 
-export const randomTetromino = () => {
+export const randomTetromino = (simple: boolean) => {
   const tetrominos = 'IJLOSTZ';
-  const index = Math.floor(Math.random() * tetrominos.length);
+  const scope = simple ? 4 : tetrominos.length;
+  const index = Math.floor(Math.random() * scope);
   return Tetrominos[index];
 };

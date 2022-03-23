@@ -2,13 +2,14 @@ import { useContext, useEffect, useState } from 'react';
 
 import { fetchRealTimeScoreList, randomTetromino, Tetromino } from 'helpers';
 import { Score } from 'models';
-import { GameStatusContext } from '../contexts/GameStatusContext';
+import { GameStateContext } from '../contexts/GameStateContext';
 
 const LEVEL_INCREASE_COUNT = 2;
+const SIMPLE_TETROMINOS_LIMIT = 10;
 const pointsTable: number[] = [0, 40, 100, 300, 1200];
 const initialTetrominosList: Tetromino[] = [
-  randomTetromino(),
-  randomTetromino()
+  randomTetromino(true),
+  randomTetromino(true)
 ];
 
 const initialStorableScore: Score = {
@@ -32,8 +33,10 @@ export const useGameStatus = (
   Score,
   Tetromino[],
   () => void,
+  () => void,
   () => void
 ] => {
+  const { gameState, gameDispatch } = useContext(GameStateContext);
   const [highScore, setHighScore] = useState(0);
   const [level, setLevel] = useState(1);
   const [newHighScore, setNewHighScore] = useState(false);
@@ -43,10 +46,9 @@ export const useGameStatus = (
   const [tetrominos, setTetrominos] = useState(initialTetrominosList);
   const [tetrominoCount, setTetrominoCount] = useState(0);
 
-  const { gameState, gameDispatch } = useContext(GameStatusContext);
-
   useEffect(() => {
     const unsubscribe = fetchRealTimeScoreList(gameDispatch);
+
     return () => {
       unsubscribe();
     };
@@ -105,9 +107,16 @@ export const useGameStatus = (
     setTetrominoCount(0);
   };
 
+  const resetTetrominos = (): void => {
+    setTetrominos([randomTetromino(true), randomTetromino(true)]);
+  };
+
   const generateNextTetromino = (): void => {
     setTetrominoCount(tetrominoCount + 1);
-    setTetrominos([tetrominos[1], randomTetromino()]);
+    setTetrominos([
+      tetrominos[1],
+      randomTetromino(tetrominoCount < SIMPLE_TETROMINOS_LIMIT)
+    ]);
   };
 
   return [
@@ -119,6 +128,7 @@ export const useGameStatus = (
     storableScore,
     tetrominos,
     resetGame,
+    resetTetrominos,
     generateNextTetromino
   ];
 };

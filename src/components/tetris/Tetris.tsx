@@ -66,9 +66,10 @@ export default function Tetris() {
     storableScore,
     tetrominos,
     resetGame,
+    resetTetrominos,
     generateNextTetromino
   ] = useGameStatus(rowsCleared);
-  const [dropSpeed, setDropSpeed] = useState(1100);
+  const [dropSpeed, setDropSpeed] = useState(0);
   const [gamesPlayed, setGamesPlayed] = useState(0);
   const [
     leftPressState,
@@ -141,6 +142,8 @@ export default function Tetris() {
           startScreen: false
         });
         saveScore(storableScore);
+        resetTetrominos();
+
         if (newHighScore) {
           playYouWin();
         } else {

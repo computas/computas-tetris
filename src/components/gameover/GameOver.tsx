@@ -2,26 +2,19 @@ import React, { useEffect, useState } from 'react';
 
 import css from './GameOver.module.scss';
 import ScorePage from './scorepage/ScorePage';
+import { Score } from 'models';
 
 interface GameOverProps {
   gameOver: boolean;
   score: number;
+  scoreList: Score[];
   restart: () => void;
 }
 
-interface HighScores {
-  score: number;
-  name: string;
-}
-
 const GameOver = (props: GameOverProps) => {
-  const { gameOver, score, restart } = props;
+  const { gameOver, score, scoreList, restart } = props;
   const [showScores, setShowScores] = useState(false);
   const [currentRank, setCurrentRank] = useState(1);
-
-  const currentHighScores = JSON.parse(
-    localStorage.getItem('highScores') ?? '[]'
-  ) as HighScores[];
 
   const showHighScores = () => {
     restart();
@@ -29,19 +22,8 @@ const GameOver = (props: GameOverProps) => {
 
   useEffect(() => {
     if (gameOver) {
-      if (currentHighScores.length === 0) {
-        const newScore = [{ score, name: 'Player' }];
-        localStorage.setItem('highScores', JSON.stringify(newScore));
-      } else {
-        currentHighScores.push({ score, name: 'Player' });
-        currentHighScores.sort(
-          (a: HighScores, b: HighScores) => b.score - a.score
-        );
-        localStorage.setItem('highScores', JSON.stringify(currentHighScores));
-        setCurrentRank(
-          currentHighScores.findIndex((item) => item.score <= score) + 1
-        );
-      }
+      setCurrentRank(scoreList.findIndex((item) => item.score <= score) + 1);
+
       setShowScores(false);
       setTimeout(() => {
         setShowScores(true);
@@ -57,7 +39,7 @@ const GameOver = (props: GameOverProps) => {
     <div className={css.GameOver}>
       <ScorePage
         score={score}
-        rank={`${currentRank}/${currentHighScores.length + 1}`}
+        rank={`${currentRank}/${scoreList.length}`}
         showHighScores={showHighScores}
       />
     </div>

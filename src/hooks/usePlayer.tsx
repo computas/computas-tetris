@@ -7,7 +7,7 @@ import {
   randomTetromino,
   Tetromino
 } from 'helpers';
-import { Player } from '../models/player';
+import { Player } from 'models';
 import { STAGE_WIDTH } from 'components/stage/Stage';
 
 const initialPlayerState: Player = {

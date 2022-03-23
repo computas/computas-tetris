@@ -62,6 +62,7 @@ export default function Tetris() {
     level,
     newHighScore,
     storableScore,
+    scoreList,
     tetrominos,
     resetGame,
     generateNextTetromino
@@ -348,6 +349,7 @@ export default function Tetris() {
       <GameOver
         gameOver={state.gameOver && gamesPlayed > 0}
         score={score}
+        scoreList={scoreList}
         restart={returnHome}
       />
       <Swipe

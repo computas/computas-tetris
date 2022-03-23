@@ -1,28 +1,43 @@
-import { addDoc, collection, DocumentData, getDocs } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  DocumentData,
+  onSnapshot,
+  query
+} from 'firebase/firestore';
 
 import { firestore } from '../index';
 import { Score } from 'models';
 
-export const fetchHighScores = async () => {
+export const fetchRealTimeScoreList = (callback: (scores: Score[]) => void) => {
+  const scoreList: Score[] = [];
   const collRef = collection(firestore, 'Scores');
-  const docSnap = await getDocs(collRef);
+  onSnapshot(query(collRef), (snapshot) => {
+    snapshot.docChanges().forEach((entry) => {
+      scoreList.push(getScoreFromEntry(entry.doc.data()));
+    });
+    scoreList.sort((a: Score, b: Score) => b.score - a.score);
 
-  docSnap.forEach((entry) => {
-    const score = getScoreFromEntry(entry.data());
+    console.log('UPDATED SCORELIST', scoreList);
+    callback(scoreList);
   });
 };
 
 export const saveScore = async (score: Score) => {
+  const t = new Date();
+  const newDuration = t.getTime() - score.duration;
+
   const collRef = collection(firestore, 'Scores');
-  const status = await addDoc(collRef, score);
+  const status = await addDoc(collRef, { ...score, duration: newDuration });
   console.log('SAVED', status);
 };
 
 const getScoreFromEntry = (entry: DocumentData): Score => {
   return {
     created: entry.created,
-    level: entry.level,
     duration: entry.duration,
+    email: entry.level,
+    level: entry.level,
     name: entry.name,
     rows: entry.rows,
     score: entry.score,

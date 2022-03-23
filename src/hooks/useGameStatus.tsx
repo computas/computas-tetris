@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import { fetchHighScores, randomTetromino, Tetromino } from '../helpers';
-import { Score } from '../models';
+import { fetchRealTimeScoreList, randomTetromino, Tetromino } from '../helpers';
+import { Score } from 'models';
 
 const LEVEL_INCREASE_COUNT = 2;
 const pointsTable: number[] = [0, 40, 100, 300, 1200];
@@ -12,6 +12,7 @@ const initialTetrominosList: Tetromino[] = [
 
 const initialStorableScore: Score = {
   duration: 0,
+  email: '',
   level: 0,
   name: '',
   rows: 0,
@@ -19,20 +20,7 @@ const initialStorableScore: Score = {
   tetrominos: 0
 };
 
-const initialHighScore = (): number => {
-  const tempHighScore = localStorage.getItem('highScores');
-  if (!tempHighScore) {
-    return 0;
-  }
-
-  const scores = JSON.parse(tempHighScore);
-  try {
-    return scores[0].score ?? 0;
-  } catch (e) {
-    console.error(e);
-    return 0;
-  }
-};
+const initialScoreList: Score[] = [];
 
 export const useGameStatus = (
   rowsCleared: number
@@ -43,21 +31,32 @@ export const useGameStatus = (
   number,
   boolean,
   Score,
+  Score[],
   Tetromino[],
   () => void,
   () => void
 ] => {
-  const [score, setScore] = useState(0);
-  const [highScore, setHighScore] = useState(initialHighScore());
+  const [highScore, setHighScore] = useState(0);
+  const [level, setLevel] = useState(1);
   const [newHighScore, setNewHighScore] = useState(false);
   const [rows, setRows] = useState(0);
-  const [level, setLevel] = useState(1);
+  const [score, setScore] = useState(0);
+  const [scoreList, setScoreList] = useState(initialScoreList);
   const [storableScore, setSetstorableScore] = useState(initialStorableScore);
   const [tetrominos, setTetrominos] = useState(initialTetrominosList);
+  const [tetrominoCount, setTetrominoCount] = useState(0);
 
   useEffect(() => {
-    fetchHighScores();
+    fetchRealTimeScoreList((scores: Score[]) => {
+      setScoreList(scores);
+    });
   }, []);
+
+  useEffect(() => {
+    if (scoreList.length) {
+      findHighestScore();
+    }
+  }, [scoreList]);
 
   useEffect(() => {
     if (rowsCleared) {
@@ -80,23 +79,37 @@ export const useGameStatus = (
 
       setSetstorableScore({
         ...storableScore,
-        score: newScore,
+        level: newLevel,
         rows: newRows,
-        level: newLevel
+        score: newScore,
+        tetrominos: tetrominoCount
       });
     }
   }, [rowsCleared]);
 
+  const findHighestScore = (): void => {
+    let highest = 0;
+    scoreList.forEach((scoreEntry) => {
+      if (scoreEntry.score > highest) {
+        highest = scoreEntry.score;
+      }
+    });
+    //console.log('Highest', highest);
+    setHighScore(highest);
+  };
+
   const resetGame = (): void => {
-    setSetstorableScore(initialStorableScore);
+    const t = new Date();
+    setSetstorableScore({ ...initialStorableScore, duration: t.getTime() });
     setScore(0);
     setNewHighScore(false);
     setRows(0);
     setLevel(1);
+    setTetrominoCount(0);
   };
 
   const generateNextTetromino = (): void => {
-    // TODO: increase tertomino count
+    setTetrominoCount(tetrominoCount + 1);
     setTetrominos([tetrominos[1], randomTetromino()]);
   };
 
@@ -107,6 +120,7 @@ export const useGameStatus = (
     level,
     newHighScore,
     storableScore,
+    scoreList,
     tetrominos,
     resetGame,
     generateNextTetromino

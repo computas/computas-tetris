@@ -3,23 +3,26 @@ import {
   collection,
   DocumentData,
   onSnapshot,
+  Timestamp,
   query
 } from 'firebase/firestore';
 
 import { firestore } from '../index';
-import { Score } from 'models';
+import { Score } from '../models';
+import { GameContextActionType } from '../enums/GameContextActionTypes';
 
-export const fetchRealTimeScoreList = (callback: (scores: Score[]) => void) => {
-  const scoreList: Score[] = [];
+export const fetchRealTimeScoreList = (dispatch: any): any => {
   const collRef = collection(firestore, 'Scores');
-  onSnapshot(query(collRef), (snapshot) => {
+  return onSnapshot(query(collRef), (snapshot) => {
+    const changeList: DocumentData[] = [];
     snapshot.docChanges().forEach((entry) => {
-      scoreList.push(getScoreFromEntry(entry.doc.data()));
+      changeList.push(entry);
     });
-    scoreList.sort((a: Score, b: Score) => b.score - a.score);
 
-    console.log('UPDATED SCORELIST', scoreList);
-    callback(scoreList);
+    dispatch({
+      type: GameContextActionType.ScoreListChanged,
+      payload: { changes: changeList }
+    });
   });
 };
 
@@ -28,12 +31,18 @@ export const saveScore = async (score: Score) => {
   const newDuration = t.getTime() - score.duration;
 
   const collRef = collection(firestore, 'Scores');
-  const status = await addDoc(collRef, { ...score, duration: newDuration });
+  const status = await addDoc(collRef, {
+    ...score,
+    created: Timestamp.now(),
+    duration: newDuration
+  });
   console.log('SAVED', status);
 };
 
-const getScoreFromEntry = (entry: DocumentData): Score => {
+export const getScoreFromEntry = (doc: DocumentData): Score => {
+  const entry = doc.data();
   return {
+    id: doc.id,
     created: entry.created,
     duration: entry.duration,
     email: entry.level,

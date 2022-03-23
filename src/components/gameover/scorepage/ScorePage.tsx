@@ -19,9 +19,15 @@ interface ScorePageProps {
 const ScorePage = (props: ScorePageProps) => {
   const { score, rank, showHighScores } = props;
   const [showHigh, setShowHigh] = useState(true);
+  const [prevScore, setPrevScore] = useState(0);
 
   useEffect(() => {
-    if (rank.split('/')[0] === '1') {
+    if (score === prevScore) {
+      setShowHigh(false);
+      return;
+    }
+
+    if (rank.split(' ')[0] === '1') {
       setShowHigh(true);
       setTimeout(() => {
         setShowHigh(false);
@@ -29,7 +35,8 @@ const ScorePage = (props: ScorePageProps) => {
     } else {
       setShowHigh(false);
     }
-  }, [rank]);
+    setPrevScore(score);
+  }, [score, rank]);
 
   return (
     <>

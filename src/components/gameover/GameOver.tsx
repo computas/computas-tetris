@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import css from './GameOver.module.scss';
 import ScorePage from './scorepage/ScorePage';
-import { Score } from 'models';
+import { GameStatusContext } from '../../contexts/GameStatusContext';
 
 interface GameOverProps {
   gameOver: boolean;
   score: number;
-  scoreList: Score[];
   restart: () => void;
 }
 
 const GameOver = (props: GameOverProps) => {
-  const { gameOver, score, scoreList, restart } = props;
+  const { gameOver, score, restart } = props;
+  const { gameState } = useContext(GameStatusContext);
   const [showScores, setShowScores] = useState(false);
   const [currentRank, setCurrentRank] = useState(1);
 
@@ -22,7 +22,9 @@ const GameOver = (props: GameOverProps) => {
 
   useEffect(() => {
     if (gameOver) {
-      setCurrentRank(scoreList.findIndex((item) => item.score <= score) + 1);
+      setCurrentRank(
+        gameState.scoreList.findIndex((item) => item.score <= score) + 1
+      );
 
       setShowScores(false);
       setTimeout(() => {
@@ -39,7 +41,7 @@ const GameOver = (props: GameOverProps) => {
     <div className={css.GameOver}>
       <ScorePage
         score={score}
-        rank={`${currentRank}/${scoreList.length}`}
+        rank={`${currentRank} av ${gameState.scoreList.length}`}
         showHighScores={showHighScores}
       />
     </div>

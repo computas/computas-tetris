@@ -43,6 +43,8 @@ const RIGHT = 1;
 const BLOCK_SIZE = 32;
 const SPEED_FACTOR = 600;
 const LEVEL_FACTOR = 35;
+const SWIPE_DOWN_TOLERANCE = 3.0;
+const TAP_MOVE_TOLERANCE = 8;
 
 export default function Tetris() {
   const [state, setState] = useState(initialGameState);
@@ -62,7 +64,6 @@ export default function Tetris() {
     level,
     newHighScore,
     storableScore,
-    scoreList,
     tetrominos,
     resetGame,
     generateNextTetromino
@@ -308,17 +309,19 @@ export default function Tetris() {
         (event.timeStamp - touchStartPosition.timeStamp + 1)
     };
 
-    if (delta.velocity < 0.001 && delta.timeStamp < 200) {
+    const axis = {
+      x: Math.abs(delta.x),
+      y: Math.abs(delta.y)
+    };
+
+    if (axis.x < TAP_MOVE_TOLERANCE && axis.y < TAP_MOVE_TOLERANCE) {
       playRotateSound();
       rotatePlayer(stage, 1);
-      return;
     }
 
-    if (delta.velocity < 0.25) {
-      return;
+    if (axis.y / (axis.x + 1) > SWIPE_DOWN_TOLERANCE) {
+      swipedDown();
     }
-
-    swipedDown();
   };
 
   return (
@@ -349,7 +352,6 @@ export default function Tetris() {
       <GameOver
         gameOver={state.gameOver && gamesPlayed > 0}
         score={score}
-        scoreList={scoreList}
         restart={returnHome}
       />
       <Swipe

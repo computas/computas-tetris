@@ -10,6 +10,13 @@
   box-sizing: content-box;
 }
 
+html {
+  display: grid;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
 body {
   margin: 0;
   background: #123;
@@ -19,6 +26,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-size: 62.5%;
   overflow: hidden;
+  touch-action: pan-y;
 }
 
 button {

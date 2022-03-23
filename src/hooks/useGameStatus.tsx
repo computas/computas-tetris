@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
-import { fetchRealTimeScoreList, randomTetromino, Tetromino } from '../helpers';
+import { fetchRealTimeScoreList, randomTetromino, Tetromino } from 'helpers';
 import { Score } from 'models';
+import { GameStatusContext } from '../contexts/GameStatusContext';
 
 const LEVEL_INCREASE_COUNT = 2;
 const pointsTable: number[] = [0, 40, 100, 300, 1200];
@@ -20,8 +21,6 @@ const initialStorableScore: Score = {
   tetrominos: 0
 };
 
-const initialScoreList: Score[] = [];
-
 export const useGameStatus = (
   rowsCleared: number
 ): [
@@ -31,7 +30,6 @@ export const useGameStatus = (
   number,
   boolean,
   Score,
-  Score[],
   Tetromino[],
   () => void,
   () => void
@@ -41,22 +39,22 @@ export const useGameStatus = (
   const [newHighScore, setNewHighScore] = useState(false);
   const [rows, setRows] = useState(0);
   const [score, setScore] = useState(0);
-  const [scoreList, setScoreList] = useState(initialScoreList);
   const [storableScore, setSetstorableScore] = useState(initialStorableScore);
   const [tetrominos, setTetrominos] = useState(initialTetrominosList);
   const [tetrominoCount, setTetrominoCount] = useState(0);
 
+  const { gameState, gameDispatch } = useContext(GameStatusContext);
+
   useEffect(() => {
-    fetchRealTimeScoreList((scores: Score[]) => {
-      setScoreList(scores);
-    });
+    const unsubscribe = fetchRealTimeScoreList(gameDispatch);
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   useEffect(() => {
-    if (scoreList.length) {
-      findHighestScore();
-    }
-  }, [scoreList]);
+    findHighestScore();
+  }, [gameState.scoreList]);
 
   useEffect(() => {
     if (rowsCleared) {
@@ -89,12 +87,11 @@ export const useGameStatus = (
 
   const findHighestScore = (): void => {
     let highest = 0;
-    scoreList.forEach((scoreEntry) => {
+    gameState.scoreList.forEach((scoreEntry) => {
       if (scoreEntry.score > highest) {
         highest = scoreEntry.score;
       }
     });
-    //console.log('Highest', highest);
     setHighScore(highest);
   };
 
@@ -120,7 +117,6 @@ export const useGameStatus = (
     level,
     newHighScore,
     storableScore,
-    scoreList,
     tetrominos,
     resetGame,
     generateNextTetromino

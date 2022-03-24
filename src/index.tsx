@@ -9,7 +9,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Highscores from './pages/highscores';
-import { GameStatusProvider } from './contexts/GameStateContext';
+import { GameStateProvider } from './contexts/GameStateContext';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyA0gvBuEPaccE2sW5ybIANcmPomKbDkkmA',
@@ -25,14 +25,14 @@ const firebaseConfig = {
 
 render(
   <React.StrictMode>
-    <GameStatusProvider>
+    <GameStateProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<App />} />
           <Route path="/highscores" element={<Highscores />} />
         </Routes>
       </BrowserRouter>
-    </GameStatusProvider>
+    </GameStateProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

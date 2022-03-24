@@ -19,6 +19,7 @@ const initialGameState: GameState = {
 };
 
 const stateReducer = (state: GameState, action: GameStateAction) => {
+  console.log('state', action.type);
   switch (action.type) {
     case GameStateActionType.ResetScoreList:
       return {
@@ -70,7 +71,7 @@ const initialValue: contextValue = {
 
 const GameStateContext = createContext(initialValue);
 
-const GameStatusProvider = (props: any) => {
+const GameStateProvider = (props: any) => {
   const { children } = props;
   const [gameState, gameDispatch] = useReducer(stateReducer, initialGameState);
   const value = { gameState, gameDispatch };
@@ -79,7 +80,7 @@ const GameStatusProvider = (props: any) => {
     gameDispatch({
       type: GameStateActionType.ResetScoreList
     });
-    console.log('GAME STATUS CONTEXT INIT', gameState.scoreList);
+    console.log('insta');
   }, []);
 
   return (
@@ -89,4 +90,4 @@ const GameStatusProvider = (props: any) => {
   );
 };
 
-export { GameStateContext, GameStatusProvider };
+export { GameStateContext, GameStateProvider };

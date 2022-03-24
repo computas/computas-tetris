@@ -1,12 +1,14 @@
 import { useContext, useEffect, useState } from 'react';
 
 import { fetchRealTimeScoreList, randomTetromino, Tetromino } from 'helpers';
-import { Score } from 'models';
 import { GameStateContext } from '../contexts/GameStateContext';
+import { Score } from 'models';
+import { GameStateActionType } from '../enums/GameStateActionTypes';
 
 const LEVEL_INCREASE_COUNT = 2;
 const SIMPLE_TETROMINOS_LIMIT = 10;
-const pointsTable: number[] = [0, 40, 100, 300, 1200];
+const POINTS_TABLE: number[] = [0, 40, 100, 300, 1200];
+
 const initialTetrominosList: Tetromino[] = [
   randomTetromino(true),
   randomTetromino(true)
@@ -19,6 +21,7 @@ const initialStorableScore: Score = {
   name: '',
   rows: 0,
   score: 0,
+  subscribe: false,
   tetrominos: 0
 };
 
@@ -50,6 +53,7 @@ export const useGameStatus = (
     const unsubscribe = fetchRealTimeScoreList(gameDispatch);
 
     return () => {
+      gameDispatch({ type: GameStateActionType.ResetScoreList });
       unsubscribe();
     };
   }, []);
@@ -60,7 +64,7 @@ export const useGameStatus = (
 
   useEffect(() => {
     if (rowsCleared) {
-      const newScore = score + pointsTable[rowsCleared] * level;
+      const newScore = score + POINTS_TABLE[rowsCleared] * level;
       const newRows = rows + rowsCleared;
       let newLevel = level;
 

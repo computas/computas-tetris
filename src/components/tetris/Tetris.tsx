@@ -43,8 +43,9 @@ const RIGHT = 1;
 const BLOCK_SIZE = 32;
 const SPEED_FACTOR = 600;
 const LEVEL_FACTOR = 35;
-const SWIPE_DOWN_TOLERANCE = 3.0;
-const TAP_MOVE_TOLERANCE = 8;
+const SWIPE_DOWN_ANGLE = 3.0;
+const SWIPE_DOWN_DIST_MIN = 20;
+const TAP_MOVE_DIST_MAX = 8;
 
 export default function Tetris() {
   const [state, setState] = useState(initialGameState);
@@ -81,8 +82,8 @@ export default function Tetris() {
     setMoveComplete
   ] = useController();
 
-  const [playMoveBlockSound] = useSound('/assets/sfx/suction-plop1.mp3');
-  const [playDropDownSound] = useSound('/assets/sfx/drop1.mp3');
+  const [playMoveBlockSound] = useSound('/assets/sfx/move.mp3');
+  const [playDropDownSound] = useSound('/assets/sfx/swipe-down.mp3');
   const [playHitFloorSound] = useSound('/assets/sfx/hit-floor.mp3');
   const [playHitWallSound] = useSound('/assets/sfx/hit-wall.mp3');
   const [playRotateSound] = useSound('/assets/sfx/rotate.mp3', {
@@ -158,7 +159,7 @@ export default function Tetris() {
   }, [player.collided]);
 
   useEffect(() => {
-    if (player.position.y + player.tetromino.shape.length - 1 > 0) {
+    if (player.position.y + player.tetromino.shape.length > 0) {
       playMoveBlockSound();
     }
   }, [player.position.x]);
@@ -317,12 +318,18 @@ export default function Tetris() {
       y: Math.abs(delta.y)
     };
 
-    if (axis.x < TAP_MOVE_TOLERANCE && axis.y < TAP_MOVE_TOLERANCE) {
+    if (axis.x < TAP_MOVE_DIST_MAX && axis.y < TAP_MOVE_DIST_MAX) {
       playRotateSound();
       rotatePlayer(stage, 1);
+      return;
     }
 
-    if (axis.y / (axis.x + 1) > SWIPE_DOWN_TOLERANCE) {
+    console.log(axis, delta);
+
+    if (
+      axis.y / (axis.x + 1) > SWIPE_DOWN_ANGLE &&
+      axis.y > SWIPE_DOWN_DIST_MIN
+    ) {
       swipedDown();
     }
   };
@@ -358,12 +365,13 @@ export default function Tetris() {
         restart={returnHome}
       />
       <Swipe
+        className={css.Tetris}
         onSwipeStart={swipeStart}
         onSwipeMove={swipeMove}
         onSwipeEnd={swipeEnd}
       >
         <section
-          className={css.Tetris}
+          className={css.Board}
           onKeyDown={(event) => handleKeyPressed(event, state)}
           onKeyUp={(event) => handleKeyReleased(event, state)}
           tabIndex={0}

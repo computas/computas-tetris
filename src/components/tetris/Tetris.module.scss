@@ -1,14 +1,22 @@
 .Tetris {
-  width: 100%;
-  max-width: 33rem;
-  margin: 0 auto;
-  outline: none;
+  position: absolute;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  padding-top: 11rem;
 
-  > section {
-    display: grid;
-    grid-template-columns: auto 8rem;
-    position: relative;
-    height: 40rem;
+  .Board {
+    width: 100%;
+    max-width: 33rem;
+    margin: 0 auto;
+    outline: none;
+
+    > section {
+      display: grid;
+      grid-template-columns: auto 8rem;
+      position: relative;
+      height: 40rem;
+    }
   }
 
   button {

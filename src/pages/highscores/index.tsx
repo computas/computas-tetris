@@ -31,7 +31,14 @@ const Highscores = (): ReactElement => {
       <ol className={css.ScoreBoardList}>
         {gameState.scoreList.slice(0, 20).map((score, index) => (
           <li key={index}>
-            <Display content={score.score} style={{ fontSize: '25px' }} />
+            <Display
+              content={score.score}
+              style={{
+                fontSize: '25px',
+                display: 'grid',
+                alignContent: 'center'
+              }}
+            />
           </li>
         ))}
       </ol>

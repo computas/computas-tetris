@@ -89,6 +89,9 @@ export default function Tetris() {
   const [playDropDownSound] = useSound('/assets/sfx/swipe-down.mp3');
   const [playHitFloorSound] = useSound('/assets/sfx/hit-floor.mp3');
   const [playHitWallSound] = useSound('/assets/sfx/hit-wall.mp3');
+  const [playMusic, { stop }] = useSound('/assets/sfx/music.mp3', {
+    volume: 0.4
+  });
   const [playRotateSound] = useSound('/assets/sfx/rotate.mp3', {
     volume: 0.4
   });
@@ -103,6 +106,14 @@ export default function Tetris() {
   useEffect(() => {
     document.querySelector('section')?.focus();
   }, []);
+
+  useEffect(() => {
+    playMusic();
+
+    return () => {
+      stop();
+    };
+  }, [playMusic]);
 
   useEffect(() => {
     if (downPressState) {
@@ -243,6 +254,7 @@ export default function Tetris() {
   };
 
   const play = (): void => {
+    stop();
     generateNextTetromino();
     resetGame();
     setStage(createStage());
@@ -262,6 +274,7 @@ export default function Tetris() {
       gameOver: false,
       startScreen: true
     });
+    playMusic();
     resetGame();
     setStage(createStage());
     setGamesPlayed(0);

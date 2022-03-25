@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from 'react';
 
 import { fetchRealTimeScoreList, randomTetromino, Tetromino } from 'helpers';
+import { GameStateActionType } from '../enums/GameStateActionTypes';
 import { GameStateContext } from '../contexts/GameStateContext';
 import { Score } from 'models';
-import { GameStateActionType } from '../enums/GameStateActionTypes';
 
 const LEVEL_INCREASE_COUNT = 2;
 const SIMPLE_TETROMINOS_LIMIT = 10;
@@ -17,12 +17,12 @@ const initialTetrominosList: Tetromino[] = [
 const initialStorableScore: Score = {
   duration: 0,
   email: '',
-  level: 0,
+  level: 1,
   name: '',
   rows: 0,
   score: 0,
   subscribe: false,
-  tetrominos: 0
+  tetrominos: 1
 };
 
 export const useGameStatus = (
@@ -47,7 +47,6 @@ export const useGameStatus = (
   const [score, setScore] = useState(0);
   const [storableScore, setSetstorableScore] = useState(initialStorableScore);
   const [tetrominos, setTetrominos] = useState(initialTetrominosList);
-  const [tetrominoCount, setTetrominoCount] = useState(0);
 
   useEffect(() => {
     const unsubscribe = fetchRealTimeScoreList(gameDispatch);
@@ -85,8 +84,7 @@ export const useGameStatus = (
         ...storableScore,
         level: newLevel,
         rows: newRows,
-        score: newScore,
-        tetrominos: tetrominoCount
+        score: newScore
       });
     }
   }, [rowsCleared]);
@@ -108,7 +106,6 @@ export const useGameStatus = (
     setNewHighScore(false);
     setRows(0);
     setLevel(1);
-    setTetrominoCount(0);
   };
 
   const resetTetrominos = (): void => {
@@ -116,11 +113,18 @@ export const useGameStatus = (
   };
 
   const generateNextTetromino = (): void => {
-    setTetrominoCount(tetrominoCount + 1);
+    incrementTetrominoCount();
     setTetrominos([
       tetrominos[1],
-      randomTetromino(tetrominoCount < SIMPLE_TETROMINOS_LIMIT)
+      randomTetromino(storableScore.tetrominos <= SIMPLE_TETROMINOS_LIMIT)
     ]);
+  };
+
+  const incrementTetrominoCount = (): void => {
+    setSetstorableScore({
+      ...storableScore,
+      tetrominos: storableScore.tetrominos + 1
+    });
   };
 
   return [

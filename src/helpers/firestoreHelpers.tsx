@@ -27,14 +27,10 @@ export const fetchRealTimeScoreList = (dispatch: any): any => {
 };
 
 export const saveScore = async (score: Score) => {
-  const t = new Date();
-  const newDuration = t.getTime() - score.duration;
-
   const collRef = collection(firestore, 'Scores');
   const status = await addDoc(collRef, {
     ...score,
-    created: Timestamp.now(),
-    duration: newDuration
+    created: Timestamp.now()
   });
   console.log('SAVED', status);
 };

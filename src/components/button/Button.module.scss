@@ -1,0 +1,27 @@
+.Button {
+  margin: 0;
+  padding: 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  color: #003459;
+  cursor: pointer;
+
+  &.normal {
+    padding: 0.5rem 0.8rem;
+    font-size: 1.4rem;
+  }
+
+  &.large {
+    padding: 1rem 1.4rem;
+    font-size: 1.8rem;
+  }
+
+  &.primary {
+    background: var(--primary-button-color);
+  }
+
+  &.secondary {
+    background: var(--secondary-button-color);
+  }
+}

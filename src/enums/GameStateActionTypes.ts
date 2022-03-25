@@ -1,4 +1,6 @@
 export enum GameStateActionType {
   ResetScoreList,
-  ScoreListChanged
+  ScoreListChanged,
+  ScoreReady,
+  UpdateScoreWithDetails
 }

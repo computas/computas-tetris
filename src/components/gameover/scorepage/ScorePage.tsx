@@ -9,17 +9,29 @@ import { ReactComponent as Block4 } from '../../../svg/Block-4.svg';
 import { ReactComponent as Block5 } from '../../../svg/Block-6.svg';
 import { ReactComponent as Block6 } from '../../../svg/Block-8.svg';
 import css from './ScorePage.module.scss';
+import Button, { ButtonSize, ButtonVariant } from '../../button/Button';
+import TextField from '../../textfield/TextField';
 
 interface ScorePageProps {
   score: number;
   rank: string;
-  showHighScores: () => void;
+  participate: (name: string, email: string, subscribe: boolean) => void;
+  restart: () => void;
 }
 
 const ScorePage = (props: ScorePageProps) => {
-  const { score, rank, showHighScores } = props;
+  const { participate, rank, restart, score } = props;
   const [showHigh, setShowHigh] = useState(true);
   const [prevScore, setPrevScore] = useState(0);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [subscribe, setSubscribe] = useState(false);
+
+  useEffect(() => {
+    setName('');
+    setEmail('');
+    setSubscribe(false);
+  }, []);
 
   useEffect(() => {
     if (score === prevScore) {
@@ -37,6 +49,18 @@ const ScorePage = (props: ScorePageProps) => {
     }
     setPrevScore(score);
   }, [score, rank]);
+
+  const handleTextInput = (fieldId: string, value: string): void => {
+    if (fieldId === 'name') {
+      setName(value);
+    } else if (fieldId === 'email') {
+      setEmail(value);
+    }
+  };
+
+  const toggleSubscribe = (): void => {
+    setSubscribe(!subscribe);
+  };
 
   return (
     <>
@@ -72,13 +96,48 @@ const ScorePage = (props: ScorePageProps) => {
           <div className={css.ScorePageRank}>
             <span>Plassering: {rank}</span>
           </div>
-          <div className={css.ScorePageDescription}>
-            Bli med i konkurransen og vinn premie!
-          </div>
-          <div className={css.ScorePageButton}>
-            <button onClick={() => showHighScores()}>
-              <span className={css.ButtonText}>VI VIL VINNE!</span>
-            </button>
+          <div className={css.ScorePageDescription}>Vinn premie!</div>
+          <div className={css.form}>
+            <TextField
+              label={'Kallenavn'}
+              placeholder={'Kallenavn'}
+              onChange={(value) => handleTextInput('name', value)}
+              value={name}
+            />
+            <TextField
+              label={'E-post'}
+              placeholder={'E-post'}
+              onChange={(value) => handleTextInput('email', value)}
+              value={email}
+            />
+            <p>
+              Vi sender e-post til vinneren av konkurransen når premien kan
+              hentes
+            </p>
+            <p>
+              <input
+                type={'checkbox'}
+                defaultChecked={subscribe}
+                onClick={toggleSubscribe}
+              />{' '}
+              Jeg ønsker å melde meg på Computas´ nyhetsbrev
+            </p>
+
+            <div className={css.centered}>
+              <Button
+                label={'VI VIL VINNE!'}
+                onClick={() => participate(name, email, subscribe)}
+                size={ButtonSize.Large}
+                variant={ButtonVariant.Primary}
+              />
+              <br />
+              <br />
+              <Button
+                label={'GLEM OSS'}
+                variant={ButtonVariant.Secondary}
+                onClick={restart}
+              />
+            </div>
           </div>
           <div className={css.Tetromino}>
             <Block6 />

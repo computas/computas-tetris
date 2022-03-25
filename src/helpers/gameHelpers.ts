@@ -2,8 +2,13 @@ import { STAGE_HEIGHT, STAGE_WIDTH } from 'components/stage/Stage';
 import { Player, Position } from 'models';
 import { Tetromino } from './tetrominos';
 
+export interface Cell {
+  color: number;
+  locked: boolean;
+}
+
 export interface Row {
-  cells: { color: number; locked: boolean }[];
+  cells: Cell[];
 }
 
 export interface GameBoard {

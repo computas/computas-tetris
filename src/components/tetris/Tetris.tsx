@@ -94,9 +94,9 @@ export default function Tetris() {
   const [playRotateSound] = useSound('/assets/sfx/rotate.mp3', {
     volume: 0.4
   });
-  const [playRemoveLine] = useSound('/assets/sfx/remove1.mp3');
-  const [playYouLose] = useSound('/assets/sfx/you-lose.mp3');
-  const [playYouWin] = useSound('/assets/sfx/you-win.mp3');
+  const [playRemoveLineSound] = useSound('/assets/sfx/remove1.mp3');
+  const [playYouLoseSound] = useSound('/assets/sfx/you-lose.mp3');
+  const [playYouWinSound] = useSound('/assets/sfx/you-win.mp3');
 
   const levelSpeed = (): number => {
     return Math.max(SPEED_FACTOR - level * LEVEL_FACTOR, LEVEL_FACTOR);
@@ -164,9 +164,9 @@ export default function Tetris() {
         resetTetrominos();
 
         if (newHighScore) {
-          playYouWin();
+          playYouWinSound();
         } else {
-          playYouLose();
+          playYouLoseSound();
         }
         return;
       } else {
@@ -191,8 +191,8 @@ export default function Tetris() {
   }, [level]);
 
   useEffect(() => {
-    if (rowsCleared > 0) {
-      playRemoveLine();
+    if (rowsCleared.length > 0) {
+      playRemoveLineSound();
     }
   }, [rowsCleared]);
 

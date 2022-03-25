@@ -12,15 +12,16 @@ import { STAGE_HEIGHT, STAGE_WIDTH } from 'components/stage/Stage';
 
 const PREVIEW_COLOR_BASE = 200;
 const initialStage = createStage();
+const initialRows: Row[] = [];
 
 export const useStage = (
   player: Player
-): [GameBoard, Dispatch<SetStateAction<GameBoard>>, number] => {
+): [GameBoard, Dispatch<SetStateAction<GameBoard>>, Row[]] => {
   const [stage, setStage] = useState(initialStage);
-  const [rowsCleared, setRowsCleared] = useState(0);
+  const [rowsCleared, setRowsCleared] = useState(initialRows);
 
   useEffect(() => {
-    setRowsCleared(0);
+    setRowsCleared([]);
   }, []);
 
   useEffect(() => {
@@ -30,8 +31,10 @@ export const useStage = (
     renderDropPreview(player, newStage);
     renderTetromino(player, newStage);
 
-    const lines = checkLines(newStage);
-    setRowsCleared(lines);
+    const rows = checkLines(newStage);
+    if (rows.length) {
+      setRowsCleared(rows);
+    }
 
     setStage(newStage);
   }, [player]);
@@ -110,18 +113,21 @@ const renderDropPreview = (player: Player, stage: GameBoard): void => {
   }
 };
 
-const checkLines = (stage: GameBoard): number => {
+const checkLines = (stage: GameBoard): Row[] => {
   const keepers: Row[] = [];
+  const removers: Row[] = [];
 
   for (let y = 0; y < STAGE_HEIGHT; y++) {
-    if (stage.rows[y].cells.findIndex((cell) => !cell.locked) !== -1) {
-      keepers.push(stage.rows[y]);
+    const row = stage.rows[y];
+    if (row.cells.findIndex((cell) => !cell.locked) !== -1) {
+      keepers.push(row);
+    } else {
+      removers.push(row);
     }
   }
 
-  const lines = STAGE_HEIGHT - keepers.length;
-  if (!lines) {
-    return 0;
+  if (!removers.length) {
+    return [];
   }
 
   while (keepers.length < STAGE_HEIGHT) {
@@ -134,5 +140,5 @@ const checkLines = (stage: GameBoard): number => {
 
   stage.rows = keepers;
 
-  return lines;
+  return removers;
 };

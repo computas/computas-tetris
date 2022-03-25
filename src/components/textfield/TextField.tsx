@@ -24,9 +24,10 @@ const TextField = (props: TextFieldProps): ReactElement => {
     <div className={css.TextField}>
       <label>{label}</label>
       <input
-        type={'text'}
-        placeholder={placeholder ?? ''}
+        defaultValue={value}
         onInput={handleInput}
+        placeholder={placeholder ?? ''}
+        type={'text'}
       />
     </div>
   );

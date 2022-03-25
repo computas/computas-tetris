@@ -19,7 +19,6 @@ const initialGameState: GameState = {
 };
 
 const stateReducer = (state: GameState, action: GameStateAction) => {
-  console.log('state', action.type);
   switch (action.type) {
     case GameStateActionType.ResetScoreList:
       return {
@@ -80,7 +79,6 @@ const GameStateProvider = (props: any) => {
     gameDispatch({
       type: GameStateActionType.ResetScoreList
     });
-    console.log('insta');
   }, []);
 
   return (

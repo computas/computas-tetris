@@ -24,7 +24,6 @@ import {
   usePlayer,
   useStage
 } from 'hooks';
-import Button, { ButtonSize, ButtonVariant } from '../button/Button';
 import { GameStateContext } from '../../contexts/GameStateContext';
 import { GameStateActionType } from '../../enums/GameStateActionTypes';
 

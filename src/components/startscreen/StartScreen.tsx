@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Lottie from 'lottie-react';
 
 import animationData from '../../lotties/hiro-hiding.json';

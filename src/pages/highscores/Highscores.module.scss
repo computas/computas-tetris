@@ -1,27 +1,92 @@
-.Highscores {
-  padding: 2rem;
-  color: var(--primary-color);
-  font-size: 2rem;
+.container {
+  display: grid;
+}
 
-  h1 {
-    margin: 0;
-  }
+.GamesPlayed {
+  font-size: 2.5rem;
+  color: white;
+  margin: 0 auto;
+}
+
+.TetrisHeader {
+  width: 40rem;
+  margin: 1rem auto;
+}
+
+.ScoreBoardList {
+  display: grid;
+  place-items: center;
+  margin-top: 0.5rem;
+  color: white;
+  counter-reset: item;
 
   li {
-    padding: 0.5rem;
-    background: var(--tertiary-color);
+    list-style-type: none;
+    position: relative;
+    margin: 0 !important;
+    padding: 0;
+    font-size: 2.5rem;
+    font-weight: 700;
 
-    + li {
-      margin-top: 0.3rem;
+    &::before {
+      content: counter(item) ' ';
+      position: absolute;
+      left: -4rem;
+      counter-increment: item;
+      font-size: inherit;
+      line-height: 4.5rem;
     }
 
-    div {
-      display: grid;
-      grid-template-columns: 10rem auto;
-      grid-gap: 2rem;
+    > div {
+      width: 40.3rem;
+      height: 4.6rem;
+      background-color: #29cff5;
+      color: black;
+      font-size: 2rem !important;
+    }
 
-      span:first-child {
-        text-align: right;
+    &:nth-child(1) {
+      &::before {
+        left: -7rem;
+        font-size: 7rem;
+        line-height: 7rem;
+      }
+
+      > * {
+        width: 54.7rem;
+        height: 6.7rem;
+        background-color: #ff5f63;
+        font-size: 4rem !important;
+      }
+    }
+
+    &:nth-child(2) {
+      &::before {
+        left: -6rem;
+        font-size: 6rem;
+        line-height: 7rem;
+      }
+
+      > * {
+        width: 49.6rem;
+        height: 6.7rem;
+        background-color: #fed546;
+        font-size: 4rem !important;
+      }
+    }
+
+    &:nth-child(3) {
+      &::before {
+        left: -5rem;
+        font-size: 5rem;
+        line-height: 7rem;
+      }
+
+      > * {
+        width: 44.3rem;
+        height: 6.7rem;
+        background-color: #49bca1;
+        font-size: 4rem !important;
       }
     }
   }

@@ -24,7 +24,7 @@ import {
   usePlayer,
   useStage
 } from 'hooks';
-import Button, { ButtonVariant } from '../button/Button';
+import Button, { ButtonSize, ButtonVariant } from '../button/Button';
 import { GameStateContext } from '../../contexts/GameStateContext';
 import { GameStateActionType } from '../../enums/GameStateActionTypes';
 
@@ -117,7 +117,7 @@ export default function Tetris() {
 
   useEffect(() => {
     if (downPressState) {
-      if (state.gameOver || state.startScreen) {
+      if (state.startScreen) {
         play();
         return;
       }
@@ -230,7 +230,25 @@ export default function Tetris() {
     updatePlayerPosition(player.position.x + dir, player.position.y, false);
   };
 
+  const tapped = (): void => {
+    if (state.startScreen) {
+      play();
+      return;
+    }
+
+    if (state.gameOver) {
+      return;
+    }
+
+    playRotateSound();
+    rotatePlayer(stage, 1);
+  };
+
   const moveMaxDown = (): void => {
+    if (state.gameOver || state.startScreen) {
+      return;
+    }
+
     const row = calculateLandingRow(player, stage);
     updatePlayerPosition(player.position.x, row, true);
     playDropDownSound();
@@ -280,15 +298,7 @@ export default function Tetris() {
     setGamesPlayed(0);
   };
 
-  const swipedDown = (): void => {
-    moveMaxDown();
-  };
-
   const swipeStart = (event: any): void => {
-    if (state.gameOver || state.startScreen) {
-      return;
-    }
-
     const touch = event.changedTouches[0];
     setTouchPosition({ x: 0, y: 0 });
     setTouchStartPosition({
@@ -320,10 +330,6 @@ export default function Tetris() {
   };
 
   const swipeEnd = (event: any): void => {
-    if (state.gameOver || state.startScreen) {
-      return;
-    }
-
     const touch = event.changedTouches[0];
     const delta = {
       x: touch.clientX - touchStartPosition.x,
@@ -340,18 +346,15 @@ export default function Tetris() {
     };
 
     if (axis.x < TAP_MOVE_DIST_MAX && axis.y < TAP_MOVE_DIST_MAX) {
-      playRotateSound();
-      rotatePlayer(stage, 1);
+      tapped();
       return;
     }
-
-    console.log(axis, delta);
 
     if (
       axis.y / (axis.x + 1) > SWIPE_DOWN_ANGLE &&
       axis.y > SWIPE_DOWN_DIST_MIN
     ) {
-      swipedDown();
+      moveMaxDown();
     }
   };
 
@@ -380,11 +383,6 @@ export default function Tetris() {
           />
         </div>
       </div>
-      <GameOver
-        gameOver={state.gameOver && gamesPlayed > 0}
-        score={score}
-        restart={returnHome}
-      />
       <Swipe
         className={css.Tetris}
         onSwipeStart={swipeStart}
@@ -404,33 +402,14 @@ export default function Tetris() {
           <section>
             <Stage stage={stage} />
             <StartScreen startScreen={state.startScreen && gamesPlayed === 0} />
+            <GameOver
+              gameOver={state.gameOver && gamesPlayed > 0}
+              score={score}
+              restart={returnHome}
+            />
             <Next tetromino={tetrominos[1]} />
             <aside>
               <TetrisVertical className={css.VerticalTetrisLogo} />
-              {state.gameOver ? (
-                <div className={css.buttonPlacement}>
-                  <button
-                    className={css.PlayAgainButton}
-                    onClick={play}
-                    tabIndex={-1}
-                  >
-                    Spill igjen
-                  </button>
-                  <button
-                    className={css.HomeButton}
-                    onClick={returnHome}
-                    tabIndex={-1}
-                  >
-                    Hjem
-                  </button>
-                </div>
-              ) : state.startScreen ? (
-                <Button
-                  label={'Spill'}
-                  onClick={play}
-                  variant={ButtonVariant.Primary}
-                />
-              ) : null}
             </aside>
           </section>
         </section>

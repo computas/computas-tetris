@@ -18,9 +18,10 @@
 
   input[type='text'] {
     width: 100%;
-    padding: 0.7rem 1rem;
+    padding: 1rem 1.5rem;
     border-radius: 1rem;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     user-select: text;
+    outline: none;
   }
 }

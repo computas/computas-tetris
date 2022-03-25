@@ -86,31 +86,6 @@
   }
 }
 
-@media (any-hover: none) {
-  .Tetris .buttons {
-    display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
-    grid-gap: 1rem;
-    position: relative;
-    z-index: 9999;
-    margin-top: 1rem;
-    margin-right: 4rem;
-    margin-left: -2.2rem;
-    color: white;
-
-    > button {
-      font-size: 3rem;
-      pointer-events: all;
-      height: 100%;
-    }
-
-    button {
-      background: #2acff5;
-      color: white;
-    }
-  }
-}
-
 .VerticalTetrisLogo {
   width: 9.3rem;
   margin: 3rem auto auto;

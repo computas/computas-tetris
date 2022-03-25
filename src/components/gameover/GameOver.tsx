@@ -12,6 +12,8 @@ interface GameOverProps {
   restart: () => void;
 }
 
+const GAME_OVER_DISPLAY_DURATION = 2000;
+
 const GameOver = (props: GameOverProps) => {
   const { gameOver, score, restart } = props;
   const { gameState, gameDispatch } = useContext(GameStateContext);
@@ -27,7 +29,7 @@ const GameOver = (props: GameOverProps) => {
       setShowScores(false);
       setTimeout(() => {
         setShowScores(true);
-      }, 2000);
+      }, GAME_OVER_DISPLAY_DURATION);
     }
   }, [gameOver]);
 
@@ -43,14 +45,6 @@ const GameOver = (props: GameOverProps) => {
   }, [gameState.storableScore]);
 
   const participate = (name: string, email: string, subscribe: boolean) => {
-    console.log(
-      'SAVE SCORE AND PARTICIPATE',
-      name,
-      email,
-      subscribe,
-      gameState.storableScore
-    );
-
     if (name.trim() === '') {
       console.log('Name must be filled in');
       return;
@@ -69,8 +63,6 @@ const GameOver = (props: GameOverProps) => {
         subscribe
       }
     });
-
-    //restart();
   };
 
   if (!gameOver) {

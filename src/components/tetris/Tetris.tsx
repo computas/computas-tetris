@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Swipe, { SwipePosition } from 'react-easy-swipe';
 // eslint-disable-next-line
 import useSound from 'use-sound';
@@ -13,8 +13,7 @@ import {
   calculateLandingRow,
   canMove,
   createStage,
-  detectCollision,
-  saveScore
+  detectCollision
 } from 'helpers';
 import { ReactComponent as ComputasLogo } from '../../svg/computas.svg';
 import { ReactComponent as TetrisVertical } from '../../svg/tetrisVertical.svg';
@@ -25,6 +24,9 @@ import {
   usePlayer,
   useStage
 } from 'hooks';
+import Button, { ButtonVariant } from '../button/Button';
+import { GameStateContext } from '../../contexts/GameStateContext';
+import { GameStateActionType } from '../../enums/GameStateActionTypes';
 
 export interface GameState {
   gameOver: boolean;
@@ -44,10 +46,11 @@ const BLOCK_SIZE = 32;
 const SPEED_FACTOR = 600;
 const LEVEL_FACTOR = 35;
 const SWIPE_DOWN_ANGLE = 3.0;
-const SWIPE_DOWN_DIST_MIN = 20;
+const SWIPE_DOWN_DIST_MIN = 80;
 const TAP_MOVE_DIST_MAX = 8;
 
 export default function Tetris() {
+  const { gameDispatch } = useContext(GameStateContext);
   const [state, setState] = useState(initialGameState);
   const [touchStartPosition, setTouchStartPosition] = useState({
     x: 0,
@@ -142,7 +145,12 @@ export default function Tetris() {
           gameOver: true,
           startScreen: false
         });
-        saveScore(storableScore);
+        gameDispatch({
+          type: GameStateActionType.ScoreReady,
+          payload: {
+            storableScore
+          }
+        });
         resetTetrominos();
 
         if (newHighScore) {
@@ -404,9 +412,11 @@ export default function Tetris() {
                   </button>
                 </div>
               ) : state.startScreen ? (
-                <button className={css.PlayButton} onClick={play} tabIndex={-1}>
-                  Spill
-                </button>
+                <Button
+                  label={'Spill'}
+                  onClick={play}
+                  variant={ButtonVariant.Primary}
+                />
               ) : null}
             </aside>
           </section>

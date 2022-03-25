@@ -1,21 +1,30 @@
+.alignTop {
+  display: grid;
+  justify-content: center;
+  grid-auto-flow: column;
+  margin-top: 1rem;
+  padding: 1rem;
+  column-gap: 2.5rem;
+}
+
 .Tetris {
   position: absolute;
   top: 0;
   width: 100vw;
   height: 100vh;
-  padding-top: 11rem;
+  padding-top: 14rem;
 
   .Board {
     width: 100%;
-    max-width: 33rem;
+    max-width: 61.7rem;
     margin: 0 auto;
     outline: none;
 
     > section {
       display: grid;
-      grid-template-columns: auto 8rem;
+      grid-template-columns: auto 13rem;
       position: relative;
-      height: 40rem;
+      height: 84rem;
     }
   }
 
@@ -45,13 +54,12 @@
   aside {
     display: grid;
     position: absolute;
-    right: 1rem;
-    top: 0;
+    right: 0;
+    top: 12rem;
     bottom: 0;
-    width: 8rem;
+    width: 13rem;
     padding: 0.5rem 0.2rem;
     border-radius: 0.5rem;
-    box-sizing: border-box;
   }
 
   .PlayButton {
@@ -103,21 +111,12 @@
   }
 }
 
-.alignTop {
-  display: grid;
-  justify-content: center;
-  grid-auto-flow: column;
-  padding: 1rem;
-  column-gap: 2.5rem;
-  margin-right: 2.5rem;
-}
-
 .VerticalTetrisLogo {
-  width: 4.3rem;
-  margin: 6rem auto auto;
+  width: 9.3rem;
+  margin: 3rem auto auto;
 }
 
 .ComputasLogo {
-  width: 5rem;
-  min-width: 5rem;
+  width: 10.3rem;
+  min-width: 10.3rem;
 }

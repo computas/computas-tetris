@@ -14,5 +14,15 @@
     + li {
       margin-top: 0.3rem;
     }
+
+    div {
+      display: grid;
+      grid-template-columns: 10rem auto;
+      grid-gap: 2rem;
+
+      span:first-child {
+        text-align: right;
+      }
+    }
   }
 }

@@ -22,7 +22,7 @@ const StartScreen = (props: StartScreenProps) => {
         1: Bruk piltastene for å bevege tetrominoen.
       </p>
       <p className={css.StartScreenInformation}>
-        2: Trykk start eller space for å starte spillet.
+        2: Trykk Spill eller space for å starte spillet.
       </p>
       <p className={css.StartScreenInformation}>3: Lykke til!</p>
       <Lottie

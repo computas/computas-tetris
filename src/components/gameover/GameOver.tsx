@@ -3,6 +3,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import css from './GameOver.module.scss';
 import ScorePage from './scorepage/ScorePage';
 import { GameStateContext } from '../../contexts/GameStateContext';
+import { GameStateActionType } from '../../enums/GameStateActionTypes';
+import { saveScore } from '../../helpers';
 
 interface GameOverProps {
   gameOver: boolean;
@@ -12,13 +14,9 @@ interface GameOverProps {
 
 const GameOver = (props: GameOverProps) => {
   const { gameOver, score, restart } = props;
-  const { gameState } = useContext(GameStateContext);
+  const { gameState, gameDispatch } = useContext(GameStateContext);
   const [showScores, setShowScores] = useState(false);
   const [currentRank, setCurrentRank] = useState(1);
-
-  const showHighScores = () => {
-    restart();
-  };
 
   useEffect(() => {
     if (gameOver) {
@@ -33,6 +31,48 @@ const GameOver = (props: GameOverProps) => {
     }
   }, [gameOver]);
 
+  useEffect(() => {
+    if (
+      gameState.storableScore.name !== '' &&
+      gameState.storableScore.email !== ''
+    ) {
+      saveScore(gameState.storableScore).then(() => {
+        restart();
+      });
+    }
+  }, [gameState.storableScore]);
+
+  const participate = (name: string, email: string, subscribe: boolean) => {
+    console.log(
+      'SAVE SCORE AND PARTICIPATE',
+      name,
+      email,
+      subscribe,
+      gameState.storableScore
+    );
+
+    if (name.trim() === '') {
+      console.log('Name must be filled in');
+      return;
+    }
+
+    if (email.trim() === '') {
+      console.log('E-mail must be filled in');
+      return;
+    }
+
+    gameDispatch({
+      type: GameStateActionType.UpdateScoreWithDetails,
+      payload: {
+        name,
+        email,
+        subscribe
+      }
+    });
+
+    //restart();
+  };
+
   if (!gameOver) {
     return null;
   }
@@ -42,7 +82,8 @@ const GameOver = (props: GameOverProps) => {
       <ScorePage
         score={score}
         rank={`${currentRank} av ${gameState.scoreList.length}`}
-        showHighScores={showHighScores}
+        participate={participate}
+        restart={restart}
       />
     </div>
   ) : (

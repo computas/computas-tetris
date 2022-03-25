@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 
-import './Display.scss';
+import css from './Display.module.scss';
 
-export default function Display(props: {
+const Display = (props: {
   content: string;
   style?: React.CSSProperties;
-}) {
+}): ReactElement => {
+  const { content, style } = props;
+
   return (
-    <div className="display" style={props.style}>
-      {props.content}
+    <div className={css.Display} style={style}>
+      {content}
     </div>
   );
-}
+};
+
+export default Display;

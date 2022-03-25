@@ -9,10 +9,22 @@
   height: 100%;
   background-color: #003459;
   text-align: center;
+
+  .form {
+    width: 30rem;
+    text-align: left;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: white;
+  }
+
+  .centered {
+    text-align: center;
+  }
 }
 
 .ScorePageScore {
-  color: #FED546;
+  color: #fed546;
   font-size: 3rem;
   padding-bottom: 3rem;
 }
@@ -22,6 +34,7 @@
   font-size: 2rem;
   padding-bottom: 3rem;
 }
+
 .ScorePageDescription {
   color: #fff;
   width: 15rem;
@@ -30,24 +43,8 @@
   padding-bottom: 3rem;
 }
 
-.ScorePageButton {
-  button {
-    background-color: #FED546;
-    border: none;
-    border-radius: 0.5rem;
-    font-weight: 700;
-    padding: 1rem;
-    cursor: pointer;
-  }
-  padding-bottom: 3rem;
-}
 .Tetromino {
   padding: 2.6rem;
-}
-.ButtonText {
-  padding: 1rem;
-  color: #003459;
-  font-size: 2rem;
 }
 
 .Column {
@@ -77,7 +74,7 @@
   background-color: rgb(0, 52, 89);
   border-radius: 1rem;
   filter: drop-shadow(0rem 0rem 2.4rem #29cff5);
-  border: #FED546 solid 0.4rem;
+  border: #fed546 solid 0.4rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -85,7 +82,7 @@
 }
 
 .TopScoreOverlayText {
-  color: #FED546;
+  color: #fed546;
   line-height: 5rem;
   font-size: 3.5rem;
   text-shadow: 0rem 1rem 1rem rgba(0, 0, 0, 0.25);

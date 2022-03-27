@@ -112,6 +112,18 @@
   margin-right: 2.5rem;
 }
 
+.TrialCounter {
+  padding: 3rem;
+  column-gap: 2.5rem;
+  margin-right: 2.5rem;
+  display: grid;
+  justify-content: center;
+  grid-auto-flow: column;
+  font-weight: 700;
+  color: #FFFFFF;
+  font-size: 2.8rem;
+}
+
 .VerticalTetrisLogo {
   width: 4.3rem;
   margin: 6rem auto auto;

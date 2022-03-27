@@ -1,22 +1,9 @@
-.StartScreen {
+.TrialScreen {
   position: absolute;
   left: 0;
   top: 0;
   height: 100%;
   width: 100%;
-  background-color: #003459;
-  text-align: center;
-  z-index: 11;
-}
-
-.StartScreen {
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  justify-items: center;
   background-color: #003459;
   text-align: center;
   z-index: 11;
@@ -34,6 +21,18 @@
   padding-bottom: 1.5rem;
 }
 
+.FiguresBox {
+  display: flex;
+  justify-content: center;
+
+  .Figures {
+    width: 120%;
+    max-width: 1000px;
+    position: fixed;
+    bottom: 0;
+  }
+}
+
 .PlayButtonText {
   padding: 1rem;
   color: #003459;
@@ -43,19 +42,6 @@
 .StartScreenHeader {
     max-width: 50rem;
     padding: 2% 5%;
-}
-
-.FiguresBox {
-  display: flex;
-  justify-content: center;
-
-  .Figures {
-    width: 100%;
-    max-height: 60vh;
-    max-width: 650px;
-    position: fixed;
-    bottom: 0;
-  }
 }
 
 .ToplistButton {

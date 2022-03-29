@@ -9,38 +9,84 @@
 }
 
 .TetrisHeader {
-  width: 40rem;
+  width: 60rem;
   margin: 1rem auto;
 }
 
 .ScoreBoardList {
   display: grid;
   place-items: center;
-  font-size: xx-large;
-  color: white;
   margin-top: 0.5rem;
+  color: white;
+  counter-reset: item;
 
   li {
-    & > div {
+    list-style-type: none;
+    position: relative;
+    margin: 0 !important;
+    padding: 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+
+    &::before {
+      content: counter(item) ' ';
+      position: absolute;
+      left: -5rem;
+      width: 4rem;
+      counter-increment: item;
+      font-size: inherit;
+      line-height: 4.5rem;
+      text-align: right;
+    }
+
+    > div {
+      width: 40.3rem;
+      height: 4.6rem;
       background-color: #29cff5;
-      width: 25rem;
-      height: 1.25rem;
       color: black;
+      font-size: 2rem !important;
     }
-    &:nth-child(1) > * {
-      background-color: #ff5f63;
-      height: 3rem;
-      width: 34rem;
+
+    &:nth-child(1) {
+      &::before {
+        font-size: 7rem;
+        line-height: 7rem;
+      }
+
+      > * {
+        width: 54.7rem;
+        height: 6.7rem;
+        background-color: #ff5f63;
+        font-size: 4rem !important;
+      }
     }
-    &:nth-child(2) > * {
-      background-color: #fed546;
-      height: 2.5rem;
-      width: 31rem;
+
+    &:nth-child(2) {
+      &::before {
+        font-size: 6rem;
+        line-height: 7rem;
+      }
+
+      > * {
+        width: 49.6rem;
+        height: 6.7rem;
+        background-color: #fed546;
+        font-size: 4rem !important;
+      }
     }
-    &:nth-child(3) > * {
-      background-color: #49bca1;
-      height: 2rem;
-      width: 27.5rem;
+
+    &:nth-child(3) {
+      &::before {
+        font-size: 5rem;
+        line-height: 7rem;
+      }
+
+      > * {
+        width: 44.3rem;
+        height: 6.7rem;
+        background-color: #49bca1;
+        font-size: 4rem !important;
+      }
     }
   }
 }

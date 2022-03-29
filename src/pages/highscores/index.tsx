@@ -1,10 +1,10 @@
 import React, { ReactElement, useContext, useEffect } from 'react';
 
 import css from './Highscores.module.scss';
+import Display from 'components/display/Display';
 import { fetchRealTimeScoreList } from '../../helpers';
 import { GameStateContext } from '../../contexts/GameStateContext';
 import { GameStateActionType } from '../../enums/GameStateActionTypes';
-import Display from 'components/display/Display';
 import { ReactComponent as TetrisHeader } from '../../svg/tetrisHeader.svg';
 
 const Highscores = (): ReactElement => {
@@ -31,14 +31,7 @@ const Highscores = (): ReactElement => {
       <ol className={css.ScoreBoardList}>
         {gameState.scoreList.slice(0, 20).map((score, index) => (
           <li key={index}>
-            <Display
-              content={score.score}
-              style={{
-                fontSize: '25px',
-                display: 'grid',
-                alignContent: 'center'
-              }}
-            />
+            <Display content={[score.name, score.score.toString()]} />
           </li>
         ))}
       </ol>

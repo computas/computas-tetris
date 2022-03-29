@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Swipe, { SwipePosition } from 'react-easy-swipe';
 // eslint-disable-next-line
 import useSound from 'use-sound';
@@ -14,8 +14,7 @@ import {
   calculateLandingRow,
   canMove,
   createStage,
-  detectCollision,
-  saveScore
+  detectCollision
 } from 'helpers';
 import { ReactComponent as ComputasLogo } from '../../svg/computas.svg';
 import { ReactComponent as TetrisVertical } from '../../svg/tetrisVertical.svg';
@@ -26,6 +25,8 @@ import {
   usePlayer,
   useStage
 } from 'hooks';
+import { GameStateContext } from '../../contexts/GameStateContext';
+import { GameStateActionType } from '../../enums/GameStateActionTypes';
 
 export interface GameState {
   gameOver: boolean;
@@ -49,11 +50,12 @@ const BLOCK_SIZE = 32;
 const SPEED_FACTOR = 600;
 const LEVEL_FACTOR = 35;
 const SWIPE_DOWN_ANGLE = 3.0;
-const SWIPE_DOWN_DIST_MIN = 20;
+const SWIPE_DOWN_DIST_MIN = 80;
 const TAP_MOVE_DIST_MAX = 8;
 const TRIAL_BLOCKS = 5;
 
 export default function Tetris() {
+  const { gameDispatch } = useContext(GameStateContext);
   const [state, setState] = useState(initialGameState);
   const [touchStartPosition, setTouchStartPosition] = useState({
     x: 0,
@@ -93,12 +95,15 @@ export default function Tetris() {
   const [playDropDownSound] = useSound('/assets/sfx/swipe-down.mp3');
   const [playHitFloorSound] = useSound('/assets/sfx/hit-floor.mp3');
   const [playHitWallSound] = useSound('/assets/sfx/hit-wall.mp3');
+  const [playMusic, { stop }] = useSound('/assets/sfx/music.mp3', {
+    volume: 0.4
+  });
   const [playRotateSound] = useSound('/assets/sfx/rotate.mp3', {
     volume: 0.4
   });
-  const [playRemoveLine] = useSound('/assets/sfx/remove1.mp3');
-  const [playYouLose] = useSound('/assets/sfx/you-lose.mp3');
-  const [playYouWin] = useSound('/assets/sfx/you-win.mp3');
+  const [playRemoveLineSound] = useSound('/assets/sfx/remove1.mp3');
+  const [playYouLoseSound] = useSound('/assets/sfx/you-lose.mp3');
+  const [playYouWinSound] = useSound('/assets/sfx/you-win.mp3');
 
   const levelSpeed = (): number => {
     return Math.max(SPEED_FACTOR - level * LEVEL_FACTOR, LEVEL_FACTOR);
@@ -113,8 +118,16 @@ export default function Tetris() {
   }, [blocksPlayed]);
 
   useEffect(() => {
+    playMusic();
+
+    return () => {
+      stop();
+    };
+  }, [playMusic]);
+
+  useEffect(() => {
     if (downPressState) {
-      if (state.gameOver || state.startScreen) {
+      if (state.startScreen) {
         play();
         return;
       }
@@ -161,13 +174,18 @@ export default function Tetris() {
           gameOver: true,
           startScreen: false
         });
-        saveScore(storableScore);
+        gameDispatch({
+          type: GameStateActionType.ScoreReady,
+          payload: {
+            storableScore
+          }
+        });
         resetTetrominos();
 
         if (newHighScore) {
-          playYouWin();
+          playYouWinSound();
         } else {
-          playYouLose();
+          playYouLoseSound();
         }
         return;
       } else {
@@ -192,8 +210,8 @@ export default function Tetris() {
   }, [level]);
 
   useEffect(() => {
-    if (rowsCleared > 0) {
-      playRemoveLine();
+    if (rowsCleared.length > 0) {
+      playRemoveLineSound();
     }
   }, [rowsCleared]);
 
@@ -230,7 +248,25 @@ export default function Tetris() {
     updatePlayerPosition(player.position.x + dir, player.position.y, false);
   };
 
+  const tapped = (): void => {
+    if (state.startScreen) {
+      play();
+      return;
+    }
+
+    if (state.gameOver) {
+      return;
+    }
+
+    playRotateSound();
+    rotatePlayer(stage, 1);
+  };
+
   const moveMaxDown = (): void => {
+    if (state.gameOver || state.startScreen) {
+      return;
+    }
+
     const row = calculateLandingRow(player, stage);
     updatePlayerPosition(player.position.x, row, true);
     playDropDownSound();
@@ -258,6 +294,7 @@ export default function Tetris() {
   };
 
   const play = (): void => {
+    stop();
     generateNextTetromino();
     resetGame();
     setStage(createStage());
@@ -299,21 +336,14 @@ export default function Tetris() {
       startScreen: true,
       trial: false
     });
+    playMusic();
     resetGame();
     setStage(createStage());
     setGamesPlayed(0);
     setBlocksPlayed(1);
   };
 
-  const swipedDown = (): void => {
-    moveMaxDown();
-  };
-
   const swipeStart = (event: any): void => {
-    if (state.gameOver || state.startScreen) {
-      return;
-    }
-
     const touch = event.changedTouches[0];
     setTouchPosition({ x: 0, y: 0 });
     setTouchStartPosition({
@@ -345,10 +375,6 @@ export default function Tetris() {
   };
 
   const swipeEnd = (event: any): void => {
-    if (state.gameOver || state.startScreen) {
-      return;
-    }
-
     const touch = event.changedTouches[0];
     const delta = {
       x: touch.clientX - touchStartPosition.x,
@@ -365,18 +391,15 @@ export default function Tetris() {
     };
 
     if (axis.x < TAP_MOVE_DIST_MAX && axis.y < TAP_MOVE_DIST_MAX) {
-      playRotateSound();
-      rotatePlayer(stage, 1);
+      tapped();
       return;
     }
-
-    console.log(axis, delta);
 
     if (
       axis.y / (axis.x + 1) > SWIPE_DOWN_ANGLE &&
       axis.y > SWIPE_DOWN_DIST_MIN
     ) {
-      swipedDown();
+      moveMaxDown();
     }
   };
 
@@ -448,28 +471,6 @@ export default function Tetris() {
             <Next tetromino={tetrominos[1]} />
             <aside>
               <TetrisVertical className={css.VerticalTetrisLogo} />
-              {state.gameOver ? (
-                <div className={css.buttonPlacement}>
-                  <button
-                    className={css.PlayAgainButton}
-                    onClick={play}
-                    tabIndex={-1}
-                  >
-                    Spill igjen
-                  </button>
-                  <button
-                    className={css.HomeButton}
-                    onClick={returnHome}
-                    tabIndex={-1}
-                  >
-                    Hjem
-                  </button>
-                </div>
-              ) : state.startScreen ? (
-                <button className={css.PlayButton} onClick={play} tabIndex={-1}>
-                  Spill
-                </button>
-              ) : null}
             </aside>
           </section>
         </section>

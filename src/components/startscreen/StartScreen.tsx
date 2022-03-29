@@ -20,6 +20,8 @@ const StartScreen = (props: StartScreenProps) => {
     return null;
   }
 
+  document.querySelector('section')?.focus();
+
   return (
     <>
       <div className={css.StartScreen}>

@@ -45,6 +45,23 @@
     position: fixed;
     bottom: 0;
   }
+
+  p {
+    margin: 1.8rem 1rem;
+    color: var(--primary-color);
+    font-size: 2.3rem;
+    align-items: center;
+    text-align: center;
+    transition: all 350ms ease-out;
+  }
+
+  .desktop {
+    display: block;
+  }
+
+  .touchDevice {
+    display: none;
+  }
 }
 
 .ToplistButton {
@@ -63,12 +80,10 @@
   padding: 0rem;
   color: #003459;
   font-size: 1rem;
-}
 
-.StartScreenInformation {
-  margin: 1.8rem 1rem;
+.StartScreenHeader {
+  font-size: 4rem;
   color: var(--primary-color);
-  font-size: 2.3rem;
   align-items: center;
   text-align: center;
   transition: all 350ms ease-out;
@@ -76,8 +91,20 @@
 
 .LottieStartScreenStyle {
   position: absolute;
-  height: 11.5rem;
-  bottom: -0.6rem;
-  right: 3rem;
+  left: 8.8rem;
+  bottom: -0.8rem;
   z-index: 20;
+  height: 19rem;
+}
+
+@media (any-hover: none) {
+  .StartScreen {
+    .desktop {
+      display: none;
+    }
+
+    .touchDevice {
+      display: block;
+    }
+  }
 }

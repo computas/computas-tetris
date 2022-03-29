@@ -7,6 +7,7 @@ import { GameStateActionType } from '../enums/GameStateActionTypes';
 
 interface GameState {
   scoreList: Score[];
+  storableScore: Score;
 }
 
 interface GameStateAction {
@@ -14,12 +15,23 @@ interface GameStateAction {
   payload?: any;
 }
 
+const initialStorableScore: Score = {
+  duration: 0,
+  email: '',
+  level: 0,
+  name: '',
+  rows: 0,
+  score: 0,
+  subscribe: false,
+  tetrominos: 0
+};
+
 const initialGameState: GameState = {
-  scoreList: []
+  scoreList: [],
+  storableScore: initialStorableScore
 };
 
 const stateReducer = (state: GameState, action: GameStateAction) => {
-  console.log('state', action.type);
   switch (action.type) {
     case GameStateActionType.ResetScoreList:
       return {
@@ -30,6 +42,26 @@ const stateReducer = (state: GameState, action: GameStateAction) => {
       return {
         ...state,
         scoreList: updatedScoreList(action.payload.changes, state)
+      };
+
+    case GameStateActionType.ScoreReady:
+      return {
+        ...state,
+        storableScore: {
+          ...action.payload.storableScore,
+          duration: getDurationSince(action.payload.storableScore.duration)
+        }
+      };
+
+    case GameStateActionType.UpdateScoreWithDetails:
+      return {
+        ...state,
+        storableScore: {
+          ...state.storableScore,
+          name: action.payload.name,
+          email: action.payload.email,
+          subscribe: action.payload.subscribe
+        }
       };
 
     default:
@@ -59,6 +91,11 @@ const updatedScoreList = (
   return newScoreList;
 };
 
+const getDurationSince = (start: number): number => {
+  const t = new Date();
+  return t.getTime() - start;
+};
+
 interface contextValue {
   gameState: GameState;
   gameDispatch: any;
@@ -80,7 +117,6 @@ const GameStateProvider = (props: any) => {
     gameDispatch({
       type: GameStateActionType.ResetScoreList
     });
-    console.log('insta');
   }, []);
 
   return (

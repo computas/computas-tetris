@@ -1,9 +1,14 @@
 import { useContext, useEffect, useState } from 'react';
 
-import { fetchRealTimeScoreList, randomTetromino, Tetromino } from 'helpers';
+import {
+  fetchRealTimeScoreList,
+  randomTetromino,
+  Row,
+  Tetromino
+} from 'helpers';
+import { GameStateActionType } from '../enums/GameStateActionTypes';
 import { GameStateContext } from '../contexts/GameStateContext';
 import { Score } from 'models';
-import { GameStateActionType } from '../enums/GameStateActionTypes';
 
 const LEVEL_INCREASE_COUNT = 2;
 const SIMPLE_TETROMINOS_LIMIT = 10;
@@ -17,16 +22,16 @@ const initialTetrominosList: Tetromino[] = [
 const initialStorableScore: Score = {
   duration: 0,
   email: '',
-  level: 0,
+  level: 1,
   name: '',
   rows: 0,
   score: 0,
   subscribe: false,
-  tetrominos: 0
+  tetrominos: 1
 };
 
 export const useGameStatus = (
-  rowsCleared: number
+  rowsCleared: Row[]
 ): [
   number,
   number,
@@ -47,7 +52,6 @@ export const useGameStatus = (
   const [score, setScore] = useState(0);
   const [storableScore, setSetstorableScore] = useState(initialStorableScore);
   const [tetrominos, setTetrominos] = useState(initialTetrominosList);
-  const [tetrominoCount, setTetrominoCount] = useState(0);
 
   useEffect(() => {
     const unsubscribe = fetchRealTimeScoreList(gameDispatch);
@@ -64,8 +68,8 @@ export const useGameStatus = (
 
   useEffect(() => {
     if (rowsCleared) {
-      const newScore = score + POINTS_TABLE[rowsCleared] * level;
-      const newRows = rows + rowsCleared;
+      const newScore = score + calculateScore();
+      const newRows = rows + rowsCleared.length;
       let newLevel = level;
 
       setRows(newRows);
@@ -85,8 +89,7 @@ export const useGameStatus = (
         ...storableScore,
         level: newLevel,
         rows: newRows,
-        score: newScore,
-        tetrominos: tetrominoCount
+        score: newScore
       });
     }
   }, [rowsCleared]);
@@ -108,7 +111,6 @@ export const useGameStatus = (
     setNewHighScore(false);
     setRows(0);
     setLevel(1);
-    setTetrominoCount(0);
   };
 
   const resetTetrominos = (): void => {
@@ -116,11 +118,30 @@ export const useGameStatus = (
   };
 
   const generateNextTetromino = (): void => {
-    setTetrominoCount(tetrominoCount + 1);
+    incrementTetrominoCount();
     setTetrominos([
       tetrominos[1],
-      randomTetromino(tetrominoCount < SIMPLE_TETROMINOS_LIMIT)
+      randomTetromino(storableScore.tetrominos <= SIMPLE_TETROMINOS_LIMIT)
     ]);
+  };
+
+  const incrementTetrominoCount = (): void => {
+    setSetstorableScore({
+      ...storableScore,
+      tetrominos: storableScore.tetrominos + 1
+    });
+  };
+
+  const calculateScore = (): number => {
+    const points = POINTS_TABLE[rowsCleared.length] * level;
+    const rowPoints = rowsCleared.map((row) => {
+      return (
+        row.cells.reduce((p: number, cell) => {
+          return p + cell.color;
+        }, 0) * level
+      );
+    });
+    return points + rowPoints.reduce((a, b) => a + b, 0);
   };
 
   return [

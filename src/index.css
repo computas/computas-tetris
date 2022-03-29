@@ -3,12 +3,15 @@
   --primary-color: #2acff5;
   --secondary-color: #21a4c2;
   --tertiary-color: #003c66;
-  --border: 3px solid white;
+  --border: 0.3rem solid white;
+
+  --primary-button-color: #fed546;
+  --secondary-button-color: #ff5f63;
 }
 
 * {
   user-select: none;
-  box-sizing: content-box;
+  box-sizing: border-box;
 }
 
 html {
@@ -16,6 +19,7 @@ html {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  font-size: 62.5%;
 }
 
 body {
@@ -26,7 +30,6 @@ body {
     'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-size: 62.5%;
   overflow: hidden;
   touch-action: pan-y;
 }

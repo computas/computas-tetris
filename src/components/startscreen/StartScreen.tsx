@@ -1,15 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Lottie from 'lottie-react';
+
+import { ReactComponent as TetrisHeader } from '../../svg/tetrisHeader.svg';
+import { ReactComponent as StartFigure } from '../../svg/StartMenu.svg';
 
 import animationData from '../../lotties/hiro-hiding.json';
 import css from './StartScreen.module.scss';
 
 interface StartScreenProps {
   startScreen: boolean;
+  showHighScores: () => void;
+  startTrial: () => void;
 }
 
 const StartScreen = (props: StartScreenProps) => {
-  const { startScreen } = props;
+  const { startScreen, showHighScores, startTrial } = props;
 
   if (!startScreen) {
     return null;
@@ -18,28 +23,24 @@ const StartScreen = (props: StartScreenProps) => {
   document.querySelector('section')?.focus();
 
   return (
-    <div className={css.StartScreen}>
-      <h1 className={css.StartScreenHeader}>Velkommen!</h1>
-      <div className={css.desktop}>
-        <p>1: Bruk piltastene sidelenges for å bevege tetrominoen</p>
-        <p>2: Bruk piltast opp for å rotere tetrominoen</p>
-        <p>3. Bruk Space eller piltast ned for å slippe tetrominoen</p>
-        <p>4: Trykk Space for å starte spillet</p>
+    <>
+      <div className={css.StartScreen}>
+        <TetrisHeader className={css.StartScreenHeader} />
+        <div className={css.PlayButton}>
+          <button onClick={() => startTrial()}>
+            <span className={css.PlayButtonText}>SPILL OG VINN PREMIE!</span>
+          </button>
+        </div>
+        <div className={css.ToplistButton}>
+          <button onClick={() => showHighScores()}>
+            <span className={css.ToplistButtonText}>SE TOPPLISTEN</span>
+          </button>
+        </div>
+        <div className={css.FiguresBox}>
+          <StartFigure className={css.Figures} />
+        </div>
       </div>
-      <div className={css.touchDevice}>
-        <p>1: Swipe venstre/høyre for å bevege tetrominoen</p>
-        <p>2: Tap for å rotere tetrominoen</p>
-        <p>3. Swipe ned for å slippe tetrominoen</p>
-        <p>4: Tap for å starte spillet</p>
-      </div>
-      <p>5: Lykke til!</p>
-      <Lottie
-        animationData={animationData}
-        autoPlay
-        loop
-        className={css.LottieStartScreenStyle}
-      />
-    </div>
+    </>
   );
 };
 

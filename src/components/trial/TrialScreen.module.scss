@@ -1,0 +1,87 @@
+.TrialScreen {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #003459;
+  text-align: center;
+  z-index: 11;
+}
+
+.PlayButton {
+  button {
+    background-color: #FED546;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    padding: 1rem;
+    cursor: pointer;
+  }
+  padding-bottom: 1.5rem;
+}
+
+.FiguresBox {
+  display: flex;
+  justify-content: center;
+
+  .Figures {
+    width: 120%;
+    max-width: 1000px;
+    position: fixed;
+    bottom: 0;
+  }
+}
+
+.PlayButtonText {
+  padding: 1rem;
+  color: #003459;
+  font-size: 1.5rem;
+}
+
+.StartScreenHeader {
+    max-width: 50rem;
+    padding: 2% 5%;
+}
+
+.ToplistButton {
+  button {
+    background-color: #FF5F63;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    padding: 1rem;
+    cursor: pointer;
+  }
+  padding-bottom: 2rem;
+}
+
+.ToplistButtonText {
+  padding: 0rem;
+  color: #003459;
+  font-size: 1rem;
+}
+
+.TrialPromptDescription {
+  font-weight: 700;
+  color: #FFFFFF;
+  font-size: 2.8rem;
+  padding: 3rem 5rem 3rem 5rem;
+}
+
+.StartScreenInformation {
+  margin: 1.8rem 1rem;
+  color: var(--primary-color);
+  font-size: 2.3rem;
+  align-items: center;
+  text-align: center;
+  transition: all 350ms ease-out;
+}
+
+.LottieStartScreenStyle {
+  position: absolute;
+  height: 11.5rem;
+  bottom: -0.6rem;
+  right: 3rem;
+  z-index: 20;
+}

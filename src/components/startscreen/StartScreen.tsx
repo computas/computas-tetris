@@ -24,18 +24,22 @@ const StartScreen = (props: StartScreenProps) => {
     <>
       <div className={css.StartScreen}>
         <TetrisHeader className={css.StartScreenHeader} />
-        <Button
-          label={'SPILL OG VINN PREMIE!'}
-          onClick={() => startTrial()}
-          size={ButtonSize.Large}
-          variant={ButtonVariant.Primary}
-        />
-        <Button
-          label={'SE TOPPLISTEN'}
-          onClick={() => showHighScores()}
-          size={ButtonSize.Large}
-          variant={ButtonVariant.Secondary}
-        />
+        <div className={css.Button}>
+          <Button
+            label={'SPILL OG VINN PREMIE!'}
+            onClick={() => startTrial()}
+            size={ButtonSize.XL}
+            variant={ButtonVariant.Primary}
+          />
+        </div>
+        <div className={css.Button}>
+          <Button
+            label={'SE TOPPLISTEN'}
+            onClick={() => showHighScores()}
+            size={ButtonSize.Large}
+            variant={ButtonVariant.Secondary}
+          />
+        </div>
         <div className={css.FiguresBox}>
           <StartFigure className={css.Figures} />
         </div>

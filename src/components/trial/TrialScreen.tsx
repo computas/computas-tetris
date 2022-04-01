@@ -45,18 +45,22 @@ const TrialScreen = (props: TrialScreenProps) => {
         <div className={css.TrialPromptDescription}>
           Vil dere ta en prøverunde, eller starte spillet?
         </div>
-        <Button
-          label={'SPILL OG VINN PREMIE!'}
-          onClick={() => play()}
-          size={ButtonSize.Large}
-          variant={ButtonVariant.Primary}
-        />
-        <Button
-          label={'VI VIL TESTE FØRST'}
-          onClick={() => progressTrial()}
-          size={ButtonSize.Large}
-          variant={ButtonVariant.Primary}
-        />
+        <div className={css.Button}>
+          <Button
+            label={'SPILL OG VINN PREMIE!'}
+            onClick={() => play()}
+            size={ButtonSize.XL}
+            variant={ButtonVariant.Primary}
+          />
+        </div>
+        <div className={css.Button}>
+          <Button
+            label={'VI VIL TESTE FØRST'}
+            onClick={() => progressTrial()}
+            size={ButtonSize.XL}
+            variant={ButtonVariant.Primary}
+          />
+        </div>
         <div className={css.FiguresBox}>
           <Trial1 className={css.Figures} />
         </div>

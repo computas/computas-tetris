@@ -5,7 +5,8 @@ import css from './Button.module.scss';
 
 export enum ButtonSize {
   Normal = 'normal',
-  Large = 'large'
+  Large = 'large',
+  XL = 'xlarge'
 }
 
 export enum ButtonVariant {
@@ -27,8 +28,9 @@ const Button = (props: ButtonProps): ReactElement => {
   const cssFromSize = () => {
     if (size === ButtonSize.Large) {
       return css.large;
+    } else if (size == ButtonSize.XL) {
+      return css.xlarge;
     }
-
     return css.normal;
   };
 

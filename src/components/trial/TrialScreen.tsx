@@ -1,11 +1,10 @@
-import { map } from '@firebase/util';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import { ReactComponent as Trial1 } from '../../svg/Trial-1.svg';
 import { ReactComponent as Trial2 } from '../../svg/Trial-2.svg';
 import { ReactComponent as Trial3 } from '../../svg/Trial-3.svg';
 import { ReactComponent as Trial4 } from '../../svg/Trial-4.svg';
-
+import Button, { ButtonSize, ButtonVariant } from '../button/Button';
 import css from './TrialScreen.module.scss';
 
 interface TrialScreenProps {
@@ -18,10 +17,16 @@ interface TrialScreenProps {
 const TrialScreen = (props: TrialScreenProps) => {
   const { trial, trialStage, progressTrial, play } = props;
 
-  if (!trial || trialStage == 3) {
+  if (!trial || trialStage === 3) {
     document.querySelector('section')?.focus();
     return null;
   }
+
+  const getDescriptionText = (trialStage: number) => {
+    return trialStage < 4
+      ? 'Klikk for å prøve dere på spillet mens den som styrer kan se!'
+      : 'Håper dere er klare, for nå starter spillet!';
+  };
 
   const renderFigure = (trialStage: number) => {
     switch (trialStage) {
@@ -34,22 +39,24 @@ const TrialScreen = (props: TrialScreenProps) => {
     }
   };
 
-  return trialStage == 1 ? (
+  return trialStage === 1 ? (
     <>
       <div className={css.TrialScreen}>
         <div className={css.TrialPromptDescription}>
           Vil dere ta en prøverunde, eller starte spillet?
         </div>
-        <div className={css.PlayButton}>
-          <button onClick={() => play()}>
-            <span className={css.PlayButtonText}>START SPILLET!</span>
-          </button>
-        </div>
-        <div className={css.PlayButton}>
-          <button onClick={() => progressTrial()}>
-            <span className={css.PlayButtonText}>VI VILL TESTE FØRST</span>
-          </button>
-        </div>
+        <Button
+          label={'SPILL OG VINN PREMIE!'}
+          onClick={() => play()}
+          size={ButtonSize.Large}
+          variant={ButtonVariant.Primary}
+        />
+        <Button
+          label={'VI VIL TESTE FØRST'}
+          onClick={() => progressTrial()}
+          size={ButtonSize.Large}
+          variant={ButtonVariant.Primary}
+        />
         <div className={css.FiguresBox}>
           <Trial1 className={css.Figures} />
         </div>
@@ -59,9 +66,7 @@ const TrialScreen = (props: TrialScreenProps) => {
     <>
       <div className={css.TrialScreen} onClick={() => progressTrial()}>
         <div className={css.TrialPromptDescription}>
-          {trialStage < 4
-            ? 'Klikk for å prøve dere på spillet mens den som styrer kan se!'
-            : 'Håper dere er klare, for nå starter spillet!'}
+          {getDescriptionText(trialStage)}
         </div>
         <div className={css.FiguresBox}>{renderFigure(trialStage)}</div>
       </div>

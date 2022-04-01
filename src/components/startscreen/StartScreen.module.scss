@@ -4,34 +4,15 @@
   top: 0;
   height: 100%;
   width: 100%;
-  background: rgba(0, 0, 0, 0.4);
-  justify-items: center;
   background-color: #003459;
+  justify-items: center;
   text-align: center;
   z-index: 11;
 }
 
-.PlayButton {
-  button {
-    background-color: #FED546;
-    border: none;
-    border-radius: 0.5rem;
-    font-weight: 700;
-    padding: 1rem;
-    cursor: pointer;
-  }
-  padding-bottom: 1.5rem;
-}
-
-.PlayButtonText {
-  padding: 1rem;
-  color: #003459;
-  font-size: 1.5rem;
-}
-
 .StartScreenHeader {
-    max-width: 50rem;
-    padding: 2% 5%;
+  max-width: 50rem;
+  padding: 2% 5%;
 }
 
 .FiguresBox {
@@ -44,60 +25,5 @@
     max-width: 650px;
     position: fixed;
     bottom: 0;
-  }
-
-  p {
-    margin: 1.8rem 1rem;
-    color: var(--primary-color);
-    font-size: 2.3rem;
-    align-items: center;
-    text-align: center;
-    transition: all 350ms ease-out;
-  }
-
-  .desktop {
-    display: block;
-  }
-
-  .touchDevice {
-    display: none;
-  }
-}
-
-.ToplistButton {
-  button {
-    background-color: #FF5F63;
-    border: none;
-    border-radius: 0.5rem;
-    font-weight: 700;
-    padding: 1rem;
-    cursor: pointer;
-  }
-  padding-bottom: 2rem;
-}
-
-.ToplistButtonText {
-  padding: 0rem;
-  color: #003459;
-  font-size: 1rem;
-}
-
-.LottieStartScreenStyle {
-  position: absolute;
-  left: 8.8rem;
-  bottom: -0.8rem;
-  z-index: 20;
-  height: 19rem;
-}
-
-@media (any-hover: none) {
-  .StartScreen {
-    .desktop {
-      display: none;
-    }
-
-    .touchDevice {
-      display: block;
-    }
   }
 }

@@ -27,6 +27,7 @@ import {
 } from 'hooks';
 import { GameStateContext } from '../../contexts/GameStateContext';
 import { GameStateActionType } from '../../enums/GameStateActionTypes';
+import { isPartiallyEmittedExpression } from 'typescript';
 
 export interface GameState {
   gameOver: boolean;
@@ -277,7 +278,7 @@ export default function Tetris() {
       return;
     }
 
-    if (state.trial && state.trialStage != 3) {
+    if (state.trial && state.trialStage !== 3) {
       return;
     }
 
@@ -403,37 +404,39 @@ export default function Tetris() {
     }
   };
 
+  const header = state.trial ? (
+    <div className={css.TrialCounter}>
+      {'Prøverunde - Brikke ' + blocksPlayed + ' av ' + TRIAL_BLOCKS}
+    </div>
+  ) : (
+    <div className={css.alignTop}>
+      <div>
+        <Display
+          content={'Rader: ' + rows}
+          style={{ backgroundColor: '#29cff5' }}
+        />
+        <Display
+          content={'Nivå: ' + level}
+          style={{ backgroundColor: '#49bca1' }}
+        />
+      </div>
+      <ComputasLogo className={css.ComputasLogo} />
+      <div>
+        <Display
+          content={'Høyeste poeng: ' + highScore}
+          style={{ backgroundColor: '#ff5f63' }}
+        />
+        <Display
+          content={'Poeng: ' + score}
+          style={{ backgroundColor: '#fed546' }}
+        />
+      </div>
+    </div>
+  );
+
   return (
     <>
-      {state.trial ? (
-        <div className={css.TrialCounter}>
-          {'Prøverunde - Brikke ' + blocksPlayed + ' av ' + TRIAL_BLOCKS}
-        </div>
-      ) : (
-        <div className={css.alignTop}>
-          <div>
-            <Display
-              content={'Rader: ' + rows}
-              style={{ backgroundColor: '#29cff5' }}
-            />
-            <Display
-              content={'Nivå: ' + level}
-              style={{ backgroundColor: '#49bca1' }}
-            />
-          </div>
-          <ComputasLogo className={css.ComputasLogo} />
-          <div>
-            <Display
-              content={'Høyeste poeng: ' + highScore}
-              style={{ backgroundColor: '#ff5f63' }}
-            />
-            <Display
-              content={'Poeng: ' + score}
-              style={{ backgroundColor: '#fed546' }}
-            />
-          </div>
-        </div>
-      )}
+      {header}
       <StartScreen
         startScreen={state.startScreen}
         showHighScores={returnHome}

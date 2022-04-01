@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
-import Lottie from 'lottie-react';
+import React from 'react';
 
 import { ReactComponent as TetrisHeader } from '../../svg/tetrisHeader.svg';
 import { ReactComponent as StartFigure } from '../../svg/StartMenu.svg';
-
-import animationData from '../../lotties/hiro-hiding.json';
 import css from './StartScreen.module.scss';
+import Button, { ButtonSize, ButtonVariant } from '../button/Button';
 
 interface StartScreenProps {
   startScreen: boolean;
@@ -26,16 +24,18 @@ const StartScreen = (props: StartScreenProps) => {
     <>
       <div className={css.StartScreen}>
         <TetrisHeader className={css.StartScreenHeader} />
-        <div className={css.PlayButton}>
-          <button onClick={() => startTrial()}>
-            <span className={css.PlayButtonText}>SPILL OG VINN PREMIE!</span>
-          </button>
-        </div>
-        <div className={css.ToplistButton}>
-          <button onClick={() => showHighScores()}>
-            <span className={css.ToplistButtonText}>SE TOPPLISTEN</span>
-          </button>
-        </div>
+        <Button
+          label={'SPILL OG VINN PREMIE!'}
+          onClick={() => startTrial()}
+          size={ButtonSize.Large}
+          variant={ButtonVariant.Primary}
+        />
+        <Button
+          label={'SE TOPPLISTEN'}
+          onClick={() => showHighScores()}
+          size={ButtonSize.Large}
+          variant={ButtonVariant.Secondary}
+        />
         <div className={css.FiguresBox}>
           <StartFigure className={css.Figures} />
         </div>

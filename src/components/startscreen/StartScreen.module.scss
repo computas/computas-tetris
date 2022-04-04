@@ -1,58 +1,33 @@
 .StartScreen {
   position: absolute;
-  left: 0.5rem;
-  top: 0.5rem;
-  width: 47.7rem;
+  left: 0;
+  top: 0;
   height: 100%;
-  background: rgba(0, 0, 0, 0.4);
-
-  h1,
-  p {
-    filter: drop-shadow(0 0 16px var(--primary-color));
-  }
-
-  p {
-    margin: 1.8rem 1rem;
-    color: var(--primary-color);
-    font-size: 2.3rem;
-    align-items: center;
-    text-align: center;
-    transition: all 350ms ease-out;
-  }
-
-  .desktop {
-    display: block;
-  }
-
-  .touchDevice {
-    display: none;
-  }
+  width: 100%;
+  background-color: #003459;
+  justify-items: center;
+  text-align: center;
+  z-index: 11;
 }
 
 .StartScreenHeader {
-  font-size: 4rem;
-  color: var(--primary-color);
-  align-items: center;
-  text-align: center;
-  transition: all 350ms ease-out;
+  max-width: 75rem;
+  padding: 2rem;
 }
 
-.LottieStartScreenStyle {
-  position: absolute;
-  left: 8.8rem;
-  bottom: -0.8rem;
-  z-index: 20;
-  height: 19rem;
+.Button {
+  padding-bottom: 2.5rem;
 }
 
-@media (any-hover: none) {
-  .StartScreen {
-    .desktop {
-      display: none;
-    }
+.FiguresBox {
+  display: flex;
+  justify-content: center;
 
-    .touchDevice {
-      display: block;
-    }
+  .Figures {
+    width: 100%;
+    max-height: 60vh;
+    max-width: 650px;
+    position: fixed;
+    bottom: 0;
   }
 }

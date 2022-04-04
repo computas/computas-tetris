@@ -9,6 +9,7 @@ import GameOver from 'components/gameover/GameOver';
 import Next from 'components/next/Next';
 import Stage from 'components/stage/Stage';
 import StartScreen from 'components/startscreen/StartScreen';
+import TrialScreen from 'components/trial/TrialScreen';
 import {
   calculateLandingRow,
   canMove,
@@ -26,16 +27,21 @@ import {
 } from 'hooks';
 import { GameStateContext } from '../../contexts/GameStateContext';
 import { GameStateActionType } from '../../enums/GameStateActionTypes';
+import { isPartiallyEmittedExpression } from 'typescript';
 
 export interface GameState {
   gameOver: boolean;
   startScreen: boolean;
+  trial: boolean;
+  trialStage: number;
   dropSpeed: number;
 }
 
 const initialGameState: GameState = {
   gameOver: false,
   startScreen: true,
+  trial: false,
+  trialStage: 0,
   dropSpeed: 1100
 };
 
@@ -47,6 +53,7 @@ const LEVEL_FACTOR = 35;
 const SWIPE_DOWN_ANGLE = 3.0;
 const SWIPE_DOWN_DIST_MIN = 80;
 const TAP_MOVE_DIST_MAX = 8;
+const TRIAL_BLOCKS = 5;
 
 export default function Tetris() {
   const { gameDispatch } = useContext(GameStateContext);
@@ -73,6 +80,7 @@ export default function Tetris() {
     generateNextTetromino
   ] = useGameStatus(rowsCleared);
   const [dropSpeed, setDropSpeed] = useState(0);
+  const [blocksPlayed, setBlocksPlayed] = useState(1);
   const [gamesPlayed, setGamesPlayed] = useState(0);
   const [
     leftPressState,
@@ -115,12 +123,15 @@ export default function Tetris() {
   }, [playMusic]);
 
   useEffect(() => {
+    if (state.trial && blocksPlayed > TRIAL_BLOCKS) progressTrial();
+  }, [blocksPlayed]);
+
+  useEffect(() => {
     if (downPressState) {
       if (state.startScreen) {
         play();
         return;
       }
-
       moveMaxDown();
     }
   }, [downPressState]);
@@ -131,6 +142,14 @@ export default function Tetris() {
       rotatePlayer(stage, 1);
     }
   }, [rotatePressState]);
+
+  useEffect(() => {
+    if (state.trial && state.trialStage > 3 && state.trialStage <= 5) {
+      setTimeout(() => {
+        progressTrial();
+      }, 2000);
+    }
+  }, [state.trialStage]);
 
   useEffect(() => {
     if (leftPressState) {
@@ -149,6 +168,7 @@ export default function Tetris() {
     }
 
     if (player.collided) {
+      setBlocksPlayed(blocksPlayed + 1);
       if (player.position.y < 0) {
         setState({
           ...state,
@@ -258,6 +278,10 @@ export default function Tetris() {
       return;
     }
 
+    if (state.trial && state.trialStage !== 3) {
+      return;
+    }
+
     const didCollide = detectCollision(player, stage, {
       ...player.position,
       y: player.position.y + 1
@@ -277,24 +301,47 @@ export default function Tetris() {
     setStage(createStage());
     setState({
       ...state,
+      trial: false,
+      trialStage: 0,
       gameOver: false,
       startScreen: false
     });
     setGamesPlayed(gamesPlayed + 1);
+    setBlocksPlayed(1);
 
     document.querySelector('section')?.focus();
+  };
+
+  const progressTrial = (): void => {
+    setState({
+      ...state,
+      startScreen: false,
+      gameOver: false,
+      trial: true,
+      trialStage: state.trialStage + 1
+    });
+
+    if (state.trialStage == 3) {
+      generateNextTetromino();
+      resetGame();
+      setStage(createStage());
+    }
+
+    if (state.trialStage >= 5) play();
   };
 
   const returnHome = (): void => {
     setState({
       ...state,
       gameOver: false,
-      startScreen: true
+      startScreen: true,
+      trial: false
     });
     playMusic();
     resetGame();
     setStage(createStage());
     setGamesPlayed(0);
+    setBlocksPlayed(1);
   };
 
   const swipeStart = (event: any): void => {
@@ -357,31 +404,50 @@ export default function Tetris() {
     }
   };
 
+  const header = state.trial ? (
+    <div className={css.TrialCounter}>
+      {'Prøverunde - Brikke ' + blocksPlayed + ' av ' + TRIAL_BLOCKS}
+    </div>
+  ) : (
+    <div className={css.alignTop}>
+      <div>
+        <Display
+          content={'Rader: ' + rows}
+          style={{ backgroundColor: '#29cff5' }}
+        />
+        <Display
+          content={'Nivå: ' + level}
+          style={{ backgroundColor: '#49bca1' }}
+        />
+      </div>
+      <ComputasLogo className={css.ComputasLogo} />
+      <div>
+        <Display
+          content={'Høyeste poeng: ' + highScore}
+          style={{ backgroundColor: '#ff5f63' }}
+        />
+        <Display
+          content={'Poeng: ' + score}
+          style={{ backgroundColor: '#fed546' }}
+        />
+      </div>
+    </div>
+  );
+
   return (
     <>
-      <div className={css.alignTop}>
-        <div>
-          <Display
-            content={'Rader: ' + rows}
-            style={{ backgroundColor: '#29cff5' }}
-          />
-          <Display
-            content={'Nivå: ' + level}
-            style={{ backgroundColor: '#49bca1' }}
-          />
-        </div>
-        <ComputasLogo className={css.ComputasLogo} />
-        <div>
-          <Display
-            content={'Høyeste poeng: ' + highScore}
-            style={{ backgroundColor: '#ff5f63' }}
-          />
-          <Display
-            content={'Poeng: ' + score}
-            style={{ backgroundColor: '#fed546' }}
-          />
-        </div>
-      </div>
+      {header}
+      <StartScreen
+        startScreen={state.startScreen}
+        showHighScores={returnHome}
+        startTrial={progressTrial}
+      />
+      <TrialScreen
+        trial={state.trial}
+        trialStage={state.trialStage}
+        progressTrial={progressTrial}
+        play={play}
+      />
       <Swipe
         className={css.Tetris}
         onSwipeStart={swipeStart}
@@ -400,7 +466,6 @@ export default function Tetris() {
         >
           <section>
             <Stage stage={stage} />
-            <StartScreen startScreen={state.startScreen && gamesPlayed === 0} />
             <GameOver
               gameOver={state.gameOver && gamesPlayed > 0}
               score={score}

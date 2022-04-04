@@ -17,6 +17,11 @@
     font-size: 1.8rem;
   }
 
+  &.xlarge {
+    padding: 1.5rem 2.5rem;
+    font-size: 2.2rem;
+  }
+
   &.primary {
     background: var(--primary-button-color);
   }

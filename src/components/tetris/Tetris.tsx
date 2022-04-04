@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Swipe, { SwipePosition } from 'react-easy-swipe';
+import { useNavigate } from 'react-router-dom';
 // eslint-disable-next-line
 import useSound from 'use-sound';
 
@@ -16,6 +17,8 @@ import {
   createStage,
   detectCollision
 } from 'helpers';
+import { GameStateActionType } from '../../enums/GameStateActionTypes';
+import { GameStateContext } from '../../contexts/GameStateContext';
 import { ReactComponent as ComputasLogo } from '../../svg/computas.svg';
 import { ReactComponent as TetrisVertical } from '../../svg/tetrisVertical.svg';
 import {
@@ -25,8 +28,6 @@ import {
   usePlayer,
   useStage
 } from 'hooks';
-import { GameStateContext } from '../../contexts/GameStateContext';
-import { GameStateActionType } from '../../enums/GameStateActionTypes';
 
 export interface GameState {
   gameOver: boolean;
@@ -104,6 +105,7 @@ export default function Tetris() {
   const [playRemoveLineSound] = useSound('/assets/sfx/remove1.mp3');
   const [playYouLoseSound] = useSound('/assets/sfx/you-lose.mp3');
   const [playYouWinSound] = useSound('/assets/sfx/you-win.mp3');
+  const navigate = useNavigate();
 
   const levelSpeed = (): number => {
     return Math.max(SPEED_FACTOR - level * LEVEL_FACTOR, LEVEL_FACTOR);
@@ -169,25 +171,7 @@ export default function Tetris() {
     if (player.collided) {
       setBlocksPlayed(blocksPlayed + 1);
       if (player.position.y < 0) {
-        setState({
-          ...state,
-          gameOver: true,
-          startScreen: false
-        });
-        gameDispatch({
-          type: GameStateActionType.ScoreReady,
-          payload: {
-            storableScore
-          }
-        });
-        resetTetrominos();
-
-        if (newHighScore) {
-          playYouWinSound();
-        } else {
-          playYouLoseSound();
-        }
-        return;
+        gameOver();
       } else {
         playHitFloorSound();
         generateNextTetromino();
@@ -311,6 +295,27 @@ export default function Tetris() {
     document.querySelector('section')?.focus();
   };
 
+  const gameOver = (): void => {
+    setState({
+      ...state,
+      gameOver: true,
+      startScreen: false
+    });
+    gameDispatch({
+      type: GameStateActionType.ScoreReady,
+      payload: {
+        storableScore
+      }
+    });
+    resetTetrominos();
+
+    if (newHighScore) {
+      playYouWinSound();
+    } else {
+      playYouLoseSound();
+    }
+  };
+
   const progressTrial = (): void => {
     setState({
       ...state,
@@ -320,13 +325,19 @@ export default function Tetris() {
       trialStage: state.trialStage + 1
     });
 
-    if (state.trialStage == 3) {
-      generateNextTetromino();
+    if (state.trialStage === 2) {
+      stop();
+    }
+
+    if (state.trialStage === 3) {
       resetGame();
+      resetTetrominos();
       setStage(createStage());
     }
 
-    if (state.trialStage >= 5) play();
+    if (state.trialStage >= 5) {
+      play();
+    }
   };
 
   const returnHome = (): void => {
@@ -438,7 +449,9 @@ export default function Tetris() {
       {header}
       <StartScreen
         startScreen={state.startScreen}
-        showHighScores={returnHome}
+        showHighScores={() => {
+          navigate('/highscores');
+        }}
         startTrial={progressTrial}
       />
       <TrialScreen

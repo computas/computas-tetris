@@ -14,16 +14,19 @@ interface TrialScreenProps {
   play: () => void;
 }
 
+export const TRIAL_PLAY = 3;
+export const TRIAL_END = 5;
+
 const TrialScreen = (props: TrialScreenProps) => {
   const { trial, trialStage, progressTrial, play } = props;
 
-  if (!trial || trialStage === 3) {
+  if (!trial || trialStage === TRIAL_PLAY) {
     document.querySelector('section')?.focus();
     return null;
   }
 
   const getDescriptionText = (trialStage: number) => {
-    return trialStage < 4
+    return trialStage <= TRIAL_PLAY
       ? 'Klikk for å prøve dere på spillet mens den som styrer kan se!'
       : 'Håper dere er klare, for nå starter spillet!';
   };
@@ -37,6 +40,10 @@ const TrialScreen = (props: TrialScreenProps) => {
       case 5:
         return <Trial4 className={css.Figures} />;
     }
+  };
+
+  const progressClick = () => {
+    if (trialStage == 2) progressTrial();
   };
 
   return trialStage === 1 ? (
@@ -68,7 +75,7 @@ const TrialScreen = (props: TrialScreenProps) => {
     </>
   ) : (
     <>
-      <div className={css.TrialScreen} onClick={() => progressTrial()}>
+      <div className={css.TrialScreen} onClick={() => progressClick()}>
         <div className={css.TrialPromptDescription}>
           {getDescriptionText(trialStage)}
         </div>

@@ -26,7 +26,7 @@ const TrialScreen = (props: TrialScreenProps) => {
   }
 
   const getDescriptionText = (trialStage: number) => {
-    return trialStage == 2
+    return trialStage === 2
       ? 'Klikk for å prøve dere på spillet mens den som styrer kan se!'
       : 'Håper dere er klare, for nå starter spillet!';
   };

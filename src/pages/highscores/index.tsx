@@ -2,12 +2,12 @@ import React, { ReactElement, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import css from './Highscores.module.scss';
+import Button, { ButtonVariant } from '../../components/button/Button';
 import Display from 'components/display/Display';
 import { fetchRealTimeScoreList } from '../../helpers';
 import { GameStateActionType } from '../../enums/GameStateActionTypes';
 import { GameStateContext } from '../../contexts/GameStateContext';
 import { ReactComponent as TetrisHeader } from '../../svg/toplistHeader.svg';
-import Button, { ButtonVariant } from '../../components/button/Button';
 
 const TOPLIST_LENGTH = 10;
 

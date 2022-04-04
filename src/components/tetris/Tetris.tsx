@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import useSound from 'use-sound';
 
 import css from './Tetris.module.scss';
+import CountDownOverlay from '../countdown/CountDownOverlay';
 import Display from 'components/display/Display';
 import GameOver from 'components/gameover/GameOver';
 import Next from 'components/next/Next';
@@ -46,7 +47,7 @@ const initialGameState: GameState = {
   startScreen: true,
   trial: false,
   trialStage: 0,
-  countdown: -1,
+  countdown: 0,
   dropSpeed: 1100
 };
 
@@ -143,23 +144,11 @@ export default function Tetris() {
   }, [downPressState]);
 
   useEffect(() => {
-    if (rotatePressState) {
+    if (rotatePressState && !state.countdown) {
       playRotateSound();
       rotatePlayer(stage, 1);
     }
   }, [rotatePressState]);
-
-  useEffect(() => {
-    if (
-      state.trial &&
-      state.trialStage > TRIAL_PLAY &&
-      state.trialStage <= TRIAL_END
-    ) {
-      setTimeout(() => {
-        progressTrial();
-      }, 2000);
-    }
-  }, [state.trialStage]);
 
   useEffect(() => {
     if (state.countdown > 0) {
@@ -173,11 +162,11 @@ export default function Tetris() {
   }, [state.countdown]);
 
   useEffect(() => {
-    if (leftPressState) {
+    if (leftPressState && !state.countdown) {
       movePlayer(LEFT);
       setMoveComplete();
     }
-    if (rightPressState) {
+    if (rightPressState && !state.countdown) {
       movePlayer(RIGHT);
       setMoveComplete();
     }
@@ -204,6 +193,18 @@ export default function Tetris() {
       playMoveBlockSound();
     }
   }, [player.position.x]);
+
+  useEffect(() => {
+    if (
+      state.trial &&
+      state.trialStage > TRIAL_PLAY &&
+      state.trialStage <= TRIAL_END
+    ) {
+      setTimeout(() => {
+        progressTrial();
+      }, 2000);
+    }
+  }, [state.trialStage]);
 
   useEffect(() => {
     applyNextTetromino(tetrominos[0]);
@@ -390,13 +391,6 @@ export default function Tetris() {
     });
   };
 
-  const countdownColor = () => {
-    if (state.countdown > 0) {
-      return ['#FF5F63', '#FED546', '#29CFF5'][state.countdown - 1];
-    }
-    return '#FFFFFF';
-  };
-
   const swipeMove = (position: SwipePosition): void => {
     if (state.gameOver || state.startScreen) {
       return;
@@ -477,25 +471,8 @@ export default function Tetris() {
     </div>
   );
 
-  const countdownOverlay =
-    state.countdown > 0 ? (
-      <>
-        <div className={css.countDown}>
-          <span
-            className={css.countDownText}
-            style={{ color: countdownColor() }}
-          >
-            {state.countdown}
-          </span>
-        </div>
-      </>
-    ) : (
-      <></>
-    );
-
   return (
     <>
-      {countdownOverlay}
       {header}
       <StartScreen
         startScreen={state.startScreen}
@@ -528,6 +505,7 @@ export default function Tetris() {
         >
           <section>
             <Stage stage={stage} />
+            <CountDownOverlay current={state.countdown} />
             <GameOver
               gameOver={state.gameOver && gamesPlayed > 0}
               score={score}

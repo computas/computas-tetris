@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import { ReactComponent as ComputasLogo } from '../../../svg/computas.svg';
 import { ReactComponent as Block0 } from '../../../svg/Block.svg';
@@ -11,17 +11,18 @@ import { ReactComponent as Block6 } from '../../../svg/Block-8.svg';
 import css from './ScorePage.module.scss';
 import Button, { ButtonSize, ButtonVariant } from '../../button/Button';
 import TextField from '../../textfield/TextField';
+import { GameStateContext } from '../../../contexts/GameStateContext';
 
 interface ScorePageProps {
   score: number;
   rank: string;
   participate: (name: string, email: string, subscribe: boolean) => void;
   restart: () => void;
-  getEmail: (name: string) => string;
 }
 
 const ScorePage = (props: ScorePageProps) => {
-  const { participate, rank, restart, score, getEmail } = props;
+  const { participate, rank, restart, score } = props;
+  const { gameState } = useContext(GameStateContext);
   const [showHigh, setShowHigh] = useState(true);
   const [prevScore, setPrevScore] = useState(0);
   const [name, setName] = useState('');
@@ -73,10 +74,10 @@ const ScorePage = (props: ScorePageProps) => {
     if (!pattern.test(value.trim())) {
       setEmailError(message);
       return false;
-    } else {
-      setEmailError('');
-      return true;
     }
+
+    setEmailError('');
+    return true;
   };
 
   const validateUnique = (
@@ -87,13 +88,13 @@ const ScorePage = (props: ScorePageProps) => {
     const storedEmail = getEmail(name);
     if (storedEmail !== '' && storedEmail !== email) {
       if (nameError === '') {
-        setNameError(message + ' (' + getEmail(name) + ')');
+        setNameError(message);
       }
       return false;
-    } else {
-      setNameError('');
-      return true;
     }
+
+    setNameError('');
+    return true;
   };
 
   const validateAndParticipate = (): void => {
@@ -107,6 +108,15 @@ const ScorePage = (props: ScorePageProps) => {
     ) {
       participate(name, email, subscribe);
     }
+  };
+
+  const getEmail = (name: string): string => {
+    for (const entry of gameState.scoreList) {
+      if (entry.name === name) {
+        return entry.email;
+      }
+    }
+    return '';
   };
 
   const toggleSubscribe = (): void => {

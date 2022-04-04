@@ -257,7 +257,7 @@ export default function Tetris() {
     if (
       state.gameOver ||
       state.startScreen ||
-      (state.trial && state.trialStage != TRIAL_PLAY)
+      (state.trial && state.trialStage !== TRIAL_PLAY)
     ) {
       return;
     }
@@ -271,7 +271,7 @@ export default function Tetris() {
     if (
       state.gameOver ||
       state.startScreen ||
-      (state.trial && state.trialStage != TRIAL_PLAY)
+      (state.trial && state.trialStage !== TRIAL_PLAY)
     ) {
       return;
     }
@@ -340,7 +340,7 @@ export default function Tetris() {
       stop();
     }
 
-    if (state.trialStage == TRIAL_PLAY) {
+    if (state.trialStage === TRIAL_PLAY) {
       generateNextTetromino();
       resetGame();
       resetTetrominos();

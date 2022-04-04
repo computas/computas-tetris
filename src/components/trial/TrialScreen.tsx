@@ -26,7 +26,7 @@ const TrialScreen = (props: TrialScreenProps) => {
   }
 
   const getDescriptionText = (trialStage: number) => {
-    return trialStage <= TRIAL_PLAY
+    return trialStage == 2
       ? 'Klikk for å prøve dere på spillet mens den som styrer kan se!'
       : 'Håper dere er klare, for nå starter spillet!';
   };
@@ -43,7 +43,9 @@ const TrialScreen = (props: TrialScreenProps) => {
   };
 
   const progressClick = () => {
-    if (trialStage == 2) progressTrial();
+    if (trialStage === 2) {
+      progressTrial();
+    }
   };
 
   return trialStage === 1 ? (

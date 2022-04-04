@@ -41,7 +41,7 @@ export const getScoreFromEntry = (doc: DocumentData): Score => {
     id: doc.id,
     created: entry.created,
     duration: entry.duration,
-    email: entry.level,
+    email: entry.email,
     level: entry.level,
     name: entry.name,
     rows: entry.rows,

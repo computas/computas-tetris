@@ -44,15 +44,16 @@ const GameOver = (props: GameOverProps) => {
     }
   }, [gameState.storableScore]);
 
+  const getEmail = (name: string) => {
+    for (const entry of gameState.scoreList) {
+      if (entry.name === name) {
+        return entry.email;
+      }
+    }
+    return '';
+  };
+
   const participate = (name: string, email: string, subscribe: boolean) => {
-    if (name.trim() === '') {
-      return;
-    }
-
-    if (email.trim() === '') {
-      return;
-    }
-
     gameDispatch({
       type: GameStateActionType.UpdateScoreWithDetails,
       payload: {
@@ -74,6 +75,7 @@ const GameOver = (props: GameOverProps) => {
         rank={`${currentRank} av ${gameState.scoreList.length}`}
         participate={participate}
         restart={restart}
+        getEmail={getEmail}
       />
     </div>
   ) : (

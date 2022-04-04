@@ -17,10 +17,11 @@ interface ScorePageProps {
   rank: string;
   participate: (name: string, email: string, subscribe: boolean) => void;
   restart: () => void;
+  getEmail: (name: string) => string;
 }
 
 const ScorePage = (props: ScorePageProps) => {
-  const { participate, rank, restart, score } = props;
+  const { participate, rank, restart, score, getEmail } = props;
   const [showHigh, setShowHigh] = useState(true);
   const [prevScore, setPrevScore] = useState(0);
   const [name, setName] = useState('');
@@ -54,25 +55,58 @@ const ScorePage = (props: ScorePageProps) => {
     }
   };
 
-  const validateTextInput = (value: string, message: string): void => {
-    setNameError(!value.trim() ? message : '');
+  const validateTextInput = (value: string, message: string): boolean => {
+    if (!value.trim()) {
+      setNameError(message);
+      return false;
+    } else {
+      setNameError('');
+      return true;
+    }
   };
 
-  const validateEmailInput = (value: string, message: string): void => {
+  const validateEmailInput = (value: string, message: string): boolean => {
     const pattern = new RegExp(
       /^(([^<>()\\[\]\\.,;:\s@"]+(\.[^<>()\\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     );
-    setEmailError(!pattern.test(value.trim()) ? message : '');
+
+    if (!pattern.test(value.trim())) {
+      setEmailError(message);
+      return false;
+    } else {
+      setEmailError('');
+      return true;
+    }
+  };
+
+  const validateUnique = (
+    name: string,
+    email: string,
+    message: string
+  ): boolean => {
+    const storedEmail = getEmail(name);
+    if (storedEmail !== '' && storedEmail !== email) {
+      if (nameError === '') {
+        setNameError(message + ' (' + getEmail(name) + ')');
+      }
+      return false;
+    } else {
+      setNameError('');
+      return true;
+    }
   };
 
   const validateAndParticipate = (): void => {
-    validateTextInput(name, 'Dette feltet kan ikke være tomt');
-    validateEmailInput(
-      email,
-      'Dette feltet må inneholde en gyldig e-postadresse'
-    );
-
-    participate(name, email, subscribe);
+    if (
+      validateTextInput(name, 'Dette feltet kan ikke være tomt') &&
+      validateEmailInput(
+        email,
+        'Dette feltet må inneholde en gyldig e-postadresse'
+      ) &&
+      validateUnique(name, email, 'Team navn koblet til annen e-post')
+    ) {
+      participate(name, email, subscribe);
+    }
   };
 
   const toggleSubscribe = (): void => {

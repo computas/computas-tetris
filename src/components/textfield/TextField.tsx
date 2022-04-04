@@ -1,16 +1,40 @@
+import classNames from 'classnames';
 import React, { ReactElement } from 'react';
 
 import css from './TextField.module.scss';
 
 interface TextFieldProps {
+  errorMessage?: string;
+  fieldType?: string;
   label: string;
-  placeholder?: string;
+  onBlur?: (value: string) => void;
   onChange?: (value: string) => void;
+  placeholder?: string;
   value: string;
 }
 
 const TextField = (props: TextFieldProps): ReactElement => {
-  const { label, onChange, placeholder, value } = props;
+  const {
+    errorMessage,
+    fieldType,
+    label,
+    onBlur,
+    onChange,
+    placeholder,
+    value
+  } = props;
+
+  const getFieldType = (): string => {
+    return fieldType ? fieldType : 'text';
+  };
+
+  const handleBlur = (event: any): void => {
+    if (!onBlur) {
+      return;
+    }
+
+    onBlur(event.target.value);
+  };
 
   const handleInput = (event: any): void => {
     if (!onChange) {
@@ -21,14 +45,16 @@ const TextField = (props: TextFieldProps): ReactElement => {
   };
 
   return (
-    <div className={css.TextField}>
+    <div className={classNames(css.TextField, errorMessage ? css.error : null)}>
       <label>{label}</label>
       <input
         defaultValue={value}
+        onBlur={handleBlur}
         onInput={handleInput}
         placeholder={placeholder ?? ''}
-        type={'text'}
+        type={getFieldType()}
       />
+      {errorMessage && <span>{errorMessage}</span>}
     </div>
   );
 };

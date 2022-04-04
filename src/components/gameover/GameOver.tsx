@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import css from './GameOver.module.scss';
 import ScorePage from './scorepage/ScorePage';
-import { GameStateContext } from '../../contexts/GameStateContext';
 import { GameStateActionType } from '../../enums/GameStateActionTypes';
+import { GameStateContext } from '../../contexts/GameStateContext';
 import { saveScore } from '../../helpers';
 
 interface GameOverProps {
@@ -46,12 +46,10 @@ const GameOver = (props: GameOverProps) => {
 
   const participate = (name: string, email: string, subscribe: boolean) => {
     if (name.trim() === '') {
-      console.log('Name must be filled in');
       return;
     }
 
     if (email.trim() === '') {
-      console.log('E-mail must be filled in');
       return;
     }
 

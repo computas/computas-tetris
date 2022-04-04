@@ -24,14 +24,10 @@ const ScorePage = (props: ScorePageProps) => {
   const [showHigh, setShowHigh] = useState(true);
   const [prevScore, setPrevScore] = useState(0);
   const [name, setName] = useState('');
+  const [nameError, setNameError] = useState('');
   const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
   const [subscribe, setSubscribe] = useState(false);
-
-  useEffect(() => {
-    setName('');
-    setEmail('');
-    setSubscribe(false);
-  }, []);
 
   useEffect(() => {
     if (score === prevScore) {
@@ -52,10 +48,31 @@ const ScorePage = (props: ScorePageProps) => {
 
   const handleTextInput = (fieldId: string, value: string): void => {
     if (fieldId === 'name') {
-      setName(value);
+      setName(value.trim());
     } else if (fieldId === 'email') {
-      setEmail(value);
+      setEmail(value.trim());
     }
+  };
+
+  const validateTextInput = (value: string, message: string): void => {
+    setNameError(!value.trim() ? message : '');
+  };
+
+  const validateEmailInput = (value: string, message: string): void => {
+    const pattern = new RegExp(
+      /^(([^<>()\\[\]\\.,;:\s@"]+(\.[^<>()\\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
+    setEmailError(!pattern.test(value.trim()) ? message : '');
+  };
+
+  const validateAndParticipate = (): void => {
+    validateTextInput(name, 'Dette feltet kan ikke være tomt');
+    validateEmailInput(
+      email,
+      'Dette feltet må inneholde en gyldig e-postadresse'
+    );
+
+    participate(name, email, subscribe);
   };
 
   const toggleSubscribe = (): void => {
@@ -99,14 +116,26 @@ const ScorePage = (props: ScorePageProps) => {
           <div className={css.ScorePageDescription}>Vinn premie!</div>
           <div className={css.form}>
             <TextField
+              errorMessage={nameError}
               label={'Kallenavn'}
               placeholder={'Kallenavn'}
+              onBlur={(value: string) =>
+                validateTextInput(value, 'Dette feltet kan ikke være tomt')
+              }
               onChange={(value) => handleTextInput('name', value)}
               value={name}
             />
             <TextField
+              errorMessage={emailError}
+              fieldType={'email'}
               label={'E-post'}
               placeholder={'E-post'}
+              onBlur={(value: string) =>
+                validateEmailInput(
+                  value,
+                  'Dette feltet må inneholde en gyldig e-postadresse'
+                )
+              }
               onChange={(value) => handleTextInput('email', value)}
               value={email}
             />
@@ -126,7 +155,7 @@ const ScorePage = (props: ScorePageProps) => {
             <div className={css.centered}>
               <Button
                 label={'VI VIL VINNE!'}
-                onClick={() => participate(name, email, subscribe)}
+                onClick={validateAndParticipate}
                 size={ButtonSize.Large}
                 variant={ButtonVariant.Primary}
               />

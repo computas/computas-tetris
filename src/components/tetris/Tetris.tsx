@@ -10,7 +10,10 @@ import GameOver from 'components/gameover/GameOver';
 import Next from 'components/next/Next';
 import Stage from 'components/stage/Stage';
 import StartScreen from 'components/startscreen/StartScreen';
-import TrialScreen from 'components/trial/TrialScreen';
+import TrialScreen, {
+  TRIAL_PLAY,
+  TRIAL_END
+} from 'components/trial/TrialScreen';
 import {
   calculateLandingRow,
   canMove,
@@ -145,7 +148,11 @@ export default function Tetris() {
   }, [rotatePressState]);
 
   useEffect(() => {
-    if (state.trial && state.trialStage > 3 && state.trialStage <= 5) {
+    if (
+      state.trial &&
+      state.trialStage > TRIAL_PLAY &&
+      state.trialStage <= TRIAL_END
+    ) {
       setTimeout(() => {
         progressTrial();
       }, 2000);
@@ -247,7 +254,11 @@ export default function Tetris() {
   };
 
   const moveMaxDown = (): void => {
-    if (state.gameOver || state.startScreen) {
+    if (
+      state.gameOver ||
+      state.startScreen ||
+      (state.trial && state.trialStage !== TRIAL_PLAY)
+    ) {
       return;
     }
 
@@ -257,11 +268,11 @@ export default function Tetris() {
   };
 
   const drop = (): void => {
-    if (state.gameOver || state.startScreen) {
-      return;
-    }
-
-    if (state.trial && state.trialStage !== 3) {
+    if (
+      state.gameOver ||
+      state.startScreen ||
+      (state.trial && state.trialStage !== TRIAL_PLAY)
+    ) {
       return;
     }
 
@@ -329,7 +340,8 @@ export default function Tetris() {
       stop();
     }
 
-    if (state.trialStage === 3) {
+    if (state.trialStage === TRIAL_PLAY) {
+      generateNextTetromino();
       resetGame();
       resetTetrominos();
       setStage(createStage());

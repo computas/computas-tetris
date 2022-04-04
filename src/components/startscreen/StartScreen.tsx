@@ -27,7 +27,7 @@ const StartScreen = (props: StartScreenProps) => {
         <div className={css.Button}>
           <Button
             label={'SPILL OG VINN PREMIE!'}
-            onClick={() => startTrial()}
+            onClick={startTrial}
             size={ButtonSize.XL}
             variant={ButtonVariant.Primary}
           />
@@ -35,7 +35,7 @@ const StartScreen = (props: StartScreenProps) => {
         <div className={css.Button}>
           <Button
             label={'SE TOPPLISTEN'}
-            onClick={() => showHighScores()}
+            onClick={showHighScores}
             size={ButtonSize.Large}
             variant={ButtonVariant.Secondary}
           />

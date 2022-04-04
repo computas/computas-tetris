@@ -55,7 +55,7 @@ const TrialScreen = (props: TrialScreenProps) => {
         <div className={css.Button}>
           <Button
             label={'SPILL OG VINN PREMIE!'}
-            onClick={() => play()}
+            onClick={play}
             size={ButtonSize.XL}
             variant={ButtonVariant.Primary}
           />
@@ -63,7 +63,7 @@ const TrialScreen = (props: TrialScreenProps) => {
         <div className={css.Button}>
           <Button
             label={'VI VIL TESTE FØRST'}
-            onClick={() => progressTrial()}
+            onClick={progressTrial}
             size={ButtonSize.XL}
             variant={ButtonVariant.Primary}
           />
@@ -75,7 +75,7 @@ const TrialScreen = (props: TrialScreenProps) => {
     </>
   ) : (
     <>
-      <div className={css.TrialScreen} onClick={() => progressClick()}>
+      <div className={css.TrialScreen} onClick={progressClick}>
         <div className={css.TrialPromptDescription}>
           {getDescriptionText(trialStage)}
         </div>

@@ -1,9 +1,9 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { createRoot } from 'react-dom/client';
 import { getAnalytics } from 'firebase/analytics';
 import { getFirestore } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
-import { render } from 'react-dom';
 
 import './index.css';
 import App from './App';
@@ -11,6 +11,8 @@ import reportWebVitals from './reportWebVitals';
 import Highscores from './pages/highscores';
 import { GameStateProvider } from './contexts/GameStateContext';
 
+const rootContainer = document.getElementById('root');
+const root = createRoot(rootContainer as HTMLElement);
 const firebaseConfig = {
   apiKey: 'AIzaSyA0gvBuEPaccE2sW5ybIANcmPomKbDkkmA',
   authDomain: 'compis-tetris.firebaseapp.com',
@@ -23,7 +25,7 @@ const firebaseConfig = {
   measurementId: 'G-XJJ3HG47TQ'
 };
 
-render(
+root.render(
   <React.StrictMode>
     <GameStateProvider>
       <BrowserRouter>
@@ -33,8 +35,7 @@ render(
         </Routes>
       </BrowserRouter>
     </GameStateProvider>
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 );
 
 export const app = initializeApp(firebaseConfig);

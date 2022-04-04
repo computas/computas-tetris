@@ -17,21 +17,18 @@ interface ScorePageProps {
   rank: string;
   participate: (name: string, email: string, subscribe: boolean) => void;
   restart: () => void;
+  getEmail: (name: string) => string;
 }
 
 const ScorePage = (props: ScorePageProps) => {
-  const { participate, rank, restart, score } = props;
+  const { participate, rank, restart, score, getEmail } = props;
   const [showHigh, setShowHigh] = useState(true);
   const [prevScore, setPrevScore] = useState(0);
   const [name, setName] = useState('');
+  const [nameError, setNameError] = useState('');
   const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
   const [subscribe, setSubscribe] = useState(false);
-
-  useEffect(() => {
-    setName('');
-    setEmail('');
-    setSubscribe(false);
-  }, []);
 
   useEffect(() => {
     if (score === prevScore) {
@@ -52,9 +49,63 @@ const ScorePage = (props: ScorePageProps) => {
 
   const handleTextInput = (fieldId: string, value: string): void => {
     if (fieldId === 'name') {
-      setName(value);
+      setName(value.trim());
     } else if (fieldId === 'email') {
-      setEmail(value);
+      setEmail(value.trim());
+    }
+  };
+
+  const validateTextInput = (value: string, message: string): boolean => {
+    if (!value.trim()) {
+      setNameError(message);
+      return false;
+    } else {
+      setNameError('');
+      return true;
+    }
+  };
+
+  const validateEmailInput = (value: string, message: string): boolean => {
+    const pattern = new RegExp(
+      /^(([^<>()\\[\]\\.,;:\s@"]+(\.[^<>()\\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
+
+    if (!pattern.test(value.trim())) {
+      setEmailError(message);
+      return false;
+    } else {
+      setEmailError('');
+      return true;
+    }
+  };
+
+  const validateUnique = (
+    name: string,
+    email: string,
+    message: string
+  ): boolean => {
+    const storedEmail = getEmail(name);
+    if (storedEmail !== '' && storedEmail !== email) {
+      if (nameError === '') {
+        setNameError(message + ' (' + getEmail(name) + ')');
+      }
+      return false;
+    } else {
+      setNameError('');
+      return true;
+    }
+  };
+
+  const validateAndParticipate = (): void => {
+    if (
+      validateTextInput(name, 'Dette feltet kan ikke være tomt') &&
+      validateEmailInput(
+        email,
+        'Dette feltet må inneholde en gyldig e-postadresse'
+      ) &&
+      validateUnique(name, email, 'Team navn koblet til annen e-post')
+    ) {
+      participate(name, email, subscribe);
     }
   };
 
@@ -99,14 +150,26 @@ const ScorePage = (props: ScorePageProps) => {
           <div className={css.ScorePageDescription}>Vinn premie!</div>
           <div className={css.form}>
             <TextField
+              errorMessage={nameError}
               label={'Kallenavn'}
               placeholder={'Kallenavn'}
+              onBlur={(value: string) =>
+                validateTextInput(value, 'Dette feltet kan ikke være tomt')
+              }
               onChange={(value) => handleTextInput('name', value)}
               value={name}
             />
             <TextField
+              errorMessage={emailError}
+              fieldType={'email'}
               label={'E-post'}
               placeholder={'E-post'}
+              onBlur={(value: string) =>
+                validateEmailInput(
+                  value,
+                  'Dette feltet må inneholde en gyldig e-postadresse'
+                )
+              }
               onChange={(value) => handleTextInput('email', value)}
               value={email}
             />
@@ -126,7 +189,7 @@ const ScorePage = (props: ScorePageProps) => {
             <div className={css.centered}>
               <Button
                 label={'VI VIL VINNE!'}
-                onClick={() => participate(name, email, subscribe)}
+                onClick={validateAndParticipate}
                 size={ButtonSize.Large}
                 variant={ButtonVariant.Primary}
               />

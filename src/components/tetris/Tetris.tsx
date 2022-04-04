@@ -37,6 +37,7 @@ export interface GameState {
   startScreen: boolean;
   trial: boolean;
   trialStage: number;
+  countdown: number;
   dropSpeed: number;
 }
 
@@ -45,6 +46,7 @@ const initialGameState: GameState = {
   startScreen: true,
   trial: false,
   trialStage: 0,
+  countdown: -1,
   dropSpeed: 1100
 };
 
@@ -57,6 +59,7 @@ const SWIPE_DOWN_ANGLE = 3.0;
 const SWIPE_DOWN_DIST_MIN = 80;
 const TAP_MOVE_DIST_MAX = 8;
 const TRIAL_BLOCKS = 5;
+const COUNTDOWN_TIME = 3;
 
 export default function Tetris() {
   const { gameDispatch } = useContext(GameStateContext);
@@ -132,8 +135,7 @@ export default function Tetris() {
 
   useEffect(() => {
     if (downPressState) {
-      if (state.startScreen) {
-        play();
+      if (state.startScreen || state.countdown) {
         return;
       }
       moveMaxDown();
@@ -158,6 +160,17 @@ export default function Tetris() {
       }, 2000);
     }
   }, [state.trialStage]);
+
+  useEffect(() => {
+    if (state.countdown > 0) {
+      setTimeout(() => {
+        setState({
+          ...state,
+          countdown: state.countdown - 1
+        });
+      }, 1000);
+    }
+  }, [state.countdown]);
 
   useEffect(() => {
     if (leftPressState) {
@@ -241,7 +254,6 @@ export default function Tetris() {
 
   const tapped = (): void => {
     if (state.startScreen) {
-      play();
       return;
     }
 
@@ -271,6 +283,7 @@ export default function Tetris() {
     if (
       state.gameOver ||
       state.startScreen ||
+      state.countdown > 0 ||
       (state.trial && state.trialStage !== TRIAL_PLAY)
     ) {
       return;
@@ -286,24 +299,6 @@ export default function Tetris() {
       player.position.y + (didCollide ? 0 : 1),
       didCollide
     );
-  };
-
-  const play = (): void => {
-    stop();
-    generateNextTetromino();
-    resetGame();
-    setStage(createStage());
-    setState({
-      ...state,
-      trial: false,
-      trialStage: 0,
-      gameOver: false,
-      startScreen: false
-    });
-    setGamesPlayed(gamesPlayed + 1);
-    setBlocksPlayed(1);
-
-    document.querySelector('section')?.focus();
   };
 
   const gameOver = (): void => {
@@ -348,8 +343,27 @@ export default function Tetris() {
     }
 
     if (state.trialStage >= 5) {
-      play();
+      startCountdown();
     }
+  };
+
+  const startCountdown = (): void => {
+    setState({
+      ...state,
+      trial: false,
+      trialStage: 0,
+      gameOver: false,
+      startScreen: false,
+      countdown: COUNTDOWN_TIME
+    });
+    stop();
+    generateNextTetromino();
+    resetGame();
+    setStage(createStage());
+    setGamesPlayed(gamesPlayed + 1);
+    setBlocksPlayed(1);
+
+    document.querySelector('section')?.focus();
   };
 
   const returnHome = (): void => {
@@ -374,6 +388,13 @@ export default function Tetris() {
       y: touch.clientY,
       timeStamp: event.timeStamp
     });
+  };
+
+  const countdownColor = () => {
+    if (state.countdown > 0) {
+      return ['#FF5F63', '#FED546', '#29CFF5'][state.countdown - 1];
+    }
+    return '#FFFFFF';
   };
 
   const swipeMove = (position: SwipePosition): void => {
@@ -456,8 +477,25 @@ export default function Tetris() {
     </div>
   );
 
+  const countdownOverlay =
+    state.countdown > 0 ? (
+      <>
+        <div className={css.countDown}>
+          <span
+            className={css.countDownText}
+            style={{ color: countdownColor() }}
+          >
+            {state.countdown}
+          </span>
+        </div>
+      </>
+    ) : (
+      <></>
+    );
+
   return (
     <>
+      {countdownOverlay}
       {header}
       <StartScreen
         startScreen={state.startScreen}
@@ -470,7 +508,7 @@ export default function Tetris() {
         trial={state.trial}
         trialStage={state.trialStage}
         progressTrial={progressTrial}
-        play={play}
+        play={startCountdown}
       />
       <Swipe
         className={css.Tetris}

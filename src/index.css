@@ -7,6 +7,9 @@
 
   --primary-button-color: #fed546;
   --secondary-button-color: #ff5f63;
+
+  --error-color: #ff9597;
+  --error-color-support: #fce8e9;
 }
 
 * {

@@ -16,12 +16,34 @@
     font-weight: 600;
   }
 
-  input[type='text'] {
+  input[type='text'],
+  input[type='email'] {
     width: 100%;
-    padding: 1rem 1.5rem;
+    padding: 1.5rem 1.5rem;
+    border: none;
     border-radius: 1rem;
-    font-size: 1.4rem;
+    font-size: 1.8rem;
     user-select: text;
     outline: none;
+  }
+
+  &.error {
+    input[type='text'],
+    input[type='email'] {
+      background: var(--error-color-support);
+    }
+
+    span {
+      display: inline-block;
+      position: relative;
+      z-index: -1;
+      width: 100%;
+      margin-top: -1.5rem;
+      padding: 1.7rem 0.5rem 0.3rem;
+      border-radius: 0 0 1rem 1rem;
+      background: var(--error-color);
+      color: black;
+      font-size: 1.6rem;
+    }
   }
 }

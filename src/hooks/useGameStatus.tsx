@@ -27,7 +27,7 @@ const initialStorableScore: Score = {
   rows: 0,
   score: 0,
   subscribe: false,
-  tetrominos: 1
+  tetrominoCount: 1
 };
 
 export const useGameStatus = (
@@ -121,14 +121,14 @@ export const useGameStatus = (
     incrementTetrominoCount();
     setTetrominos([
       tetrominos[1],
-      randomTetromino(storableScore.tetrominos <= SIMPLE_TETROMINOS_LIMIT)
+      randomTetromino(storableScore.tetrominoCount <= SIMPLE_TETROMINOS_LIMIT)
     ]);
   };
 
   const incrementTetrominoCount = (): void => {
     setSetstorableScore({
       ...storableScore,
-      tetrominos: storableScore.tetrominos + 1
+      tetrominoCount: storableScore.tetrominoCount + 1
     });
   };
 

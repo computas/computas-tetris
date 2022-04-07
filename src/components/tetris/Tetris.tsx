@@ -48,18 +48,19 @@ const initialGameState: GameState = {
   trial: false,
   trialStage: 0,
   countdown: 0,
-  dropSpeed: 1100
+  dropSpeed: 500
 };
 
 const LEFT = -1;
 const RIGHT = 1;
 const BLOCK_SIZE = 32;
-const SPEED_FACTOR = 600;
-const LEVEL_FACTOR = 35;
+const SPEED_INITIAL = 300;
+const SPEED_MIN = 50;
+const SPEED_FACTOR = 2.5;
 const SWIPE_DOWN_ANGLE = 3.0;
 const SWIPE_DOWN_DIST_MIN = 80;
 const TAP_MOVE_DIST_MAX = 8;
-const TRIAL_BLOCKS = 5;
+const TRIAL_BLOCKS = 3;
 const COUNTDOWN_TIME = 3;
 
 export default function Tetris() {
@@ -114,8 +115,11 @@ export default function Tetris() {
   const [playYouWinSound] = useSound('/assets/sfx/you-win.mp3');
   const navigate = useNavigate();
 
-  const levelSpeed = (): number => {
-    return Math.max(SPEED_FACTOR - level * LEVEL_FACTOR, LEVEL_FACTOR);
+  const calculateSpeed = (): number => {
+    return Math.max(
+      SPEED_INITIAL - storableScore.tetrominoCount * SPEED_FACTOR,
+      SPEED_MIN
+    );
   };
 
   useEffect(() => {
@@ -202,7 +206,7 @@ export default function Tetris() {
     ) {
       setTimeout(() => {
         progressTrial();
-      }, 2000);
+      }, 1000);
     }
   }, [state.trialStage]);
 
@@ -211,8 +215,8 @@ export default function Tetris() {
   }, [tetrominos]);
 
   useEffect(() => {
-    setDropSpeed(levelSpeed);
-  }, [level]);
+    setDropSpeed(calculateSpeed);
+  }, [storableScore.tetrominoCount]);
 
   useEffect(() => {
     if (rowsCleared.length > 0) {

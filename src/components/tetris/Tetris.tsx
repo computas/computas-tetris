@@ -21,6 +21,7 @@ import {
   createStage,
   detectCollision
 } from 'helpers';
+import { GameSettingsContext } from '../../contexts/GameSettingsContext';
 import { GameStateActionType } from '../../enums/GameStateActionTypes';
 import { GameStateContext } from '../../contexts/GameStateContext';
 import { ReactComponent as ComputasLogo } from '../../svg/computas.svg';
@@ -54,9 +55,6 @@ const initialGameState: GameState = {
 const LEFT = -1;
 const RIGHT = 1;
 const BLOCK_SIZE = 32;
-const SPEED_INITIAL = 300;
-const SPEED_MIN = 50;
-const SPEED_FACTOR = 2.5;
 const SWIPE_DOWN_ANGLE = 3.0;
 const SWIPE_DOWN_DIST_MIN = 80;
 const TAP_MOVE_DIST_MAX = 8;
@@ -65,6 +63,7 @@ const COUNTDOWN_TIME = 3;
 
 export default function Tetris() {
   const { gameDispatch } = useContext(GameStateContext);
+  const { gameSettings } = useContext(GameSettingsContext);
   const [state, setState] = useState(initialGameState);
   const [touchStartPosition, setTouchStartPosition] = useState({
     x: 0,
@@ -116,9 +115,13 @@ export default function Tetris() {
   const navigate = useNavigate();
 
   const calculateSpeed = (): number => {
+    const tetrominoFactor =
+      Math.floor(
+        (storableScore.tetrominoCount - 1) / gameSettings.increaseSpeedOnEvery
+      ) * gameSettings.increaseSpeedFactor;
     return Math.max(
-      SPEED_INITIAL - storableScore.tetrominoCount * SPEED_FACTOR,
-      SPEED_MIN
+      gameSettings.initialSpeed - tetrominoFactor,
+      gameSettings.minimumSpeed
     );
   };
 
@@ -127,12 +130,16 @@ export default function Tetris() {
   }, []);
 
   useEffect(() => {
-    playMusic();
+    if (gameSettings.playMusic) {
+      playMusic();
+    } else {
+      stop();
+    }
 
     return () => {
       stop();
     };
-  }, [playMusic]);
+  }, [playMusic, gameSettings.playMusic]);
 
   useEffect(() => {
     if (state.trial && blocksPlayed > TRIAL_BLOCKS) progressTrial();
@@ -216,7 +223,7 @@ export default function Tetris() {
 
   useEffect(() => {
     setDropSpeed(calculateSpeed);
-  }, [storableScore.tetrominoCount]);
+  }, [storableScore.tetrominoCount, gameSettings]);
 
   useEffect(() => {
     if (rowsCleared.length > 0) {

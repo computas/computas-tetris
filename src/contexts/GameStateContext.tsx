@@ -1,9 +1,9 @@
 import React, { createContext, useEffect, useReducer } from 'react';
 import { DocumentData } from 'firebase/firestore';
 
+import { GameStateActionType } from '../enums/GameStateActionTypes';
 import { getScoreFromEntry } from '../helpers';
 import { Score } from '../models';
-import { GameStateActionType } from '../enums/GameStateActionTypes';
 
 interface GameState {
   scoreList: Score[];
@@ -13,6 +13,11 @@ interface GameState {
 interface GameStateAction {
   type: GameStateActionType;
   payload?: any;
+}
+
+interface contextValue {
+  gameState: GameState;
+  gameDispatch: any;
 }
 
 const initialStorableScore: Score = {
@@ -31,7 +36,12 @@ const initialGameState: GameState = {
   storableScore: initialStorableScore
 };
 
-const stateReducer = (state: GameState, action: GameStateAction) => {
+const initialValue: contextValue = {
+  gameState: initialGameState,
+  gameDispatch: null
+};
+
+const stateReducer = (state: GameState, action: GameStateAction): GameState => {
   switch (action.type) {
     case GameStateActionType.ResetScoreList:
       return {
@@ -94,16 +104,6 @@ const updatedScoreList = (
 const getDurationSince = (start: number): number => {
   const t = new Date();
   return t.getTime() - start;
-};
-
-interface contextValue {
-  gameState: GameState;
-  gameDispatch: any;
-}
-
-const initialValue: contextValue = {
-  gameState: initialGameState,
-  gameDispatch: null
 };
 
 const GameStateContext = createContext(initialValue);

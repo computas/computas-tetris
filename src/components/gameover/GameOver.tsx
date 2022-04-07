@@ -22,10 +22,8 @@ const GameOver = (props: GameOverProps) => {
 
   useEffect(() => {
     if (gameOver) {
-      setCurrentRank(
-        gameState.scoreList.findIndex((item) => item.score <= score) + 1
-      );
-
+      const rank = findRank(score);
+      setCurrentRank(rank);
       setShowScores(false);
       setTimeout(() => {
         setShowScores(true);
@@ -43,6 +41,20 @@ const GameOver = (props: GameOverProps) => {
       });
     }
   }, [gameState.storableScore]);
+
+  const findRank = (score: number): number => {
+    let rank = gameState.scoreList.findIndex((item) => item.score <= score) + 1;
+    if (rank === 0) {
+      if (gameState.scoreList.length === 0) {
+        rank += 1;
+      } else {
+        rank = gameState.scoreList.length + 1;
+      }
+    }
+    console.log('rank', rank, 'score', score);
+    rank += 0;
+    return rank;
+  };
 
   const participate = (name: string, email: string, subscribe: boolean) => {
     gameDispatch({
@@ -63,7 +75,7 @@ const GameOver = (props: GameOverProps) => {
     <div className={css.GameOver}>
       <ScorePage
         score={score}
-        rank={`${currentRank} av ${gameState.scoreList.length}`}
+        rank={`${currentRank} av ${gameState.scoreList.length + 1}`}
         participate={participate}
         restart={restart}
       />

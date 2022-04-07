@@ -7,8 +7,9 @@ import { initializeApp } from 'firebase/app';
 
 import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+import ExportEmails from './pages/export-emails/ExportEmails';
 import Highscores from './pages/highscores';
+import reportWebVitals from './reportWebVitals';
 import { GameStateProvider } from './contexts/GameStateContext';
 
 const rootContainer = document.getElementById('root');
@@ -32,6 +33,7 @@ root.render(
         <Routes>
           <Route path="/" element={<App />} />
           <Route path="/highscores" element={<Highscores />} />
+          <Route path="/export-emails" element={<ExportEmails />} />
         </Routes>
       </BrowserRouter>
     </GameStateProvider>

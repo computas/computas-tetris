@@ -1,0 +1,32 @@
+.ExportEmails {
+  width: 100%;
+  min-height: 100vh;
+  background: white;
+
+  * {
+    user-select: all;
+  }
+
+  table {
+    font-size: 1.6rem;
+
+    thead {
+      background: var(--primary-color);
+    }
+
+    th {
+      padding: 0.5rem;
+      text-align: left;
+    }
+
+    td {
+      padding: 0.2rem 0.5rem;
+    }
+
+    tbody {
+      tr:nth-child(even) {
+        background: #f8f8f8;
+      }
+    }
+  }
+}

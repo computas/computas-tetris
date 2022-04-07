@@ -8,8 +8,10 @@ import {
 } from 'firebase/firestore';
 
 import { firestore } from '../index';
-import { Score } from '../models';
+import { GameSettingsState } from '../contexts/GameSettingsContext';
+import { GameSettingsStateActionType } from '../enums/GameSettingsStateActionTypes';
 import { GameStateActionType } from '../enums/GameStateActionTypes';
+import { Score } from '../models';
 
 export const fetchRealTimeScoreList = (dispatch: any): any => {
   const collRef = collection(firestore, 'Scores');
@@ -22,6 +24,39 @@ export const fetchRealTimeScoreList = (dispatch: any): any => {
     dispatch({
       type: GameStateActionType.ScoreListChanged,
       payload: { changes: changeList }
+    });
+  });
+};
+
+export const fetchRealTimeSettings = (dispatch: any): any => {
+  const collRef = collection(firestore, 'Settings');
+  return onSnapshot(query(collRef), (snapshot) => {
+    const settings: GameSettingsState = {
+      increaseSpeedFactor: 10,
+      increaseSpeedOnEvery: 1,
+      initialSpeed: 500,
+      minimumSpeed: 30,
+      playMusic: false
+    };
+
+    snapshot.docChanges().forEach((entry) => {
+      const fetchedSettings = entry.doc.data();
+      settings.increaseSpeedFactor =
+        fetchedSettings.IncreaseSpeedFactor ?? settings.increaseSpeedFactor;
+      settings.increaseSpeedOnEvery = Math.max(
+        fetchedSettings.IncreaseSpeedOnEvery ?? settings.increaseSpeedOnEvery,
+        1
+      );
+      settings.initialSpeed =
+        fetchedSettings.InitialSpeed ?? settings.initialSpeed;
+      settings.minimumSpeed =
+        fetchedSettings.MinimumSpeed ?? settings.minimumSpeed;
+      settings.playMusic = fetchedSettings.PlayMusic ?? settings.playMusic;
+    });
+
+    dispatch({
+      type: GameSettingsStateActionType.Fetched,
+      payload: settings
     });
   });
 };

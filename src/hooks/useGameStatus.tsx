@@ -2,10 +2,12 @@ import { useContext, useEffect, useState } from 'react';
 
 import {
   fetchRealTimeScoreList,
+  fetchRealTimeSettings,
   randomTetromino,
   Row,
   Tetromino
 } from 'helpers';
+import { GameSettingsContext } from '../contexts/GameSettingsContext';
 import { GameStateActionType } from '../enums/GameStateActionTypes';
 import { GameStateContext } from '../contexts/GameStateContext';
 import { Score } from 'models';
@@ -45,6 +47,7 @@ export const useGameStatus = (
   () => void
 ] => {
   const { gameState, gameDispatch } = useContext(GameStateContext);
+  const { settingsDispatch } = useContext(GameSettingsContext);
   const [highScore, setHighScore] = useState(0);
   const [level, setLevel] = useState(1);
   const [newHighScore, setNewHighScore] = useState(false);
@@ -54,11 +57,13 @@ export const useGameStatus = (
   const [tetrominos, setTetrominos] = useState(initialTetrominosList);
 
   useEffect(() => {
-    const unsubscribe = fetchRealTimeScoreList(gameDispatch);
+    const unsubscribeSettings = fetchRealTimeSettings(settingsDispatch);
+    const unsubscribeScoreList = fetchRealTimeScoreList(gameDispatch);
 
     return () => {
       gameDispatch({ type: GameStateActionType.ResetScoreList });
-      unsubscribe();
+      unsubscribeScoreList();
+      unsubscribeSettings();
     };
   }, []);
 

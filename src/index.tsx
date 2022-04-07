@@ -11,6 +11,7 @@ import ExportEmails from './pages/export-emails/ExportEmails';
 import Highscores from './pages/highscores';
 import reportWebVitals from './reportWebVitals';
 import { GameStateProvider } from './contexts/GameStateContext';
+import { GameSettingsProvider } from './contexts/GameSettingsContext';
 
 const rootContainer = document.getElementById('root');
 const root = createRoot(rootContainer as HTMLElement);
@@ -28,15 +29,17 @@ const firebaseConfig = {
 
 root.render(
   <React.StrictMode>
-    <GameStateProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/highscores" element={<Highscores />} />
-          <Route path="/export-emails" element={<ExportEmails />} />
-        </Routes>
-      </BrowserRouter>
-    </GameStateProvider>
+    <GameSettingsProvider>
+      <GameStateProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<App />} />
+            <Route path="/highscores" element={<Highscores />} />
+            <Route path="/export-emails" element={<ExportEmails />} />
+          </Routes>
+        </BrowserRouter>
+      </GameStateProvider>
+    </GameSettingsProvider>
   </React.StrictMode>
 );
 

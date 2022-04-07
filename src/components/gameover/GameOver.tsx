@@ -51,8 +51,6 @@ const GameOver = (props: GameOverProps) => {
         rank = gameState.scoreList.length + 1;
       }
     }
-    console.log('rank', rank, 'score', score);
-    rank += 0;
     return rank;
   };
 

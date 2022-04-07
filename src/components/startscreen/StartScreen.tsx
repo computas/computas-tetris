@@ -26,7 +26,7 @@ const StartScreen = (props: StartScreenProps) => {
         <TetrisHeader className={css.StartScreenHeader} />
         <div className={css.Button}>
           <Button
-            label={'VINN PREMIE!'}
+            label={'SPILL OG VINN PREMIE!'}
             onClick={startTrial}
             size={ButtonSize.XL}
             variant={ButtonVariant.Primary}

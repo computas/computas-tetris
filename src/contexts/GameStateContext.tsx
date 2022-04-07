@@ -23,7 +23,7 @@ const initialStorableScore: Score = {
   rows: 0,
   score: 0,
   subscribe: false,
-  tetrominos: 0
+  tetrominoCount: 0
 };
 
 const initialGameState: GameState = {

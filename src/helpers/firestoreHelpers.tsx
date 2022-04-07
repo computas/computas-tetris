@@ -47,6 +47,6 @@ export const getScoreFromEntry = (doc: DocumentData): Score => {
     rows: entry.rows,
     score: entry.score,
     subscribe: entry.subscribe ?? false,
-    tetrominos: entry.tetrominos
+    tetrominoCount: entry.tetrominos
   };
 };

@@ -12,5 +12,5 @@ export interface Score {
   rows: number;
   score: number;
   subscribe: boolean;
-  tetrominos: number;
+  tetrominoCount: number;
 }

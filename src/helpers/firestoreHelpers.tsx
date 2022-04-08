@@ -1,16 +1,19 @@
 import {
   addDoc,
   collection,
+  doc,
   DocumentData,
   onSnapshot,
+  query,
   Timestamp,
-  query
+  updateDoc
 } from 'firebase/firestore';
 
 import { firestore } from '../index';
 import { GameSettingsState } from '../contexts/GameSettingsContext';
 import { GameSettingsStateActionType } from '../enums/GameSettingsStateActionTypes';
 import { GameStateActionType } from '../enums/GameStateActionTypes';
+import { GlobalSettings } from '../pages/settings/Settings';
 import { Score } from '../models';
 
 const initialGameSettings: GameSettingsState = {
@@ -68,6 +71,21 @@ export const fetchRealTimeSettings = (dispatch: any): any => {
       type: GameSettingsStateActionType.Fetched,
       payload: settings
     });
+  });
+};
+
+export const saveSettings = async (
+  settings: GlobalSettings,
+  updatedSettings: any
+) => {
+  const globalSettings: GlobalSettings = {
+    ...settings,
+    ...updatedSettings
+  };
+
+  const docRef = doc(firestore, 'Settings', 'global');
+  await updateDoc(docRef, {
+    ...globalSettings
   });
 };
 

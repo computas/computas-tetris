@@ -1,0 +1,22 @@
+.Slider {
+  display: grid;
+  grid-template-columns: 20rem 40rem 5rem;
+
+  label {
+    span {
+      display: block;
+    }
+
+    em {
+      font-size: 1.2rem;
+      font-style: normal;
+      opacity: 0.5;
+    }
+  }
+
+  > span {
+    display: inline-block;
+    align-self: center;
+    text-align: right;
+  }
+}

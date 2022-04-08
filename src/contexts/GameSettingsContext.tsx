@@ -8,6 +8,8 @@ export interface GameSettingsState {
   initialSpeed: number;
   minimumSpeed: number;
   playMusic: boolean;
+  toplistLength: number;
+  trialTetrominoCount: number;
 }
 
 interface GameSettingsStateAction {
@@ -25,7 +27,9 @@ const initialGameSettingsState: GameSettingsState = {
   increaseSpeedOnEvery: 1,
   initialSpeed: 500,
   minimumSpeed: 50,
-  playMusic: false
+  playMusic: false,
+  toplistLength: 0,
+  trialTetrominoCount: 5
 };
 
 const initialContextValue: contextValue = {

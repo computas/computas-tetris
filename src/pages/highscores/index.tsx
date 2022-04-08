@@ -4,26 +4,26 @@ import { useNavigate } from 'react-router-dom';
 import css from './Highscores.module.scss';
 import Button, { ButtonVariant } from '../../components/button/Button';
 import Display from 'components/display/Display';
-import { fetchRealTimeScoreList } from '../../helpers';
+import { fetchRealTimeScoreList, fetchRealTimeSettings } from '../../helpers';
+import { GameSettingsContext } from '../../contexts/GameSettingsContext';
 import { GameStateActionType } from '../../enums/GameStateActionTypes';
 import { GameStateContext } from '../../contexts/GameStateContext';
 import { ReactComponent as TetrisHeader } from '../../svg/toplistHeader.svg';
 
-const TOPLIST_LENGTH = 10;
-
 const Highscores = (): ReactElement => {
   const { gameState, gameDispatch } = useContext(GameStateContext);
+  const { gameSettings, settingsDispatch } = useContext(GameSettingsContext);
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    gameDispatch({
-      type: GameStateActionType.ResetScoreList
-    });
-
-    const unsubscribe = fetchRealTimeScoreList(gameDispatch);
+    const unsubscribeSettings = fetchRealTimeSettings(settingsDispatch);
+    const unsubscribeScoreList = fetchRealTimeScoreList(gameDispatch);
 
     return () => {
-      unsubscribe();
+      gameDispatch({ type: GameStateActionType.ResetScoreList });
+      unsubscribeScoreList();
+      unsubscribeSettings();
     };
   }, []);
 
@@ -36,15 +36,17 @@ const Highscores = (): ReactElement => {
   return (
     <div className={css.container}>
       <TetrisHeader className={css.TetrisHeader} />
-      <p className={css.GamesPlayed}>{registeredGames()}</p>
       <ol className={css.ScoreBoardList}>
-        {gameState.scoreList.slice(0, TOPLIST_LENGTH).map((score, index) => (
-          <li key={index}>
-            <Display content={[score.name, score.score.toString()]} />
-          </li>
-        ))}
+        {gameState.scoreList
+          .slice(0, gameSettings.toplistLength)
+          .map((score, index) => (
+            <li key={index}>
+              <Display content={[score.name, score.score.toString()]} />
+            </li>
+          ))}
       </ol>
       <div>
+        <p className={css.GamesPlayed}>{registeredGames()}</p>
         <Button
           label={'TILBAKE'}
           variant={ButtonVariant.Secondary}

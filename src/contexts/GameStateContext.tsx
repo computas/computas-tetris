@@ -42,6 +42,8 @@ const initialValue: contextValue = {
 };
 
 const stateReducer = (state: GameState, action: GameStateAction): GameState => {
+  const { payload } = action;
+
   switch (action.type) {
     case GameStateActionType.ResetScoreList:
       return {
@@ -51,15 +53,15 @@ const stateReducer = (state: GameState, action: GameStateAction): GameState => {
     case GameStateActionType.ScoreListChanged:
       return {
         ...state,
-        scoreList: updatedScoreList(action.payload.changes, state)
+        scoreList: updatedScoreList(payload.changes, state)
       };
 
     case GameStateActionType.ScoreReady:
       return {
         ...state,
         storableScore: {
-          ...action.payload.storableScore,
-          duration: getDurationSince(action.payload.storableScore.duration)
+          ...payload.storableScore,
+          duration: getDurationSince(payload.storableScore.duration)
         }
       };
 
@@ -68,9 +70,9 @@ const stateReducer = (state: GameState, action: GameStateAction): GameState => {
         ...state,
         storableScore: {
           ...state.storableScore,
-          name: action.payload.name,
-          email: action.payload.email,
-          subscribe: action.payload.subscribe
+          name: payload.name,
+          email: payload.email,
+          subscribe: payload.subscribe
         }
       };
 

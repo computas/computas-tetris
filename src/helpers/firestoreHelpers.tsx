@@ -13,6 +13,16 @@ import { GameSettingsStateActionType } from '../enums/GameSettingsStateActionTyp
 import { GameStateActionType } from '../enums/GameStateActionTypes';
 import { Score } from '../models';
 
+const initialGameSettings: GameSettingsState = {
+  increaseSpeedFactor: 10,
+  increaseSpeedOnEvery: 1,
+  initialSpeed: 500,
+  minimumSpeed: 30,
+  playMusic: false,
+  toplistLength: 0,
+  trialTetrominoCount: 5
+};
+
 export const fetchRealTimeScoreList = (dispatch: any): any => {
   const collRef = collection(firestore, 'Scores');
   return onSnapshot(query(collRef), (snapshot) => {
@@ -32,11 +42,7 @@ export const fetchRealTimeSettings = (dispatch: any): any => {
   const collRef = collection(firestore, 'Settings');
   return onSnapshot(query(collRef), (snapshot) => {
     const settings: GameSettingsState = {
-      increaseSpeedFactor: 10,
-      increaseSpeedOnEvery: 1,
-      initialSpeed: 500,
-      minimumSpeed: 30,
-      playMusic: false
+      ...initialGameSettings
     };
 
     snapshot.docChanges().forEach((entry) => {
@@ -52,6 +58,10 @@ export const fetchRealTimeSettings = (dispatch: any): any => {
       settings.minimumSpeed =
         fetchedSettings.MinimumSpeed ?? settings.minimumSpeed;
       settings.playMusic = fetchedSettings.PlayMusic ?? settings.playMusic;
+      settings.toplistLength =
+        fetchedSettings.ToplistLength ?? settings.toplistLength;
+      settings.trialTetrominoCount =
+        fetchedSettings.TrialTetrominoCount ?? settings.trialTetrominoCount;
     });
 
     dispatch({

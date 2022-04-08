@@ -64,20 +64,22 @@ const TrialScreen = (props: TrialScreenProps) => {
   return (
     <div className={css.TrialScreen}>
       <div className={css.TrialPromptDescription}>
-        Vil dere ta en prøverunde, eller starte spillet?
+        Vil dere ta en prøverunde
+        <br />
+        hvor spilleren kan se?
       </div>
       <div className={css.Button}>
         <Button
-          label={'SPILL OG VINN PREMIE!'}
-          onClick={play}
+          label={'JA, VI VIL TA EN PRØVERUNDE'}
+          onClick={progressTrial}
           size={ButtonSize.XL}
           variant={ButtonVariant.Primary}
         />
       </div>
       <div className={css.Button}>
         <Button
-          label={'VI VIL TESTE FØRST'}
-          onClick={progressTrial}
+          label={'NEI, START SPILLET!'}
+          onClick={play}
           size={ButtonSize.XL}
           variant={ButtonVariant.Primary}
         />

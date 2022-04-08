@@ -58,7 +58,6 @@ const BLOCK_SIZE = 32;
 const SWIPE_DOWN_ANGLE = 3.0;
 const SWIPE_DOWN_DIST_MIN = 80;
 const TAP_MOVE_DIST_MAX = 8;
-const TRIAL_BLOCKS = 3;
 const COUNTDOWN_TIME = 3;
 
 export default function Tetris() {
@@ -142,7 +141,8 @@ export default function Tetris() {
   }, [playMusic, gameSettings.playMusic]);
 
   useEffect(() => {
-    if (state.trial && blocksPlayed > TRIAL_BLOCKS) progressTrial();
+    if (state.trial && blocksPlayed > gameSettings.trialTetrominoCount)
+      progressTrial();
   }, [blocksPlayed]);
 
   useEffect(() => {
@@ -445,6 +445,7 @@ export default function Tetris() {
     }
 
     if (
+      delta.y > 0 &&
       axis.y / (axis.x + 1) > SWIPE_DOWN_ANGLE &&
       axis.y > SWIPE_DOWN_DIST_MIN
     ) {
@@ -454,7 +455,10 @@ export default function Tetris() {
 
   const header = state.trial ? (
     <div className={css.TrialCounter}>
-      {'Prøverunde - Brikke ' + blocksPlayed + ' av ' + TRIAL_BLOCKS}
+      {'Prøverunde - Brikke ' +
+        blocksPlayed +
+        ' av ' +
+        gameSettings.trialTetrominoCount}
     </div>
   ) : (
     <div className={css.alignTop}>

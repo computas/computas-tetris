@@ -1,4 +1,4 @@
-import React, { ReactElement, useContext, useEffect, useRef } from 'react';
+import React, { ReactElement, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import css from './Highscores.module.scss';

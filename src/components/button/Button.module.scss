@@ -29,4 +29,8 @@
   &.secondary {
     background: var(--secondary-button-color);
   }
+
+  &:disabled {
+    background: lightgray;
+  }
 }

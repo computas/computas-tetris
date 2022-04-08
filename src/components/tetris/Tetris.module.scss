@@ -41,14 +41,6 @@
     font-size: 1rem;
     cursor: pointer;
     user-select: none;
-
-    &:disabled {
-      background: gray;
-      border-color: darkgrey;
-      color: #333;
-      opacity: 0;
-      transition: opacity 300ms ease-in;
-    }
   }
 
   aside {

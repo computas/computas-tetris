@@ -30,6 +30,11 @@ const ScorePage = (props: ScorePageProps) => {
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
   const [subscribe, setSubscribe] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    setIsSaving(false);
+  }, []);
 
   useEffect(() => {
     if (score === prevScore) {
@@ -106,6 +111,7 @@ const ScorePage = (props: ScorePageProps) => {
       ) &&
       validateUnique(name, email, 'Team navn koblet til annen e-post')
     ) {
+      setIsSaving(true);
       participate(name, email, subscribe);
     }
   };
@@ -198,6 +204,7 @@ const ScorePage = (props: ScorePageProps) => {
 
             <div className={css.centered}>
               <Button
+                disabled={isSaving}
                 label={'VI VIL VINNE!'}
                 onClick={validateAndParticipate}
                 size={ButtonSize.Large}
@@ -206,6 +213,7 @@ const ScorePage = (props: ScorePageProps) => {
               <br />
               <br />
               <Button
+                disabled={isSaving}
                 label={'GLEM OSS'}
                 variant={ButtonVariant.Secondary}
                 onClick={restart}

@@ -10,6 +10,7 @@ import css from './TrialScreen.module.scss';
 interface TrialScreenProps {
   play: () => void;
   progressTrial: () => void;
+  restart: () => void;
   trial: boolean;
   trialStage: number;
 }
@@ -18,7 +19,7 @@ export const TRIAL_PLAY = 3;
 export const TRIAL_END = 5;
 
 const TrialScreen = (props: TrialScreenProps) => {
-  const { play, progressTrial, trial, trialStage } = props;
+  const { play, progressTrial, restart, trial, trialStage } = props;
 
   if (!trial || trialStage === TRIAL_PLAY) {
     document.querySelector('section')?.focus();
@@ -82,6 +83,13 @@ const TrialScreen = (props: TrialScreenProps) => {
           onClick={play}
           size={ButtonSize.XL}
           variant={ButtonVariant.Primary}
+        />
+      </div>
+      <div className={css.Button}>
+        <Button
+          label={'TILBAKE'}
+          variant={ButtonVariant.Secondary}
+          onClick={restart}
         />
       </div>
       <div className={css.FiguresBox}>

@@ -35,21 +35,21 @@ import {
 } from 'hooks';
 
 export interface GameState {
+  countdown: number;
+  dropSpeed: number;
   gameOver: boolean;
   startScreen: boolean;
   trial: boolean;
   trialStage: number;
-  countdown: number;
-  dropSpeed: number;
 }
 
 const initialGameState: GameState = {
+  countdown: 0,
+  dropSpeed: 500,
   gameOver: false,
   startScreen: true,
   trial: false,
-  trialStage: 0,
-  countdown: 0,
-  dropSpeed: 500
+  trialStage: 0
 };
 
 const LEFT = -1;
@@ -61,7 +61,7 @@ const TAP_MOVE_DIST_MAX = 8;
 const COUNTDOWN_TIME = 3;
 
 export default function Tetris() {
-  const { gameDispatch } = useContext(GameStateContext);
+  const { gameState, gameDispatch } = useContext(GameStateContext);
   const { gameSettings } = useContext(GameSettingsContext);
   const [state, setState] = useState(initialGameState);
   const [touchStartPosition, setTouchStartPosition] = useState({
@@ -88,6 +88,7 @@ export default function Tetris() {
   const [dropSpeed, setDropSpeed] = useState(0);
   const [blocksPlayed, setBlocksPlayed] = useState(1);
   const [gamesPlayed, setGamesPlayed] = useState(0);
+  const [isPlayingMusic, setIsPlayingMusic] = useState(false);
   const [
     leftPressState,
     rightPressState,
@@ -130,9 +131,9 @@ export default function Tetris() {
 
   useEffect(() => {
     if (gameSettings.playMusic) {
-      playMusic();
+      gameDispatch({ type: GameStateActionType.PlayMusic });
     } else {
-      stop();
+      gameDispatch({ type: GameStateActionType.StopMusic });
     }
 
     return () => {
@@ -231,6 +232,20 @@ export default function Tetris() {
     }
   }, [rowsCleared]);
 
+  useEffect(() => {
+    if (!gameSettings.playMusic) {
+      stop();
+      return;
+    }
+
+    if (isPlayingMusic === gameState.music) {
+      return;
+    }
+
+    setIsPlayingMusic(gameState.music);
+    gameState.music ? playMusic() : stop();
+  }, [gameState.music]);
+
   useInterval(() => {
     if (!state.gameOver || !player.collided) {
       drop();
@@ -265,11 +280,7 @@ export default function Tetris() {
   };
 
   const tapped = (): void => {
-    if (state.startScreen) {
-      return;
-    }
-
-    if (state.gameOver) {
+    if (state.startScreen || state.gameOver || state.countdown > 0) {
       return;
     }
 
@@ -344,7 +355,7 @@ export default function Tetris() {
     });
 
     if (state.trialStage === 2) {
-      stop();
+      gameDispatch({ type: GameStateActionType.StopMusic });
     }
 
     if (state.trialStage === TRIAL_PLAY) {
@@ -368,7 +379,7 @@ export default function Tetris() {
       startScreen: false,
       countdown: COUNTDOWN_TIME
     });
-    stop();
+    gameDispatch({ type: GameStateActionType.StopMusic });
     generateNextTetromino();
     resetGame();
     setStage(createStage());
@@ -383,9 +394,9 @@ export default function Tetris() {
       ...state,
       gameOver: false,
       startScreen: true,
-      trial: false
+      trial: false,
+      trialStage: 0
     });
-    playMusic();
     resetGame();
     setStage(createStage());
     setGamesPlayed(0);
@@ -497,10 +508,11 @@ export default function Tetris() {
         startTrial={progressTrial}
       />
       <TrialScreen
+        play={startCountdown}
+        progressTrial={progressTrial}
+        restart={returnHome}
         trial={state.trial}
         trialStage={state.trialStage}
-        progressTrial={progressTrial}
-        play={startCountdown}
       />
       <Swipe
         className={css.Tetris}

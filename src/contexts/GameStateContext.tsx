@@ -6,6 +6,7 @@ import { getScoreFromEntry } from '../helpers';
 import { Score } from '../models';
 
 interface GameState {
+  music: boolean;
   scoreList: Score[];
   storableScore: Score;
 }
@@ -32,6 +33,7 @@ const initialStorableScore: Score = {
 };
 
 const initialGameState: GameState = {
+  music: true,
   scoreList: [],
   storableScore: initialStorableScore
 };
@@ -45,6 +47,12 @@ const stateReducer = (state: GameState, action: GameStateAction): GameState => {
   const { payload } = action;
 
   switch (action.type) {
+    case GameStateActionType.PlayMusic:
+      return {
+        ...state,
+        music: true
+      };
+
     case GameStateActionType.ResetScoreList:
       return {
         ...initialGameState
@@ -63,6 +71,12 @@ const stateReducer = (state: GameState, action: GameStateAction): GameState => {
           ...payload.storableScore,
           duration: getDurationSince(payload.storableScore.duration)
         }
+      };
+
+    case GameStateActionType.StopMusic:
+      return {
+        ...state,
+        music: false
       };
 
     case GameStateActionType.UpdateScoreWithDetails:

@@ -1,22 +1,22 @@
+.mainScreen {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
 .alignTop {
-  display: grid;
-  justify-content: center;
-  grid-auto-flow: column;
-  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
   padding: 1rem;
-  column-gap: 2.5rem;
+  width: calc(7.4rem + 58vh);
+  max-width: calc(100vw - 4.9rem);
 }
 
 .Tetris {
-  position: absolute;
-  top: 0;
-  width: 100vw;
-  height: 100vh;
-  padding-top: 14rem;
+  height: 100%;
 
   .Board {
-    width: 100%;
-    max-width: 61.7rem;
     margin: 0 auto;
     outline: none;
 
@@ -24,65 +24,12 @@
       display: grid;
       grid-template-columns: auto 13rem;
       position: relative;
-      height: 84rem;
-    }
-  }
-
-  button {
-    width: 100%;
-    height: fit-content;
-    align-self: flex-end;
-    padding: 0.5rem 1.7rem;
-    margin-left: 2rem;
-    border: 0;
-    border-radius: 0.5rem;
-    color: #333333;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    user-select: none;
-
-    &:disabled {
-      background: gray;
-      border-color: darkgrey;
-      color: #333;
-      opacity: 0;
-      transition: opacity 300ms ease-in;
     }
   }
 
   aside {
-    display: grid;
-    position: absolute;
-    right: 0;
-    top: 12rem;
-    bottom: 0;
-    width: 13rem;
-    padding: 0.5rem 0.2rem;
-    border-radius: 0.5rem;
-  }
-
-  .PlayButton {
-    background-color: #49bca1;
-    margin-bottom: -1rem;
-  }
-
-  .PlayAgainButton {
-    background-color: #fed546;
-  }
-
-  .HomeButton {
-    background-color: #29cff5;
-  }
-
-  .buttonPlacement {
-    display: grid;
-    gap: 0.25rem;
-    margin-bottom: -1rem;
-  }
-
-  .buttons {
-    display: none;
+    display: flex;
+    flex-direction: column;
   }
 }
 
@@ -99,11 +46,15 @@
 }
 
 .VerticalTetrisLogo {
-  width: 9.3rem;
-  margin: 3rem auto auto;
+  position: relative;
+  height: calc(100vh - 31.5rem);
+  max-height: calc(160vw - 43rem);
+  top: 1rem;
+  left: 1rem;
 }
 
 .ComputasLogo {
-  width: 10.3rem;
-  min-width: 10.3rem;
+  width: 12.3rem;
+  position: relative;
+  top: -1rem;
 }

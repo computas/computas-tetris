@@ -3,7 +3,7 @@
   --primary-color: #2acff5;
   --secondary-color: #21a4c2;
   --tertiary-color: #003c66;
-  --border: 0.3rem solid white;
+  --border: 0.4rem solid white;
 
   --primary-button-color: #fed546;
   --secondary-button-color: #ff5f63;
@@ -27,7 +27,7 @@ html {
 
 body {
   margin: 0;
-  background: #123;
+  background: var(--background-color);
   font-family: "Open Sans", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

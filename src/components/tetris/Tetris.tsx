@@ -54,7 +54,7 @@ const initialGameState: GameState = {
 const LEFT = -1;
 const RIGHT = 1;
 const BLOCK_SIZE = 32;
-const SPEED_INITIAL = 300;
+const SPEED_INITIAL = 10000;
 const SPEED_MIN = 50;
 const SPEED_FACTOR = 2.5;
 const SWIPE_DOWN_ANGLE = 3.0;
@@ -451,7 +451,7 @@ export default function Tetris() {
     </div>
   ) : (
     <div className={css.alignTop}>
-      <div>
+      <div className={css.progress}>
         <Display
           content={'Rader: ' + rows}
           style={{ backgroundColor: '#29cff5' }}
@@ -462,7 +462,7 @@ export default function Tetris() {
         />
       </div>
       <ComputasLogo className={css.ComputasLogo} />
-      <div>
+      <div className={css.points}>
         <Display
           content={'Høyeste poeng: ' + highScore}
           style={{ backgroundColor: '#ff5f63' }}
@@ -476,7 +476,7 @@ export default function Tetris() {
   );
 
   return (
-    <>
+    <div className={css.mainScreen}>
       {header}
       <StartScreen
         startScreen={state.startScreen}
@@ -515,13 +515,13 @@ export default function Tetris() {
               score={score}
               restart={returnHome}
             />
-            <Next tetromino={tetrominos[1]} />
             <aside>
+              <Next tetromino={tetrominos[1]} />
               <TetrisVertical className={css.VerticalTetrisLogo} />
             </aside>
           </section>
         </section>
       </Swipe>
-    </>
+    </div>
   );
 }

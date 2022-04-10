@@ -16,6 +16,7 @@ export enum ButtonVariant {
 }
 
 interface ButtonProps {
+  disabled?: boolean;
   label: string;
   onClick?: () => void;
   variant?: ButtonVariant;
@@ -23,7 +24,7 @@ interface ButtonProps {
 }
 
 const Button = (props: ButtonProps): ReactElement => {
-  const { label, onClick, size, variant } = props;
+  const { disabled, label, onClick, size, variant } = props;
 
   const cssFromSize = () => {
     if (size === ButtonSize.Large) {
@@ -55,6 +56,7 @@ const Button = (props: ButtonProps): ReactElement => {
   return (
     <button
       className={classnames(css.Button, cssFromSize(), cssFromVariant())}
+      disabled={disabled}
       onClick={callback}
       type={'button'}
     >

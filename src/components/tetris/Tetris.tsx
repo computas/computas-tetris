@@ -21,6 +21,7 @@ import {
   createStage,
   detectCollision
 } from 'helpers';
+import { GameSettingsContext } from '../../contexts/GameSettingsContext';
 import { GameStateActionType } from '../../enums/GameStateActionTypes';
 import { GameStateContext } from '../../contexts/GameStateContext';
 import { ReactComponent as ComputasLogo } from '../../svg/computas.svg';
@@ -34,37 +35,34 @@ import {
 } from 'hooks';
 
 export interface GameState {
+  countdown: number;
+  dropSpeed: number;
   gameOver: boolean;
   startScreen: boolean;
   trial: boolean;
   trialStage: number;
-  countdown: number;
-  dropSpeed: number;
 }
 
 const initialGameState: GameState = {
+  countdown: 0,
+  dropSpeed: 500,
   gameOver: false,
   startScreen: true,
   trial: false,
-  trialStage: 0,
-  countdown: 0,
-  dropSpeed: 500
+  trialStage: 0
 };
 
 const LEFT = -1;
 const RIGHT = 1;
 const BLOCK_SIZE = 32;
-const SPEED_INITIAL = 10000;
-const SPEED_MIN = 50;
-const SPEED_FACTOR = 2.5;
 const SWIPE_DOWN_ANGLE = 3.0;
 const SWIPE_DOWN_DIST_MIN = 80;
 const TAP_MOVE_DIST_MAX = 8;
-const TRIAL_BLOCKS = 3;
 const COUNTDOWN_TIME = 3;
 
 export default function Tetris() {
-  const { gameDispatch } = useContext(GameStateContext);
+  const { gameState, gameDispatch } = useContext(GameStateContext);
+  const { gameSettings } = useContext(GameSettingsContext);
   const [state, setState] = useState(initialGameState);
   const [touchStartPosition, setTouchStartPosition] = useState({
     x: 0,
@@ -90,6 +88,7 @@ export default function Tetris() {
   const [dropSpeed, setDropSpeed] = useState(0);
   const [blocksPlayed, setBlocksPlayed] = useState(1);
   const [gamesPlayed, setGamesPlayed] = useState(0);
+  const [isPlayingMusic, setIsPlayingMusic] = useState(false);
   const [
     leftPressState,
     rightPressState,
@@ -116,9 +115,13 @@ export default function Tetris() {
   const navigate = useNavigate();
 
   const calculateSpeed = (): number => {
+    const tetrominoFactor =
+      Math.floor(
+        (storableScore.tetrominoCount - 1) / gameSettings.increaseSpeedOnEvery
+      ) * gameSettings.increaseSpeedFactor;
     return Math.max(
-      SPEED_INITIAL - storableScore.tetrominoCount * SPEED_FACTOR,
-      SPEED_MIN
+      gameSettings.initialSpeed - tetrominoFactor,
+      gameSettings.minimumSpeed
     );
   };
 
@@ -127,15 +130,20 @@ export default function Tetris() {
   }, []);
 
   useEffect(() => {
-    playMusic();
+    if (gameSettings.playMusic) {
+      gameDispatch({ type: GameStateActionType.PlayMusic });
+    } else {
+      gameDispatch({ type: GameStateActionType.StopMusic });
+    }
 
     return () => {
       stop();
     };
-  }, [playMusic]);
+  }, [playMusic, gameSettings.playMusic]);
 
   useEffect(() => {
-    if (state.trial && blocksPlayed > TRIAL_BLOCKS) progressTrial();
+    if (state.trial && blocksPlayed > gameSettings.trialTetrominoCount)
+      progressTrial();
   }, [blocksPlayed]);
 
   useEffect(() => {
@@ -216,13 +224,27 @@ export default function Tetris() {
 
   useEffect(() => {
     setDropSpeed(calculateSpeed);
-  }, [storableScore.tetrominoCount]);
+  }, [storableScore.tetrominoCount, gameSettings]);
 
   useEffect(() => {
     if (rowsCleared.length > 0) {
       playRemoveLineSound();
     }
   }, [rowsCleared]);
+
+  useEffect(() => {
+    if (!gameSettings.playMusic) {
+      stop();
+      return;
+    }
+
+    if (isPlayingMusic === gameState.music) {
+      return;
+    }
+
+    setIsPlayingMusic(gameState.music);
+    gameState.music ? playMusic() : stop();
+  }, [gameState.music]);
 
   useInterval(() => {
     if (!state.gameOver || !player.collided) {
@@ -258,11 +280,7 @@ export default function Tetris() {
   };
 
   const tapped = (): void => {
-    if (state.startScreen) {
-      return;
-    }
-
-    if (state.gameOver) {
+    if (state.startScreen || state.gameOver || state.countdown > 0) {
       return;
     }
 
@@ -337,7 +355,7 @@ export default function Tetris() {
     });
 
     if (state.trialStage === 2) {
-      stop();
+      gameDispatch({ type: GameStateActionType.StopMusic });
     }
 
     if (state.trialStage === TRIAL_PLAY) {
@@ -361,7 +379,7 @@ export default function Tetris() {
       startScreen: false,
       countdown: COUNTDOWN_TIME
     });
-    stop();
+    gameDispatch({ type: GameStateActionType.StopMusic });
     generateNextTetromino();
     resetGame();
     setStage(createStage());
@@ -376,9 +394,9 @@ export default function Tetris() {
       ...state,
       gameOver: false,
       startScreen: true,
-      trial: false
+      trial: false,
+      trialStage: 0
     });
-    playMusic();
     resetGame();
     setStage(createStage());
     setGamesPlayed(0);
@@ -438,6 +456,7 @@ export default function Tetris() {
     }
 
     if (
+      delta.y > 0 &&
       axis.y / (axis.x + 1) > SWIPE_DOWN_ANGLE &&
       axis.y > SWIPE_DOWN_DIST_MIN
     ) {
@@ -447,7 +466,10 @@ export default function Tetris() {
 
   const header = state.trial ? (
     <div className={css.TrialCounter}>
-      {'Prøverunde - Brikke ' + blocksPlayed + ' av ' + TRIAL_BLOCKS}
+      {'Prøverunde - Brikke ' +
+        blocksPlayed +
+        ' av ' +
+        gameSettings.trialTetrominoCount}
     </div>
   ) : (
     <div className={css.alignTop}>
@@ -486,10 +508,11 @@ export default function Tetris() {
         startTrial={progressTrial}
       />
       <TrialScreen
+        play={startCountdown}
+        progressTrial={progressTrial}
+        restart={returnHome}
         trial={state.trial}
         trialStage={state.trialStage}
-        progressTrial={progressTrial}
-        play={startCountdown}
       />
       <Swipe
         className={css.Tetris}

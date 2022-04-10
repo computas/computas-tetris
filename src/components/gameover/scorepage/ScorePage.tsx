@@ -11,6 +11,7 @@ import { ReactComponent as Block6 } from '../../../svg/Block-8.svg';
 import css from './ScorePage.module.scss';
 import Button, { ButtonSize, ButtonVariant } from '../../button/Button';
 import TextField from '../../textfield/TextField';
+import { GameStateActionType } from '../../../enums/GameStateActionTypes';
 import { GameStateContext } from '../../../contexts/GameStateContext';
 
 interface ScorePageProps {
@@ -22,7 +23,7 @@ interface ScorePageProps {
 
 const ScorePage = (props: ScorePageProps) => {
   const { participate, rank, restart, score } = props;
-  const { gameState } = useContext(GameStateContext);
+  const { gameState, gameDispatch } = useContext(GameStateContext);
   const [showHigh, setShowHigh] = useState(true);
   const [prevScore, setPrevScore] = useState(0);
   const [name, setName] = useState('');
@@ -30,6 +31,12 @@ const ScorePage = (props: ScorePageProps) => {
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
   const [subscribe, setSubscribe] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    setIsSaving(false);
+    gameDispatch({ type: GameStateActionType.PlayMusic });
+  }, []);
 
   useEffect(() => {
     if (score === prevScore) {
@@ -106,6 +113,7 @@ const ScorePage = (props: ScorePageProps) => {
       ) &&
       validateUnique(name, email, 'Team navn koblet til annen e-post')
     ) {
+      setIsSaving(true);
       participate(name, email, subscribe);
     }
   };
@@ -198,6 +206,7 @@ const ScorePage = (props: ScorePageProps) => {
 
             <div className={css.centered}>
               <Button
+                disabled={isSaving}
                 label={'VI VIL VINNE!'}
                 onClick={validateAndParticipate}
                 size={ButtonSize.Large}
@@ -206,6 +215,7 @@ const ScorePage = (props: ScorePageProps) => {
               <br />
               <br />
               <Button
+                disabled={isSaving}
                 label={'GLEM OSS'}
                 variant={ButtonVariant.Secondary}
                 onClick={restart}

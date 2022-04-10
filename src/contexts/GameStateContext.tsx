@@ -1,11 +1,12 @@
 import React, { createContext, useEffect, useReducer } from 'react';
 import { DocumentData } from 'firebase/firestore';
 
+import { GameStateActionType } from '../enums/GameStateActionTypes';
 import { getScoreFromEntry } from '../helpers';
 import { Score } from '../models';
-import { GameStateActionType } from '../enums/GameStateActionTypes';
 
 interface GameState {
+  music: boolean;
   scoreList: Score[];
   storableScore: Score;
 }
@@ -13,6 +14,11 @@ interface GameState {
 interface GameStateAction {
   type: GameStateActionType;
   payload?: any;
+}
+
+interface contextValue {
+  gameState: GameState;
+  gameDispatch: any;
 }
 
 const initialStorableScore: Score = {
@@ -27,12 +33,26 @@ const initialStorableScore: Score = {
 };
 
 const initialGameState: GameState = {
+  music: true,
   scoreList: [],
   storableScore: initialStorableScore
 };
 
-const stateReducer = (state: GameState, action: GameStateAction) => {
+const initialValue: contextValue = {
+  gameState: initialGameState,
+  gameDispatch: null
+};
+
+const stateReducer = (state: GameState, action: GameStateAction): GameState => {
+  const { payload } = action;
+
   switch (action.type) {
+    case GameStateActionType.PlayMusic:
+      return {
+        ...state,
+        music: true
+      };
+
     case GameStateActionType.ResetScoreList:
       return {
         ...initialGameState
@@ -41,16 +61,22 @@ const stateReducer = (state: GameState, action: GameStateAction) => {
     case GameStateActionType.ScoreListChanged:
       return {
         ...state,
-        scoreList: updatedScoreList(action.payload.changes, state)
+        scoreList: updatedScoreList(payload.changes, state)
       };
 
     case GameStateActionType.ScoreReady:
       return {
         ...state,
         storableScore: {
-          ...action.payload.storableScore,
-          duration: getDurationSince(action.payload.storableScore.duration)
+          ...payload.storableScore,
+          duration: getDurationSince(payload.storableScore.duration)
         }
+      };
+
+    case GameStateActionType.StopMusic:
+      return {
+        ...state,
+        music: false
       };
 
     case GameStateActionType.UpdateScoreWithDetails:
@@ -58,9 +84,9 @@ const stateReducer = (state: GameState, action: GameStateAction) => {
         ...state,
         storableScore: {
           ...state.storableScore,
-          name: action.payload.name,
-          email: action.payload.email,
-          subscribe: action.payload.subscribe
+          name: payload.name,
+          email: payload.email,
+          subscribe: payload.subscribe
         }
       };
 
@@ -94,16 +120,6 @@ const updatedScoreList = (
 const getDurationSince = (start: number): number => {
   const t = new Date();
   return t.getTime() - start;
-};
-
-interface contextValue {
-  gameState: GameState;
-  gameDispatch: any;
-}
-
-const initialValue: contextValue = {
-  gameState: initialGameState,
-  gameDispatch: null
 };
 
 const GameStateContext = createContext(initialValue);

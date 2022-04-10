@@ -1,5 +1,5 @@
 .TrialScreen {
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
   height: 100%;
@@ -14,11 +14,12 @@
   justify-content: center;
 
   .Figures {
-    width: 120%;
-    max-width: 100rem;
-    max-height: calc(100vh - 38rem);
     position: fixed;
     bottom: 0;
+    z-index: -1;
+    width: 120%;
+    max-width: 100rem;
+    max-height: calc(100vh - 39rem);
   }
 }
 
@@ -28,7 +29,7 @@
 
 .TrialPromptDescription {
   font-weight: 700;
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 3.5rem;
   padding: 5rem 7rem;
 }

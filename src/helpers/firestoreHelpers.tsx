@@ -1,15 +1,30 @@
 import {
   addDoc,
   collection,
+  doc,
   DocumentData,
   onSnapshot,
+  query,
   Timestamp,
-  query
+  updateDoc
 } from 'firebase/firestore';
 
 import { firestore } from '../index';
-import { Score } from '../models';
+import { GameSettingsState } from '../contexts/GameSettingsContext';
+import { GameSettingsStateActionType } from '../enums/GameSettingsStateActionTypes';
 import { GameStateActionType } from '../enums/GameStateActionTypes';
+import { GlobalSettings } from '../pages/settings/Settings';
+import { Score } from '../models';
+
+const initialGameSettings: GameSettingsState = {
+  increaseSpeedFactor: 10,
+  increaseSpeedOnEvery: 1,
+  initialSpeed: 500,
+  minimumSpeed: 30,
+  playMusic: false,
+  toplistLength: 0,
+  trialTetrominoCount: 5
+};
 
 export const fetchRealTimeScoreList = (dispatch: any): any => {
   const collRef = collection(firestore, 'Scores');
@@ -23,6 +38,54 @@ export const fetchRealTimeScoreList = (dispatch: any): any => {
       type: GameStateActionType.ScoreListChanged,
       payload: { changes: changeList }
     });
+  });
+};
+
+export const fetchRealTimeSettings = (dispatch: any): any => {
+  const collRef = collection(firestore, 'Settings');
+  return onSnapshot(query(collRef), (snapshot) => {
+    const settings: GameSettingsState = {
+      ...initialGameSettings
+    };
+
+    snapshot.docChanges().forEach((entry) => {
+      const fetchedSettings = entry.doc.data();
+      settings.increaseSpeedFactor =
+        fetchedSettings.IncreaseSpeedFactor ?? settings.increaseSpeedFactor;
+      settings.increaseSpeedOnEvery = Math.max(
+        fetchedSettings.IncreaseSpeedOnEvery ?? settings.increaseSpeedOnEvery,
+        1
+      );
+      settings.initialSpeed =
+        fetchedSettings.InitialSpeed ?? settings.initialSpeed;
+      settings.minimumSpeed =
+        fetchedSettings.MinimumSpeed ?? settings.minimumSpeed;
+      settings.playMusic = fetchedSettings.PlayMusic ?? settings.playMusic;
+      settings.toplistLength =
+        fetchedSettings.ToplistLength ?? settings.toplistLength;
+      settings.trialTetrominoCount =
+        fetchedSettings.TrialTetrominoCount ?? settings.trialTetrominoCount;
+    });
+
+    dispatch({
+      type: GameSettingsStateActionType.Fetched,
+      payload: settings
+    });
+  });
+};
+
+export const saveSettings = async (
+  settings: GlobalSettings,
+  updatedSettings: any
+) => {
+  const globalSettings: GlobalSettings = {
+    ...settings,
+    ...updatedSettings
+  };
+
+  const docRef = doc(firestore, 'Settings', 'global');
+  await updateDoc(docRef, {
+    ...globalSettings
   });
 };
 

@@ -10,9 +10,10 @@
   grid-template-columns: repeat(12, 1fr);
 
   .Cell {
-    aspect-ratio: 1 / 1;
     height: calc(5vh - 1.2rem);
     max-height: calc(8.3vw - 2rem);
+    width: calc(5vh - 1.2rem);
+    max-width: calc(8.3vw - 2rem);
     background: var(--background-color);
     margin: 0.1rem;
 

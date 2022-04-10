@@ -111,7 +111,7 @@ const ScorePage = (props: ScorePageProps) => {
         email,
         'Dette feltet må inneholde en gyldig e-postadresse'
       ) &&
-      validateUnique(name, email, 'Team navn koblet til annen e-post')
+      validateUnique(name, email, 'Kallenavnet er allerede i bruk')
     ) {
       setIsSaving(true);
       participate(name, email, subscribe);

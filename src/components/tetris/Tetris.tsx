@@ -514,6 +514,12 @@ export default function Tetris() {
         trial={state.trial}
         trialStage={state.trialStage}
       />
+      <CountDownOverlay current={state.countdown} />
+      <GameOver
+        gameOver={state.gameOver && gamesPlayed > 0}
+        score={score}
+        restart={returnHome}
+      />
       <Swipe
         className={css.Tetris}
         onSwipeStart={swipeStart}
@@ -532,12 +538,6 @@ export default function Tetris() {
         >
           <section>
             <Stage stage={stage} />
-            <CountDownOverlay current={state.countdown} />
-            <GameOver
-              gameOver={state.gameOver && gamesPlayed > 0}
-              score={score}
-              restart={returnHome}
-            />
             <aside>
               <Next tetromino={tetrominos[1]} />
               <TetrisVertical className={css.VerticalTetrisLogo} />

@@ -80,7 +80,7 @@ const GameOver = (props: GameOverProps) => {
     </div>
   ) : (
     <div className={css.GameOver}>
-      <span>GAME OVER</span>
+      <span className={css.GameOverText}>GAME OVER</span>
     </div>
   );
 };

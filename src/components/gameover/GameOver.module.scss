@@ -1,11 +1,12 @@
 .GameOver {
   display: grid;
   position: absolute;
-  left: 0.5rem;
-  top: 0.5rem;
-  width: 47.7rem;
+  left: 0;
+  top: 0;
+  width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  background: rgba(0, 52, 89, 0.8);
   color: var(--primary-color);
   font-family: 'Open Sans', sans-serif;
   font-weight: 700;
@@ -13,5 +14,12 @@
   text-align: center;
   font-size: 4rem;
   transition: all 350ms ease-out;
-  z-index: 2;
+  z-index: 11;
+
+  .GameOverText {
+    font-size: 7rem;
+    font-weight: 700;
+    text-shadow: 0 0 2rem #29CFF5;
+    color: #49bca1;
+  }
 }

@@ -473,7 +473,7 @@ export default function Tetris() {
     </div>
   ) : (
     <div className={css.alignTop}>
-      <div>
+      <div className={css.progress}>
         <Display
           content={'Rader: ' + rows}
           style={{ backgroundColor: '#29cff5' }}
@@ -484,7 +484,7 @@ export default function Tetris() {
         />
       </div>
       <ComputasLogo className={css.ComputasLogo} />
-      <div>
+      <div className={css.points}>
         <Display
           content={'Høyeste poeng: ' + highScore}
           style={{ backgroundColor: '#ff5f63' }}
@@ -498,7 +498,7 @@ export default function Tetris() {
   );
 
   return (
-    <>
+    <div className={css.mainScreen}>
       {header}
       <StartScreen
         startScreen={state.startScreen}
@@ -513,6 +513,12 @@ export default function Tetris() {
         restart={returnHome}
         trial={state.trial}
         trialStage={state.trialStage}
+      />
+      <CountDownOverlay current={state.countdown} />
+      <GameOver
+        gameOver={state.gameOver && gamesPlayed > 0}
+        score={score}
+        restart={returnHome}
       />
       <Swipe
         className={css.Tetris}
@@ -532,19 +538,13 @@ export default function Tetris() {
         >
           <section>
             <Stage stage={stage} />
-            <CountDownOverlay current={state.countdown} />
-            <GameOver
-              gameOver={state.gameOver && gamesPlayed > 0}
-              score={score}
-              restart={returnHome}
-            />
-            <Next tetromino={tetrominos[1]} />
             <aside>
+              <Next tetromino={tetrominos[1]} />
               <TetrisVertical className={css.VerticalTetrisLogo} />
             </aside>
           </section>
         </section>
       </Swipe>
-    </>
+    </div>
   );
 }

@@ -19,16 +19,12 @@
     z-index: -1;
     width: 120%;
     max-width: 100rem;
+    max-height: calc(100vh - 39rem);
   }
 }
 
 .Button {
   padding-bottom: 3rem;
-}
-
-.StartScreenHeader {
-  max-width: 50rem;
-  padding: 2% 5%;
 }
 
 .TrialPromptDescription {

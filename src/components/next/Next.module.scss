@@ -22,13 +22,5 @@
       display: grid;
       grid-template-columns: 2rem 2rem 2rem;
     }
-
-    .cell {
-      border: 0.1rem outset inherit;
-      background: black;
-      color: white;
-      text-align: center;
-      transition: opacity 150ms ease-out;
-    }
   }
 }

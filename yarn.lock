@@ -8177,7 +8177,7 @@ prompts@^2.0.1, prompts@^2.4.2:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-prop-types@^15.5.8, prop-types@^15.8.1:
+prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -8332,13 +8332,6 @@ react-dom@^18.0.0:
     loose-envify "^1.1.0"
     scheduler "^0.21.0"
 
-react-easy-swipe@^0.0.22:
-  version "0.0.22"
-  resolved "https://registry.yarnpkg.com/react-easy-swipe/-/react-easy-swipe-0.0.22.tgz#480c32855cc4fc0629ea2e76604f67f7b7aeb38d"
-  integrity sha512-7dJXnHVmfqyPb+Gzf4GTTuPoqDz2jLW7huRq6gcZKeg2QxamC3zWJOucMyWunPoPgqDScwIM2wwf4WvFA2bayw==
-  dependencies:
-    prop-types "^15.5.8"
-
 react-error-overlay@^6.0.11:
   version "6.0.11"
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.11.tgz#92835de5841c5cf08ba00ddd2d677b6d17ff9adb"
@@ -8428,6 +8421,11 @@ react-scripts@5.0.1:
     workbox-webpack-plugin "^6.4.1"
   optionalDependencies:
     fsevents "^2.3.2"
+
+react-swipeable@^6.2.1:
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/react-swipeable/-/react-swipeable-6.2.1.tgz#7359fadda9917ee8b214e946447b56d3c7b0d314"
+  integrity sha512-JpTj+tjJTDcIWtoMkab6zfwWD1T1tBzUyEfXsXnohnNkwA2dTuNS0gtN7HoxU1Qa+e3GDnfNYk2z7vwzfO4SoQ==
 
 react@^18.0.0:
   version "18.0.0"

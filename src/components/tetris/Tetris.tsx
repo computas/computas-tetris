@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
-import Swipe, { SwipePosition } from 'react-easy-swipe';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { SwipeEventData, useSwipeable } from 'react-swipeable';
 import { useNavigate } from 'react-router-dom';
 // eslint-disable-next-line
 import useSound from 'use-sound';
@@ -52,9 +52,9 @@ const initialGameState: GameState = {
   trialStage: 0
 };
 
+let BLOCK_SIZE = 47;
 const LEFT = -1;
 const RIGHT = 1;
-const BLOCK_SIZE = 32;
 const SWIPE_DOWN_ANGLE = 3.0;
 const SWIPE_DOWN_DIST_MIN = 80;
 const TAP_MOVE_DIST_MAX = 8;
@@ -69,7 +69,7 @@ export default function Tetris() {
     y: 0,
     timeStamp: 0
   });
-  const [touchPosition, setTouchPosition] = useState({ x: 0, y: 0 });
+  const [blockSwipes, setBlockSwipes] = useState(0);
   const [player, updatePlayerPosition, rotatePlayer, applyNextTetromino] =
     usePlayer();
   const [stage, setStage, rowsCleared] = useStage(player);
@@ -98,6 +98,26 @@ export default function Tetris() {
     handleKeyReleased,
     setMoveComplete
   ] = useController();
+  const swipeHandlers = useSwipeable({
+    onSwipeStart: (e) => {
+      swipeStart(e.event);
+    },
+    onSwiping: (e) => {
+      swipeMove(e);
+    },
+    onSwiped: (e) => {
+      swipeEnd(e.event);
+    },
+    onTap: () => {
+      tapped();
+    }
+  });
+  const myRef = useRef();
+
+  const refPassThrough = (el: any) => {
+    swipeHandlers.ref(el);
+    myRef.current = el;
+  };
 
   const [playMoveBlockSound] = useSound('/assets/sfx/move.mp3');
   const [playDropDownSound] = useSound('/assets/sfx/swipe-down.mp3');
@@ -171,6 +191,8 @@ export default function Tetris() {
         });
       }, 1000);
     }
+    const cell = document.querySelector('.Cell') as HTMLDivElement;
+    BLOCK_SIZE = cell.offsetWidth;
   }, [state.countdown]);
 
   useEffect(() => {
@@ -405,7 +427,7 @@ export default function Tetris() {
 
   const swipeStart = (event: any): void => {
     const touch = event.changedTouches[0];
-    setTouchPosition({ x: 0, y: 0 });
+    setBlockSwipes(0);
     setTouchStartPosition({
       x: touch.clientX,
       y: touch.clientY,
@@ -413,24 +435,24 @@ export default function Tetris() {
     });
   };
 
-  const swipeMove = (position: SwipePosition): void => {
+  const swipeMove = (event: SwipeEventData): void => {
     if (state.gameOver || state.startScreen) {
       return;
     }
 
-    const delta = {
-      x: touchPosition.x - position.x,
-      y: touchPosition.y - position.y
-    };
+    if (Math.abs(event.deltaX) < Math.abs(event.deltaY)) {
+      return;
+    }
 
-    if (Math.abs(delta.x) > BLOCK_SIZE) {
-      setTouchPosition({ ...position });
-      if (position.x > touchPosition.x) {
+    const newBlockSwipe = Math.floor(event.deltaX / BLOCK_SIZE);
+    if (newBlockSwipe !== blockSwipes) {
+      if (newBlockSwipe > blockSwipes) {
         movePlayer(RIGHT);
       }
-      if (position.x < touchPosition.x) {
+      if (newBlockSwipe < blockSwipes) {
         movePlayer(LEFT);
       }
+      setBlockSwipes(newBlockSwipe);
     }
   };
 
@@ -451,7 +473,6 @@ export default function Tetris() {
     };
 
     if (axis.x < TAP_MOVE_DIST_MAX && axis.y < TAP_MOVE_DIST_MAX) {
-      tapped();
       return;
     }
 
@@ -520,12 +541,7 @@ export default function Tetris() {
         score={score}
         restart={returnHome}
       />
-      <Swipe
-        className={css.Tetris}
-        onSwipeStart={swipeStart}
-        onSwipeMove={swipeMove}
-        onSwipeEnd={swipeEnd}
-      >
+      <div className={css.Tetris} {...swipeHandlers} ref={refPassThrough}>
         <section
           className={css.Board}
           onKeyDown={(event) => handleKeyPressed(event, state)}
@@ -544,7 +560,7 @@ export default function Tetris() {
             </aside>
           </section>
         </section>
-      </Swipe>
+      </div>
     </div>
   );
 }

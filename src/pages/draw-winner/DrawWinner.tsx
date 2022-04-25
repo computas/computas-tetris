@@ -1,13 +1,21 @@
 import React, { ReactElement, useContext, useEffect, useState } from 'react';
 
 import css from './DrawWinner.module.scss';
+import Button, { ButtonSize } from '../../components/button/Button';
 import { fetchRealTimeScoreList } from '../../helpers';
 import { GameStateActionType } from '../../enums/GameStateActionTypes';
 import { GameStateContext } from '../../contexts/GameStateContext';
-import Button, { ButtonSize } from '../../components/button/Button';
+import { ReactComponent as RainbowPizza } from '../../svg/Rainbow-Pizza.svg';
+
+enum DrawState {
+  Initialized,
+  Drawing,
+  Done
+}
 
 const DrawWinner = (): ReactElement => {
   const { gameState, gameDispatch } = useContext(GameStateContext);
+  const [drawState, setDrawState] = useState(DrawState.Initialized);
   const [todaysWinner, setTodaysWinner] = useState({ name: '', email: '' });
 
   useEffect(() => {
@@ -20,11 +28,18 @@ const DrawWinner = (): ReactElement => {
   }, []);
 
   const drawWinner = (): void => {
-    const winnerIndex = Math.floor(
-      Math.random() * (gameState.scoreList.length - 1)
-    );
+    setDrawState(DrawState.Drawing);
+    setTimeout(() => {
+      showWinner();
+    }, 2000);
+    const winnerIndex =
+      1 + Math.floor(Math.random() * (gameState.scoreList.length - 2));
     const winner = gameState.scoreList[winnerIndex];
     setTodaysWinner({ name: winner.name, email: winner.email });
+  };
+
+  const showWinner = (): void => {
+    setDrawState(DrawState.Done);
   };
 
   if (gameState.scoreList.length === 0) {
@@ -38,7 +53,7 @@ const DrawWinner = (): ReactElement => {
         Det er {gameState.scoreList.length} registrerte spill som er med i
         trekningen.
       </p>
-      {todaysWinner.name === '' && (
+      {drawState === DrawState.Initialized && (
         <div className={css.Buttons}>
           <Button
             label={'Trekk dagens vinner'}
@@ -47,7 +62,12 @@ const DrawWinner = (): ReactElement => {
           />
         </div>
       )}
-      {todaysWinner.name !== '' && (
+      {drawState === DrawState.Drawing && (
+        <div className={css.Drawing}>
+          <RainbowPizza />
+        </div>
+      )}
+      {drawState === DrawState.Done && (
         <div className={css.Winner}>
           Dagens vinner
           <h2>{todaysWinner.name}</h2>

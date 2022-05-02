@@ -47,7 +47,6 @@ const initialValue: contextValue = {
 
 const stateReducer = (state: GameState, action: GameStateAction): GameState => {
   const { payload } = action;
-  const t = new Date();
 
   switch (action.type) {
     case GameStateActionType.PlayMusic:

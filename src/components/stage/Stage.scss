@@ -28,32 +28,32 @@
   color: white;
   text-align: center;
   border-radius: 0.3rem;
-  box-shadow: inset -2px -2px 0 rgba(0, 25, 44, 0.5), 
-              inset 2px 2px 0 rgba(255, 255, 255, 0.7);
+  box-shadow: inset -2px -2px 0 rgba(0, 25, 44, 0.5),
+    inset 2px 2px 0 rgba(255, 255, 255, 0.7);
 
   &[data-color='0'] {
     box-shadow: none;
   }
   &[data-color='1'] {
-    background: #ffa826;
+    background: var(--tetromino-color-1);
   }
   &[data-color='2'] {
-    background: #e96ccd;
+    background: var(--tetromino-color-2);
   }
   &[data-color='3'] {
-    background: #ff5f63;
+    background: var(--tetromino-color-3);
   }
   &[data-color='4'] {
-    background: #49bca1;
+    background: var(--tetromino-color-4);
   }
   &[data-color='5'] {
-    background: #fed546;
+    background: var(--tetromino-color-5);
   }
   &[data-color='6'] {
-    background: #b770ff;
+    background: var(--tetromino-color-6);
   }
   &[data-color='7'] {
-    background: #29cff5;
+    background: var(--tetromino-color-7);
   }
 
   &[data-color='201'],
@@ -70,5 +70,4 @@
     opacity: 1;
     z-index: 10;
   }
-
 }

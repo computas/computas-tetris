@@ -1,15 +1,24 @@
 :root {
   --background-color: #003459;
-  --primary-color: #2acff5;
+  --primary-color: #29cff5;
   --secondary-color: #21a4c2;
   --tertiary-color: #003c66;
   --border: 0.4rem solid white;
 
   --primary-button-color: #fed546;
   --secondary-button-color: #ff5f63;
+  --button-label-color: var(--background-color);
 
   --error-color: #ff9597;
   --error-color-support: #fce8e9;
+
+  --tetromino-color-1: #ffa826;
+  --tetromino-color-2: #e96ccd;
+  --tetromino-color-3: var(--secondary-button-color);
+  --tetromino-color-4: #49bca1;
+  --tetromino-color-5: var(--primary-button-color);
+  --tetromino-color-6: #b770ff;
+  --tetromino-color-7: var(--primary-color);
 }
 
 * {

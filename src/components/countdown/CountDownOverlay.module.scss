@@ -22,7 +22,7 @@
     }
 
     &[data-value='2'] {
-      color: #fed546;
+      color: var(--tetromino-color-5);
     }
 
     &[data-value='1'] {

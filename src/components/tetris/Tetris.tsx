@@ -541,7 +541,17 @@ export default function Tetris() {
         score={score}
         restart={returnHome}
       />
-      <div className={css.Tetris} {...swipeHandlers} ref={refPassThrough}>
+      <div className={css.Tetris} ref={refPassThrough}>
+        <div
+          {...swipeHandlers}
+          style={{
+            height: '100vh',
+            width: '100vw',
+            position: 'absolute',
+            top: 0,
+            left: 0
+          }}
+        ></div>
         <section
           className={css.Board}
           onKeyDown={(event) => handleKeyPressed(event, state)}

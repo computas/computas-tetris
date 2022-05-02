@@ -15,22 +15,18 @@ import { GameStateActionType } from '../../../enums/GameStateActionTypes';
 import { GameStateContext } from '../../../contexts/GameStateContext';
 
 interface ScorePageProps {
-  score: number;
   rank: string;
-  participate: (name: string, email: string, subscribe: boolean) => void;
+  participate: () => void;
   restart: () => void;
 }
 
 const ScorePage = (props: ScorePageProps) => {
-  const { participate, rank, restart, score } = props;
+  const { participate, rank, restart } = props;
   const { gameState, gameDispatch } = useContext(GameStateContext);
   const [showHigh, setShowHigh] = useState(true);
   const [prevScore, setPrevScore] = useState(0);
-  const [name, setName] = useState('');
   const [nameError, setNameError] = useState('');
-  const [email, setEmail] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [subscribe, setSubscribe] = useState(false);
+  const [emailError, setEmailError] = useState({ email: '', email2: '' });
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
@@ -39,7 +35,7 @@ const ScorePage = (props: ScorePageProps) => {
   }, []);
 
   useEffect(() => {
-    if (score === prevScore) {
+    if (gameState.storableScore.score === prevScore) {
       setShowHigh(false);
       return;
     }
@@ -52,15 +48,48 @@ const ScorePage = (props: ScorePageProps) => {
     } else {
       setShowHigh(false);
     }
-    setPrevScore(score);
-  }, [score, rank]);
 
-  const handleTextInput = (fieldId: string, value: string): void => {
+    setPrevScore(gameState.storableScore.score);
+  }, [gameState.storableScore.score, rank]);
+
+  const handleTextInput = (
+    fieldId: string,
+    value: string,
+    options?: any
+  ): void => {
+    const updatedStorableScore = {
+      ...gameState.storableScore
+    };
+
     if (fieldId === 'name') {
-      setName(value.trim());
+      updatedStorableScore.name = value.trim();
     } else if (fieldId === 'email') {
-      setEmail(value.trim());
+      updatedStorableScore.email = value.trim();
+    } else if (fieldId === 'email2') {
+      updatedStorableScore.email2 = value.trim();
     }
+
+    if (fieldId.startsWith('email')) {
+      validateEmailInput({
+        field: fieldId,
+        value: value.trim(),
+        message: 'Dette feltet må inneholde en gyldig e-postadresse',
+        allowEmpty: options?.allowEmpty ?? false
+      });
+    }
+
+    gameDispatch({
+      type: GameStateActionType.UpdateScoreWithDetails,
+      payload: updatedStorableScore
+    });
+  };
+
+  const isValidEmail = (email: string): boolean => {
+    const pattern = new RegExp(
+      /^(([^<>()\\[\]\\.,;:\s@"]+(\.[^<>()\\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
+
+    return pattern.test(email.trim());
   };
 
   const validateTextInput = (value: string, message: string): boolean => {
@@ -73,31 +102,58 @@ const ScorePage = (props: ScorePageProps) => {
     }
   };
 
-  const validateEmailInput = (value: string, message: string): boolean => {
-    const pattern = new RegExp(
-      /^(([^<>()\\[\]\\.,;:\s@"]+(\.[^<>()\\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    );
+  const validateEmailInput = (options: {
+    field: string;
+    value: string;
+    message: string;
+    allowEmpty?: boolean;
+  }): boolean => {
+    const error = {
+      ...emailError
+    };
 
-    if (!pattern.test(value.trim())) {
-      setEmailError(message);
+    if (options.field === 'email') {
+      error.email = '';
+    }
+    if (options.field === 'email2') {
+      error.email2 = '';
+    }
+
+    if (options.allowEmpty && options.value.trim() === '') {
+      setEmailError(error);
+      return true;
+    } else if (!isValidEmail(options.value)) {
+      if (options.field === 'email') {
+        error.email = options.message;
+      }
+      if (options.field === 'email2') {
+        error.email2 = options.message;
+      }
+      setEmailError(error);
       return false;
     }
 
-    setEmailError('');
+    setEmailError(error);
     return true;
   };
 
-  const validateUnique = (
-    name: string,
-    email: string,
-    message: string
-  ): boolean => {
-    const storedEmail = getEmail(name);
-    if (storedEmail !== '' && storedEmail !== email) {
-      if (nameError === '') {
+  const validateUnique = (message: string): boolean => {
+    const uniqueCombo =
+      gameState.storableScore.email + gameState.storableScore.email2 ?? '';
+    const storedEmails = getEmails(gameState.storableScore.name);
+    const emailCombos: string[] = [];
+    if (storedEmails.length > 0) {
+      emailCombos.push(
+        storedEmails[0].toLowerCase() + storedEmails[1].toLowerCase()
+      );
+      emailCombos.push(
+        storedEmails[1].toLowerCase() + storedEmails[0].toLowerCase()
+      );
+
+      if (emailCombos.indexOf(uniqueCombo) === -1) {
         setNameError(message);
+        return false;
       }
-      return false;
     }
 
     setNameError('');
@@ -106,29 +162,60 @@ const ScorePage = (props: ScorePageProps) => {
 
   const validateAndParticipate = (): void => {
     if (
-      validateTextInput(name, 'Dette feltet kan ikke være tomt') &&
-      validateEmailInput(
-        email,
-        'Dette feltet må inneholde en gyldig e-postadresse'
+      validateTextInput(
+        gameState.storableScore.name,
+        'Dette feltet kan ikke være tomt'
       ) &&
-      validateUnique(name, email, 'Kallenavnet er allerede i bruk')
+      validateEmailInput({
+        field: 'email',
+        value: gameState.storableScore.email,
+        message: 'Dette feltet må inneholde en gyldig e-postadresse'
+      }) &&
+      validateEmailInput({
+        field: 'email2',
+        value: gameState.storableScore.email2 ?? '',
+        message: 'Dette feltet må inneholde en gyldig e-postadresse',
+        allowEmpty: true
+      }) &&
+      validateUnique('Kallenavnet er allerede i bruk')
     ) {
       setIsSaving(true);
-      participate(name, email, subscribe);
+      participate();
+    } else {
+      setIsSaving(false);
     }
   };
 
-  const getEmail = (name: string): string => {
+  const getEmails = (name: string): string[] => {
+    const emails: string[] = [];
     for (const entry of gameState.scoreList) {
-      if (entry.name === name) {
-        return entry.email;
+      if (entry.name.toLowerCase() === name.toLowerCase()) {
+        emails.push(entry.email);
+        if (entry.email2 !== undefined) {
+          emails.push(entry.email2);
+        }
+        return emails;
       }
     }
-    return '';
+    return [];
   };
 
-  const toggleSubscribe = (): void => {
-    setSubscribe(!subscribe);
+  const toggleSubscribe = (field: string): void => {
+    const updatedStorableScore = {
+      ...gameState.storableScore
+    };
+
+    if (field === 'subscribe') {
+      updatedStorableScore.subscribe = !updatedStorableScore.subscribe;
+    }
+    if (field === 'subscribe2') {
+      updatedStorableScore.subscribe2 = !updatedStorableScore.subscribe2;
+    }
+
+    gameDispatch({
+      type: GameStateActionType.UpdateScoreWithDetails,
+      payload: updatedStorableScore
+    });
   };
 
   return (
@@ -159,7 +246,7 @@ const ScorePage = (props: ScorePageProps) => {
           <div className={css.ScorePageScore}>
             <span>
               Poengsum: <br />
-              {score}
+              {gameState.storableScore.score}
             </span>
           </div>
           <div className={css.ScorePageRank}>
@@ -175,33 +262,67 @@ const ScorePage = (props: ScorePageProps) => {
                 validateTextInput(value, 'Dette feltet kan ikke være tomt')
               }
               onChange={(value) => handleTextInput('name', value)}
-              value={name}
+              value={gameState.storableScore.name}
             />
-            <TextField
-              errorMessage={emailError}
-              fieldType={'email'}
-              label={'E-post'}
-              placeholder={'E-post'}
-              onBlur={(value: string) =>
-                validateEmailInput(
-                  value,
-                  'Dette feltet må inneholde en gyldig e-postadresse'
-                )
-              }
-              onChange={(value) => handleTextInput('email', value)}
-              value={email}
-            />
+            <div className={css.formRowColumned}>
+              <TextField
+                errorMessage={emailError.email}
+                fieldType={'email'}
+                id={'email'}
+                label={'E-post, spiller 1'}
+                placeholder={'E-post'}
+                onChange={(value) => handleTextInput('email', value)}
+                value={gameState.storableScore.email}
+              />
+
+              <p
+                className={
+                  isValidEmail(gameState.storableScore.email)
+                    ? undefined
+                    : css.disabled
+                }
+              >
+                <input
+                  type={'checkbox'}
+                  defaultChecked={gameState.storableScore.subscribe}
+                  onClick={() => toggleSubscribe('subscribe')}
+                />{' '}
+                Jeg ønsker å melde meg på Computas´ nyhetsbrev
+              </p>
+            </div>
+
+            <div className={css.formRowColumned}>
+              <TextField
+                errorMessage={emailError.email2}
+                fieldType={'email'}
+                id={'email2'}
+                label={'E-post, spiller 2'}
+                placeholder={'E-post'}
+                onChange={(value) =>
+                  handleTextInput('email2', value, { allowEmpty: true })
+                }
+                value={gameState.storableScore.email2 ?? ''}
+              />
+
+              <p
+                className={
+                  isValidEmail(gameState.storableScore.email2 ?? '')
+                    ? undefined
+                    : css.disabled
+                }
+              >
+                <input
+                  type={'checkbox'}
+                  defaultChecked={gameState.storableScore.subscribe2}
+                  onClick={() => toggleSubscribe('subscribe2')}
+                />{' '}
+                Jeg ønsker å melde meg på Computas´ nyhetsbrev
+              </p>
+            </div>
+
             <p>
-              Vi sender e-post til vinneren av konkurransen når premien kan
+              Vi sender e-post til vinnerne av konkurransen når premien kan
               hentes
-            </p>
-            <p>
-              <input
-                type={'checkbox'}
-                defaultChecked={subscribe}
-                onClick={toggleSubscribe}
-              />{' '}
-              Jeg ønsker å melde meg på Computas´ nyhetsbrev
             </p>
 
             <div className={css.centered}>

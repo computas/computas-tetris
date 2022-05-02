@@ -22,6 +22,10 @@ const TrialScreen = (props: TrialScreenProps) => {
   const { play, progressTrial, restart, trial, trialStage } = props;
 
   if (!trial || trialStage === TRIAL_PLAY) {
+    if (document.querySelector(':focus')?.tagName.toLowerCase() === 'input') {
+      return null;
+    }
+
     document.querySelector('section')?.focus();
     return null;
   }

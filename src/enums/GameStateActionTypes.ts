@@ -2,7 +2,10 @@ export enum GameStateActionType {
   PlayMusic,
   ResetScoreList,
   ScoreListChanged,
-  ScoreReady,
+  GameStarted,
+  GameOver,
   StopMusic,
+  TetrominoAdded,
+  UpdateScore,
   UpdateScoreWithDetails
 }

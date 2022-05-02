@@ -105,11 +105,13 @@ export const getScoreFromEntry = (doc: DocumentData): Score => {
     created: entry.created,
     duration: entry.duration,
     email: entry.email,
+    email2: entry.email2 ?? '',
     level: entry.level,
     name: entry.name,
     rows: entry.rows,
     score: entry.score,
     subscribe: entry.subscribe ?? false,
+    subscribe2: entry.subscribe2 ?? false,
     tetrominoCount: entry.tetrominos
   };
 };

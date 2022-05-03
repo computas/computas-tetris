@@ -32,9 +32,15 @@ html {
   height: 100vh;
   overflow: hidden;
   font-size: 62.5%;
+  overscroll-behavior: none;
 }
 
 body {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
   margin: 0;
   background: var(--background-color);
   font-family: "Open Sans", sans-serif;
@@ -42,6 +48,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
   touch-action: pan-y;
+  overscroll-behavior: none;
 }
 
 button {

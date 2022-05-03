@@ -25,13 +25,13 @@ const initialStorableScore: Score = {
   duration: 0,
   email: '',
   email2: '',
-  level: 0,
+  level: 1,
   name: '',
   rows: 0,
   score: 0,
   subscribe: false,
   subscribe2: false,
-  tetrominoCount: 0
+  tetrominoCount: 1
 };
 
 const initialGameState: GameState = {

@@ -1,3 +1,5 @@
+import { TetrominoSetting } from '../pages/settings/Settings';
+
 export interface Tetromino {
   shape: any;
   color: number;
@@ -68,9 +70,22 @@ export const Tetrominos: Tetromino[] = [
   }
 ];
 
-export const randomTetromino = (simple: boolean) => {
-  const tetrominos = 'IJLOSTZ';
-  const scope = simple ? 4 : tetrominos.length;
-  const index = Math.floor(Math.random() * scope);
-  return Tetrominos[index];
+export const randomTetromino = (
+  availability: TetrominoSetting[],
+  count: number,
+  lines: number
+) => {
+  const available: Tetromino[] = [];
+  availability.forEach((tetromino, index) => {
+    if (lines >= tetromino.lines || count >= tetromino.count) {
+      available.push(Tetrominos[index]);
+    }
+  });
+
+  if (!available.length) {
+    available.push(Tetrominos[3]);
+  }
+
+  const index = Math.floor(Math.random() * available.length);
+  return available[index];
 };

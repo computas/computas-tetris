@@ -3,9 +3,12 @@ import React, { ReactElement, useContext, useEffect } from 'react';
 import css from './Settings.module.scss';
 import RadioButton from '../../components/radiobutton/RadioButton';
 import Slider from '../../components/slider/Slider';
-import { fetchRealTimeSettings, saveSettings } from '../../helpers';
-import { GameSettingsContext } from '../../contexts/GameSettingsContext';
 import TetrominoAvailability from './TetrominoAvailability';
+import { fetchRealTimeSettings, saveSettings } from '../../helpers';
+import {
+  GameSettingsContext,
+  GameSettingsState
+} from '../../contexts/GameSettingsContext';
 
 export interface GlobalSettings {
   IncreaseSpeedFactor: number;
@@ -24,6 +27,25 @@ export interface TetrominoSetting {
   id: string;
   lines: number;
 }
+
+export const getTetrominoAvailability = (
+  settings: GameSettingsState
+): TetrominoSetting[] => {
+  const availability: TetrominoSetting[] = [];
+
+  for (const id in settings.tetrominos) {
+    const tetrominoSetting: TetrominoSetting = {
+      count: settings.tetrominos[id].count,
+      id,
+      lines: settings.tetrominos[id].lines
+    };
+    availability.push(tetrominoSetting);
+  }
+  availability.sort((a, b) => {
+    return a.id < b.id ? -1 : 1;
+  });
+  return availability;
+};
 
 const Settings = (): ReactElement | null => {
   const { gameSettings, settingsDispatch } = useContext(GameSettingsContext);
@@ -48,23 +70,6 @@ const Settings = (): ReactElement | null => {
       ToplistLength: gameSettings.toplistLength,
       TrialTetrominoLength: gameSettings.trialTetrominoLength
     };
-  };
-
-  const getTetrominoAvailability = (): TetrominoSetting[] => {
-    const availability: TetrominoSetting[] = [];
-
-    for (const id in gameSettings.tetrominos) {
-      const tetrominoSetting: TetrominoSetting = {
-        count: gameSettings.tetrominos[id].count,
-        id,
-        lines: gameSettings.tetrominos[id].lines
-      };
-      availability.push(tetrominoSetting);
-    }
-    availability.sort((a, b) => {
-      return a.id < b.id ? -1 : 1;
-    });
-    return availability;
   };
 
   const handleRadioButtonChange = (checked: boolean, name: string): void => {
@@ -200,7 +205,7 @@ const Settings = (): ReactElement | null => {
           Dersom antall brikker eller linjer er satt til noe annet enn null, vil
           det som slår først til trigge introduksjon av den brikken.
         </p>
-        {getTetrominoAvailability().map((tetromino) => (
+        {getTetrominoAvailability(gameSettings).map((tetromino) => (
           <TetrominoAvailability
             key={tetromino.id}
             onChange={handleAvailabilityChange}

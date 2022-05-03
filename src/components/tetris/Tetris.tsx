@@ -534,7 +534,17 @@ export default function Tetris() {
         gameOver={state.gameOver && gamesPlayed > 0}
         restart={returnHome}
       />
-      <div className={css.Tetris} {...swipeHandlers} ref={refPassThrough}>
+      <div className={css.Tetris} ref={refPassThrough}>
+        <div
+          {...swipeHandlers}
+          style={{
+            height: '100vh',
+            width: '100vw',
+            position: 'absolute',
+            top: 0,
+            left: 0
+          }}
+        ></div>
         <section
           className={css.Board}
           onKeyDown={(event) => handleKeyPressed(event, state)}

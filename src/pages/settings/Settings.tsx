@@ -3,8 +3,12 @@ import React, { ReactElement, useContext, useEffect } from 'react';
 import css from './Settings.module.scss';
 import RadioButton from '../../components/radiobutton/RadioButton';
 import Slider from '../../components/slider/Slider';
+import TetrominoAvailability from './TetrominoAvailability';
 import { fetchRealTimeSettings, saveSettings } from '../../helpers';
-import { GameSettingsContext } from '../../contexts/GameSettingsContext';
+import {
+  GameSettingsContext,
+  GameSettingsState
+} from '../../contexts/GameSettingsContext';
 
 export interface GlobalSettings {
   IncreaseSpeedFactor: number;
@@ -12,9 +16,36 @@ export interface GlobalSettings {
   InitialSpeed: number;
   MinimumSpeed: number;
   PlayMusic: boolean;
+  ShowNext: boolean;
+  Tetrominos: JSON;
   ToplistLength: number;
   TrialTetrominoLength: number;
 }
+
+export interface TetrominoSetting {
+  count: number;
+  id: string;
+  lines: number;
+}
+
+export const getTetrominoAvailability = (
+  settings: GameSettingsState
+): TetrominoSetting[] => {
+  const availability: TetrominoSetting[] = [];
+
+  for (const id in settings.tetrominos) {
+    const tetrominoSetting: TetrominoSetting = {
+      count: settings.tetrominos[id].count,
+      id,
+      lines: settings.tetrominos[id].lines
+    };
+    availability.push(tetrominoSetting);
+  }
+  availability.sort((a, b) => {
+    return a.id < b.id ? -1 : 1;
+  });
+  return availability;
+};
 
 const Settings = (): ReactElement | null => {
   const { gameSettings, settingsDispatch } = useContext(GameSettingsContext);
@@ -34,8 +65,10 @@ const Settings = (): ReactElement | null => {
       InitialSpeed: gameSettings.initialSpeed,
       MinimumSpeed: gameSettings.minimumSpeed,
       PlayMusic: gameSettings.playMusic,
+      ShowNext: gameSettings.showNext,
+      Tetrominos: gameSettings.tetrominos,
       ToplistLength: gameSettings.toplistLength,
-      TrialTetrominoLength: gameSettings.trialTetrominoCount
+      TrialTetrominoLength: gameSettings.trialTetrominoLength
     };
   };
 
@@ -51,14 +84,26 @@ const Settings = (): ReactElement | null => {
     saveSettings(getGlobalSettings(), updatedSettings);
   };
 
+  const handleAvailabilityChange = (tetromino: TetrominoSetting): void => {
+    const updatedSettings = getGlobalSettings();
+    updatedSettings.Tetrominos = {
+      ...updatedSettings.Tetrominos,
+      [tetromino.id]: {
+        count: tetromino.count,
+        lines: tetromino.lines
+      }
+    };
+    saveSettings(getGlobalSettings(), updatedSettings);
+  };
+
   return (
     <div className={css.Settings}>
       <header>
         <h1>Innstillinger</h1>
       </header>
-      <p>
+      <p className={css.warning}>
         Endringer i innstillinger oppdaterer spillet i sanntid, så vær forsiktig
-        med å gjøre store endringer
+        med å gjøre store endringer.
       </p>
 
       <div className={css.row}>
@@ -116,8 +161,8 @@ const Settings = (): ReactElement | null => {
           label={'Antall brikker i prøverunden'}
           min={1}
           max={20}
-          name={'TrialTetrominoCount'}
-          value={gameSettings.trialTetrominoCount}
+          name={'TrialTetrominoLength'}
+          value={gameSettings.trialTetrominoLength}
           onChange={handleSliderChange}
         />
       </div>
@@ -135,11 +180,38 @@ const Settings = (): ReactElement | null => {
 
       <div className={css.row}>
         <RadioButton
+          checked={gameSettings.showNext}
+          label={'Vis neste brikke'}
+          name={'ShowNext'}
+          onChange={handleRadioButtonChange}
+        />
+      </div>
+
+      <div className={css.row}>
+        <RadioButton
           checked={gameSettings.playMusic}
           label={'Spill musikk'}
           name={'PlayMusic'}
           onChange={handleRadioButtonChange}
         />
+      </div>
+
+      <hr />
+
+      <div className={css.row}>
+        <label>Tetromino-tilgjengeligjøring </label>
+        <p>
+          Her kan man justere hvordan brikker introduseres i spillet. <br />
+          Dersom antall brikker eller linjer er satt til noe annet enn null, vil
+          det som slår først til trigge introduksjon av den brikken.
+        </p>
+        {getTetrominoAvailability(gameSettings).map((tetromino) => (
+          <TetrominoAvailability
+            key={tetromino.id}
+            onChange={handleAvailabilityChange}
+            tetromino={tetromino}
+          />
+        ))}
       </div>
     </div>
   );

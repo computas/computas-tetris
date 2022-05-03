@@ -22,8 +22,10 @@ const initialGameSettings: GameSettingsState = {
   initialSpeed: 500,
   minimumSpeed: 30,
   playMusic: false,
+  showNext: true,
+  tetrominos: {},
   toplistLength: 0,
-  trialTetrominoCount: 5
+  trialTetrominoLength: 5
 };
 
 export const fetchRealTimeScoreList = (dispatch: any): any => {
@@ -49,7 +51,7 @@ export const fetchRealTimeSettings = (dispatch: any): any => {
     };
 
     snapshot.docChanges().forEach((entry) => {
-      const fetchedSettings = entry.doc.data();
+      const fetchedSettings = entry.doc.data() as GlobalSettings;
       settings.increaseSpeedFactor =
         fetchedSettings.IncreaseSpeedFactor ?? settings.increaseSpeedFactor;
       settings.increaseSpeedOnEvery = Math.max(
@@ -63,8 +65,10 @@ export const fetchRealTimeSettings = (dispatch: any): any => {
       settings.playMusic = fetchedSettings.PlayMusic ?? settings.playMusic;
       settings.toplistLength =
         fetchedSettings.ToplistLength ?? settings.toplistLength;
-      settings.trialTetrominoCount =
-        fetchedSettings.TrialTetrominoCount ?? settings.trialTetrominoCount;
+      settings.trialTetrominoLength =
+        fetchedSettings.TrialTetrominoLength ?? settings.trialTetrominoLength;
+      settings.showNext = fetchedSettings.ShowNext ?? settings.showNext;
+      settings.tetrominos = fetchedSettings.Tetrominos ?? { none: 'available' };
     });
 
     dispatch({

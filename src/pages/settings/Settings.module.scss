@@ -9,9 +9,23 @@
     font-size: 1.8rem;
   }
 
+  .warning {
+    color: red;
+  }
+
   .row {
     + .row {
       margin-top: 2rem;
+    }
+
+    > label {
+      display: block;
+      font-weight: 600;
+
+      + p {
+        margin-top: 0.5rem;
+        font-size: 1.4rem;
+      }
     }
   }
 

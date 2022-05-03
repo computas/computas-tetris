@@ -10,21 +10,21 @@ import {
 import { GameSettingsContext } from '../contexts/GameSettingsContext';
 import { GameStateActionType } from '../enums/GameStateActionTypes';
 import { GameStateContext } from '../contexts/GameStateContext';
+import { getTetrominoAvailability } from '../pages/settings/Settings';
 
 const LEVEL_INCREASE_COUNT = 2;
-const SIMPLE_TETROMINOS_LIMIT = 10;
 const POINTS_TABLE: number[] = [0, 40, 100, 300, 1200];
 
 const initialTetrominosList: Tetromino[] = [
-  randomTetromino(true),
-  randomTetromino(true)
+  randomTetromino([], 0, 0),
+  randomTetromino([], 1, 0)
 ];
 
 export const useGameStatus = (
   rowsCleared: Row[]
 ): [number, boolean, Tetromino[], () => void, () => void, () => void] => {
   const { gameState, gameDispatch } = useContext(GameStateContext);
-  const { settingsDispatch } = useContext(GameSettingsContext);
+  const { gameSettings, settingsDispatch } = useContext(GameSettingsContext);
   const [highScore, setHighScore] = useState(0);
   const [newHighScore, setNewHighScore] = useState(false);
   const [tetrominos, setTetrominos] = useState(initialTetrominosList);
@@ -82,7 +82,10 @@ export const useGameStatus = (
   };
 
   const resetTetrominos = (): void => {
-    setTetrominos([randomTetromino(true), randomTetromino(true)]);
+    setTetrominos([
+      randomTetromino(getTetrominoAvailability(gameSettings), 0, 0),
+      randomTetromino(getTetrominoAvailability(gameSettings), 1, 0)
+    ]);
   };
 
   const generateNextTetromino = (): void => {
@@ -90,7 +93,9 @@ export const useGameStatus = (
     setTetrominos([
       tetrominos[1],
       randomTetromino(
-        gameState.storableScore.tetrominoCount <= SIMPLE_TETROMINOS_LIMIT
+        getTetrominoAvailability(gameSettings),
+        gameState.storableScore.tetrominoCount,
+        gameState.storableScore.rows
       )
     ]);
   };

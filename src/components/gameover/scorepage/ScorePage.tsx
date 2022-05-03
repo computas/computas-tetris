@@ -13,6 +13,7 @@ import Button, { ButtonSize, ButtonVariant } from '../../button/Button';
 import TextField from '../../textfield/TextField';
 import { GameStateActionType } from '../../../enums/GameStateActionTypes';
 import { GameStateContext } from '../../../contexts/GameStateContext';
+import classNames from 'classnames';
 
 interface ScorePageProps {
   rank: string;
@@ -275,12 +276,13 @@ const ScorePage = (props: ScorePageProps) => {
                 value={gameState.storableScore.email}
               />
 
-              <p
-                className={
-                  isValidEmail(gameState.storableScore.email)
+              <label
+                className={classNames(
+                  css.aligned,
+                  isValidEmail(gameState.storableScore.email ?? '')
                     ? undefined
                     : css.disabled
-                }
+                )}
               >
                 <input
                   type={'checkbox'}
@@ -288,7 +290,7 @@ const ScorePage = (props: ScorePageProps) => {
                   onClick={() => toggleSubscribe('subscribe')}
                 />{' '}
                 Jeg ønsker å melde meg på Computas´ nyhetsbrev
-              </p>
+              </label>
             </div>
 
             <div className={css.formRowColumned}>
@@ -304,12 +306,13 @@ const ScorePage = (props: ScorePageProps) => {
                 value={gameState.storableScore.email2 ?? ''}
               />
 
-              <p
-                className={
+              <label
+                className={classNames(
+                  css.aligned,
                   isValidEmail(gameState.storableScore.email2 ?? '')
                     ? undefined
                     : css.disabled
-                }
+                )}
               >
                 <input
                   type={'checkbox'}
@@ -317,7 +320,7 @@ const ScorePage = (props: ScorePageProps) => {
                   onClick={() => toggleSubscribe('subscribe2')}
                 />{' '}
                 Jeg ønsker å melde meg på Computas´ nyhetsbrev
-              </p>
+              </label>
             </div>
 
             <p>

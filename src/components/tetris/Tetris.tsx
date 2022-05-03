@@ -6,8 +6,8 @@ import useSound from 'use-sound';
 
 import css from './Tetris.module.scss';
 import CountDownOverlay from '../countdown/CountDownOverlay';
-import Display from 'components/display/Display';
 import GameOver from 'components/gameover/GameOver';
+import Header from '../header/Header';
 import Next from 'components/next/Next';
 import Stage from 'components/stage/Stage';
 import StartScreen from 'components/startscreen/StartScreen';
@@ -24,7 +24,6 @@ import {
 import { GameSettingsContext } from '../../contexts/GameSettingsContext';
 import { GameStateActionType } from '../../enums/GameStateActionTypes';
 import { GameStateContext } from '../../contexts/GameStateContext';
-import { ReactComponent as ComputasLogo } from '../../svg/computas.svg';
 import { ReactComponent as TetrisVertical } from '../../svg/tetrisVertical.svg';
 import {
   useController,
@@ -487,29 +486,7 @@ export default function Tetris() {
         gameSettings.trialTetrominoLength}
     </div>
   ) : (
-    <div className={css.alignTop}>
-      <div className={css.progress}>
-        <Display
-          content={'Rader: ' + gameState.storableScore.rows}
-          style={{ backgroundColor: '#29cff5' }}
-        />
-        <Display
-          content={'Nivå: ' + gameState.storableScore.level}
-          style={{ backgroundColor: '#49bca1' }}
-        />
-      </div>
-      <ComputasLogo className={css.ComputasLogo} />
-      <div className={css.points}>
-        <Display
-          content={'Høyeste poeng: ' + highScore}
-          style={{ backgroundColor: '#ff5f63' }}
-        />
-        <Display
-          content={'Poeng: ' + gameState.storableScore.score}
-          style={{ backgroundColor: '#fed546' }}
-        />
-      </div>
-    </div>
+    <Header highScore={highScore} />
   );
 
   return (
@@ -535,16 +512,7 @@ export default function Tetris() {
         restart={returnHome}
       />
       <div className={css.Tetris} ref={refPassThrough}>
-        <div
-          {...swipeHandlers}
-          style={{
-            height: '100vh',
-            width: '100vw',
-            position: 'absolute',
-            top: 0,
-            left: 0
-          }}
-        ></div>
+        <div className={css.SwipeHandler} {...swipeHandlers}></div>
         <section
           className={css.Board}
           onKeyDown={(event) => handleKeyPressed(event, state)}

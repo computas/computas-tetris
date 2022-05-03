@@ -1,0 +1,14 @@
+.Header {
+  display: flex;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  width: calc(7.4rem + 58vh);
+  max-width: calc(100vw - 4.9rem);
+  justify-content: space-between;
+
+  .ComputasLogo {
+    width: 12.3rem;
+    position: relative;
+    top: -1rem;
+  }
+}

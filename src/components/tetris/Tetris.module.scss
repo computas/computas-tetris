@@ -4,17 +4,16 @@
   flex-direction: column;
 }
 
-.alignTop {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1.5rem;
-  padding: 1rem;
-  width: calc(7.4rem + 58vh);
-  max-width: calc(100vw - 4.9rem);
-}
-
 .Tetris {
   height: 100%;
+
+  .SwipeHandler {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+  }
 
   .Board {
     margin: 0 auto;
@@ -51,10 +50,4 @@
   max-height: calc(160vw - 43rem);
   top: 1rem;
   left: 1rem;
-}
-
-.ComputasLogo {
-  width: 12.3rem;
-  position: relative;
-  top: -1rem;
 }

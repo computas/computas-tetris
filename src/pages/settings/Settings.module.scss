@@ -1,8 +1,18 @@
 .Settings {
   height: 100vh;
-  padding: 2rem;
+  padding: 0 2rem;
   background: white;
   font-size: 1.4rem;
+  overflow: auto;
+
+  > header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    margin: 0rem -2rem 0;
+    padding: 0.1rem 2rem;
+    background: white;
+  }
 
   p {
     padding: 0 0 2rem;
@@ -26,6 +36,10 @@
         margin-top: 0.5rem;
         font-size: 1.4rem;
       }
+    }
+
+    &:last-of-type {
+      padding-bottom: 7rem;
     }
   }
 

@@ -1,6 +1,6 @@
 {
   "short_name": "Tetris",
-  "name": "Tetris in React",
+  "name": "Tetris",
   "icons": [
     {
       "src": "tetris.png",
@@ -10,6 +10,7 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "orientation": "portrait",
+  "theme_color": "#29cff5",
+  "background_color": "#003459"
 }

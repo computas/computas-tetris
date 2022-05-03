@@ -1,15 +1,24 @@
 :root {
   --background-color: #003459;
-  --primary-color: #2acff5;
+  --primary-color: #29cff5;
   --secondary-color: #21a4c2;
   --tertiary-color: #003c66;
   --border: 0.4rem solid white;
 
   --primary-button-color: #fed546;
   --secondary-button-color: #ff5f63;
+  --button-label-color: var(--background-color);
 
   --error-color: #ff9597;
   --error-color-support: #fce8e9;
+
+  --tetromino-color-1: #ffa826;
+  --tetromino-color-2: #e96ccd;
+  --tetromino-color-3: var(--secondary-button-color);
+  --tetromino-color-4: #49bca1;
+  --tetromino-color-5: var(--primary-button-color);
+  --tetromino-color-6: #b770ff;
+  --tetromino-color-7: var(--primary-color);
 }
 
 * {
@@ -23,16 +32,23 @@ html {
   height: 100vh;
   overflow: hidden;
   font-size: 62.5%;
+  overscroll-behavior: none;
+  background: var(--background-color);
 }
 
 body {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
   margin: 0;
   background: var(--background-color);
   font-family: "Open Sans", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
-  touch-action: pan-y;
+  overscroll-behavior: none;
 }
 
 button {

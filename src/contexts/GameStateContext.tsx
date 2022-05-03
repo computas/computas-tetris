@@ -24,11 +24,13 @@ interface contextValue {
 const initialStorableScore: Score = {
   duration: 0,
   email: '',
+  email2: '',
   level: 0,
   name: '',
   rows: 0,
   score: 0,
   subscribe: false,
+  subscribe2: false,
   tetrominoCount: 0
 };
 
@@ -64,12 +66,18 @@ const stateReducer = (state: GameState, action: GameStateAction): GameState => {
         scoreList: updatedScoreList(payload.changes, state)
       };
 
-    case GameStateActionType.ScoreReady:
+    case GameStateActionType.GameStarted:
+      return {
+        ...state,
+        storableScore: initialStorableScore
+      };
+
+    case GameStateActionType.GameOver:
       return {
         ...state,
         storableScore: {
-          ...payload.storableScore,
-          duration: getDurationSince(payload.storableScore.duration)
+          ...state.storableScore,
+          duration: getDurationSince(state.storableScore.duration)
         }
       };
 
@@ -79,6 +87,26 @@ const stateReducer = (state: GameState, action: GameStateAction): GameState => {
         music: false
       };
 
+    case GameStateActionType.TetrominoAdded:
+      return {
+        ...state,
+        storableScore: {
+          ...state.storableScore,
+          tetrominoCount: state.storableScore.tetrominoCount + 1
+        }
+      };
+
+    case GameStateActionType.UpdateScore:
+      return {
+        ...state,
+        storableScore: {
+          ...state.storableScore,
+          level: payload.level,
+          rows: payload.rows,
+          score: payload.score
+        }
+      };
+
     case GameStateActionType.UpdateScoreWithDetails:
       return {
         ...state,
@@ -86,7 +114,9 @@ const stateReducer = (state: GameState, action: GameStateAction): GameState => {
           ...state.storableScore,
           name: payload.name,
           email: payload.email,
-          subscribe: payload.subscribe
+          email2: payload.email2 ?? '',
+          subscribe: payload.subscribe,
+          subscribe2: payload.subscribe2 ?? false
         }
       };
 

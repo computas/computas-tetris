@@ -16,7 +16,11 @@ enum DrawState {
 const DrawWinner = (): ReactElement => {
   const { gameState, gameDispatch } = useContext(GameStateContext);
   const [drawState, setDrawState] = useState(DrawState.Initialized);
-  const [todaysWinner, setTodaysWinner] = useState({ name: '', email: '' });
+  const [todaysWinner, setTodaysWinner] = useState({
+    name: '',
+    email: '',
+    email2: ''
+  });
 
   useEffect(() => {
     const unsubscribeScoreList = fetchRealTimeScoreList(gameDispatch);
@@ -35,7 +39,11 @@ const DrawWinner = (): ReactElement => {
     const winnerIndex =
       1 + Math.floor(Math.random() * (gameState.scoreList.length - 2));
     const winner = gameState.scoreList[winnerIndex];
-    setTodaysWinner({ name: winner.name, email: winner.email });
+    setTodaysWinner({
+      name: winner.name,
+      email: winner.email,
+      email2: winner.email2 ?? ''
+    });
   };
 
   const showWinner = (): void => {
@@ -72,6 +80,7 @@ const DrawWinner = (): ReactElement => {
           Dagens vinner
           <h2>{todaysWinner.name}</h2>
           <span>{todaysWinner.email}</span>
+          <span>{todaysWinner.email2}</span>
         </div>
       )}
     </div>

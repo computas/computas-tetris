@@ -1,5 +1,5 @@
 .CountDown {
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
   z-index: 11;
@@ -18,15 +18,15 @@
     color: white;
 
     &[data-value='3'] {
-      color: #29cff5;
+      color: var(--tetromino-color-7);
     }
 
     &[data-value='2'] {
-      color: #fed546;
+      color: var(--tetromino-color-5);
     }
 
     &[data-value='1'] {
-      color: #ff5f63;
+      color: var(--tetromino-color-3);
     }
 
     &:after {

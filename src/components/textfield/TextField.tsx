@@ -6,6 +6,7 @@ import css from './TextField.module.scss';
 interface TextFieldProps {
   errorMessage?: string;
   fieldType?: string;
+  id?: string;
   label: string;
   onBlur?: (value: string) => void;
   onChange?: (value: string) => void;
@@ -17,6 +18,7 @@ const TextField = (props: TextFieldProps): ReactElement => {
   const {
     errorMessage,
     fieldType,
+    id,
     label,
     onBlur,
     onChange,
@@ -51,6 +53,7 @@ const TextField = (props: TextFieldProps): ReactElement => {
         defaultValue={value}
         onBlur={handleBlur}
         onInput={handleInput}
+        name={id}
         placeholder={placeholder ?? ''}
         type={getFieldType()}
       />

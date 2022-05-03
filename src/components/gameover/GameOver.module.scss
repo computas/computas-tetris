@@ -1,6 +1,6 @@
 .GameOver {
   display: grid;
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
   width: 100%;
@@ -19,7 +19,7 @@
   .GameOverText {
     font-size: 7rem;
     font-weight: 700;
-    text-shadow: 0 0 2rem #29CFF5;
-    color: #49bca1;
+    text-shadow: 0 0 2rem var(--primary-color);
+    color: var(--tetromino-color-4);
   }
 }

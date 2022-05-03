@@ -28,6 +28,8 @@ const ExportEmails = (): ReactElement => {
             <td>{entry.name}</td>
             <td>{entry.email}</td>
             <td>{entry.subscribe ? '*' : null}</td>
+            <td>{entry.email2}</td>
+            <td>{entry.subscribe2 ? '*' : null}</td>
           </tr>
         ))}
       </>
@@ -40,7 +42,9 @@ const ExportEmails = (): ReactElement => {
         <thead>
           <tr>
             <th>Navn</th>
-            <th>E-post</th>
+            <th>E-post, spiller 1</th>
+            <th>Nyhetsbrev</th>
+            <th>E-post, spiller 2</th>
             <th>Nyhetsbrev</th>
           </tr>
         </thead>

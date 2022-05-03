@@ -74,12 +74,8 @@ export default function Tetris() {
     usePlayer();
   const [stage, setStage, rowsCleared] = useStage(player);
   const [
-    score,
     highScore,
-    rows,
-    level,
     newHighScore,
-    storableScore,
     tetrominos,
     resetGame,
     resetTetrominos,
@@ -137,7 +133,8 @@ export default function Tetris() {
   const calculateSpeed = (): number => {
     const tetrominoFactor =
       Math.floor(
-        (storableScore.tetrominoCount - 1) / gameSettings.increaseSpeedOnEvery
+        (gameState.storableScore.tetrominoCount - 1) /
+          gameSettings.increaseSpeedOnEvery
       ) * gameSettings.increaseSpeedFactor;
     return Math.max(
       gameSettings.initialSpeed - tetrominoFactor,
@@ -246,7 +243,7 @@ export default function Tetris() {
 
   useEffect(() => {
     setDropSpeed(calculateSpeed);
-  }, [storableScore.tetrominoCount, gameSettings]);
+  }, [gameState.storableScore.tetrominoCount, gameSettings]);
 
   useEffect(() => {
     if (rowsCleared.length > 0) {
@@ -353,10 +350,7 @@ export default function Tetris() {
       startScreen: false
     });
     gameDispatch({
-      type: GameStateActionType.ScoreReady,
-      payload: {
-        storableScore
-      }
+      type: GameStateActionType.GameOver
     });
     resetTetrominos();
 
@@ -496,11 +490,11 @@ export default function Tetris() {
     <div className={css.alignTop}>
       <div className={css.progress}>
         <Display
-          content={'Rader: ' + rows}
+          content={'Rader: ' + gameState.storableScore.rows}
           style={{ backgroundColor: '#29cff5' }}
         />
         <Display
-          content={'Nivå: ' + level}
+          content={'Nivå: ' + gameState.storableScore.level}
           style={{ backgroundColor: '#49bca1' }}
         />
       </div>
@@ -511,7 +505,7 @@ export default function Tetris() {
           style={{ backgroundColor: '#ff5f63' }}
         />
         <Display
-          content={'Poeng: ' + score}
+          content={'Poeng: ' + gameState.storableScore.score}
           style={{ backgroundColor: '#fed546' }}
         />
       </div>
@@ -538,7 +532,6 @@ export default function Tetris() {
       <CountDownOverlay current={state.countdown} />
       <GameOver
         gameOver={state.gameOver && gamesPlayed > 0}
-        score={score}
         restart={returnHome}
       />
       <div className={css.Tetris} {...swipeHandlers} ref={refPassThrough}>

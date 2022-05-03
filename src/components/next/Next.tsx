@@ -1,7 +1,9 @@
-import React, { ReactElement } from 'react';
+import classNames from 'classnames';
+import React, { ReactElement, useContext } from 'react';
 
 import css from './Next.module.scss';
 import Cell from 'components/cell/Cell';
+import { GameSettingsContext } from '../../contexts/GameSettingsContext';
 import { Tetromino } from '../../helpers';
 
 interface NextProps {
@@ -10,6 +12,7 @@ interface NextProps {
 
 const Next = (props: NextProps): ReactElement => {
   const { tetromino } = props;
+  const { gameSettings } = useContext(GameSettingsContext);
 
   const renderTetromino = (): ReactElement => {
     const renderStage = [
@@ -44,7 +47,12 @@ const Next = (props: NextProps): ReactElement => {
   };
 
   return (
-    <div className={css.Next}>
+    <div
+      className={classNames(
+        css.Next,
+        gameSettings.showNext ? null : css.hidden
+      )}
+    >
       <span>Neste:</span>
       {renderTetromino()}
     </div>

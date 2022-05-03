@@ -1,6 +1,6 @@
 .Stage {
-  background: white;
-  border: 1rem solid #f2f5f7;
+  background: var(--stage-frame-color);
+  border: 1rem solid var(--stage-frame-color);
   border-radius: 0.5rem 0 0.5rem 0.5rem;
   outline: none;
 }

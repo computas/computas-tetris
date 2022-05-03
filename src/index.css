@@ -12,6 +12,8 @@
   --error-color: #ff9597;
   --error-color-support: #fce8e9;
 
+  --stage-frame-color: #f2f5f7;
+
   --tetromino-color-1: #ffa826;
   --tetromino-color-2: #e96ccd;
   --tetromino-color-3: var(--secondary-button-color);

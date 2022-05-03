@@ -5,8 +5,12 @@
   margin-top: 0;
   padding: 0.3rem 1rem;
   border-radius: 0 0.5rem 0.5rem 0;
-  background: #f2f5f7;
+  background: var(--stage-frame-color);
   font-size: large;
+
+  &.hidden {
+    display: none;
+  }
 
   span {
     font-weight: 700;

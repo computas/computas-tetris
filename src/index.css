@@ -33,6 +33,7 @@ html {
   overflow: hidden;
   font-size: 62.5%;
   overscroll-behavior: none;
+  background: var(--background-color);
 }
 
 body {
@@ -47,7 +48,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
-  touch-action: pan-y;
   overscroll-behavior: none;
 }
 

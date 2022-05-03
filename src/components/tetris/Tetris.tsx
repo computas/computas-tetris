@@ -159,7 +159,7 @@ export default function Tetris() {
   }, [playMusic, gameSettings.playMusic]);
 
   useEffect(() => {
-    if (state.trial && blocksPlayed > gameSettings.trialTetrominoCount)
+    if (state.trial && blocksPlayed > gameSettings.trialTetrominoLength)
       progressTrial();
   }, [blocksPlayed]);
 
@@ -484,7 +484,7 @@ export default function Tetris() {
       {'Prøverunde - Brikke ' +
         blocksPlayed +
         ' av ' +
-        gameSettings.trialTetrominoCount}
+        gameSettings.trialTetrominoLength}
     </div>
   ) : (
     <div className={css.alignTop}>

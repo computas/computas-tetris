@@ -31,11 +31,11 @@ const initialStorableScore: Score = {
   score: 0,
   subscribe: false,
   subscribe2: false,
-  tetrominoCount: 1
+  tetrominoCount: 2
 };
 
 const initialGameState: GameState = {
-  music: true,
+  music: false,
   scoreList: [],
   storableScore: initialStorableScore
 };
@@ -47,6 +47,7 @@ const initialValue: contextValue = {
 
 const stateReducer = (state: GameState, action: GameStateAction): GameState => {
   const { payload } = action;
+  const t = new Date();
 
   switch (action.type) {
     case GameStateActionType.PlayMusic:
@@ -69,7 +70,8 @@ const stateReducer = (state: GameState, action: GameStateAction): GameState => {
     case GameStateActionType.GameStarted:
       return {
         ...state,
-        storableScore: initialStorableScore
+        music: false,
+        storableScore: { ...initialStorableScore, duration: t.getTime() }
       };
 
     case GameStateActionType.GameOver:

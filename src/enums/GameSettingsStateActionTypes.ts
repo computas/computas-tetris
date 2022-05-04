@@ -1,3 +1,4 @@
 export enum GameSettingsStateActionType {
-  Fetched
+  Fetched,
+  ToggleMusic
 }

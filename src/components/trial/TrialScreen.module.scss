@@ -7,29 +7,29 @@
   background-color: var(--background-color);
   text-align: center;
   z-index: 11;
-}
 
-.FiguresBox {
-  display: flex;
-  justify-content: center;
+  .FiguresBox {
+    display: flex;
+    justify-content: center;
 
-  .Figures {
-    position: fixed;
-    bottom: 0;
-    z-index: -1;
-    width: 120%;
-    max-width: 100rem;
-    max-height: calc(100vh - 39rem);
+    .Figures {
+      position: fixed;
+      bottom: 0;
+      z-index: -1;
+      width: 120%;
+      max-width: 100rem;
+      max-height: calc(100vh - 39rem);
+    }
   }
-}
 
-.Button {
-  padding-bottom: 3rem;
-}
+  .Button {
+    padding-bottom: 3rem;
+  }
 
-.TrialPromptDescription {
-  font-weight: 700;
-  color: white;
-  font-size: 3.5rem;
-  padding: 5rem 7rem;
+  .TrialPromptDescription {
+    font-weight: 700;
+    color: white;
+    font-size: 3.5rem;
+    padding: 5rem 7rem;
+  }
 }

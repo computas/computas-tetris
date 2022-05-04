@@ -1,11 +1,12 @@
 import React, { ReactElement } from 'react';
 
+import Button, { ButtonSize, ButtonVariant } from '../button/Button';
+import css from './TrialScreen.module.scss';
+import MusicButton from '../button/MusicButton';
 import { ReactComponent as Trial1 } from '../../svg/Trial-1.svg';
 import { ReactComponent as Trial2 } from '../../svg/Trial-2.svg';
 import { ReactComponent as Trial3 } from '../../svg/Trial-3.svg';
 import { ReactComponent as Trial4 } from '../../svg/Trial-4.svg';
-import Button, { ButtonSize, ButtonVariant } from '../button/Button';
-import css from './TrialScreen.module.scss';
 
 interface TrialScreenProps {
   play: () => void;
@@ -62,6 +63,7 @@ const TrialScreen = (props: TrialScreenProps) => {
           {getDescriptionText(trialStage)}
         </div>
         <div className={css.FiguresBox}>{renderFigure(trialStage)}</div>
+        {trialStage === 2 && <MusicButton />}
       </div>
     );
   }
@@ -99,6 +101,7 @@ const TrialScreen = (props: TrialScreenProps) => {
       <div className={css.FiguresBox}>
         <Trial1 className={css.Figures} />
       </div>
+      <MusicButton />
     </div>
   );
 };

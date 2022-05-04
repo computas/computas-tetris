@@ -6,8 +6,8 @@ import useSound from 'use-sound';
 
 import css from './Tetris.module.scss';
 import CountDownOverlay from '../countdown/CountDownOverlay';
-import Display from 'components/display/Display';
 import GameOver from 'components/gameover/GameOver';
+import Header from '../header/Header';
 import Next from 'components/next/Next';
 import Stage from 'components/stage/Stage';
 import StartScreen from 'components/startscreen/StartScreen';
@@ -24,7 +24,6 @@ import {
 import { GameSettingsContext } from '../../contexts/GameSettingsContext';
 import { GameStateActionType } from '../../enums/GameStateActionTypes';
 import { GameStateContext } from '../../contexts/GameStateContext';
-import { ReactComponent as ComputasLogo } from '../../svg/computas.svg';
 import { ReactComponent as TetrisVertical } from '../../svg/tetrisVertical.svg';
 import {
   useController,
@@ -84,7 +83,6 @@ export default function Tetris() {
   const [dropSpeed, setDropSpeed] = useState(0);
   const [blocksPlayed, setBlocksPlayed] = useState(1);
   const [gamesPlayed, setGamesPlayed] = useState(0);
-  const [isPlayingMusic, setIsPlayingMusic] = useState(false);
   const [
     leftPressState,
     rightPressState,
@@ -120,7 +118,8 @@ export default function Tetris() {
   const [playHitFloorSound] = useSound('/assets/sfx/hit-floor.mp3');
   const [playHitWallSound] = useSound('/assets/sfx/hit-wall.mp3');
   const [playMusic, { stop }] = useSound('/assets/sfx/music.mp3', {
-    volume: 0.4
+    volume: 0.4,
+    interrupt: false
   });
   const [playRotateSound] = useSound('/assets/sfx/rotate.mp3', {
     volume: 0.4
@@ -156,7 +155,7 @@ export default function Tetris() {
     return () => {
       stop();
     };
-  }, [playMusic, gameSettings.playMusic]);
+  }, [gameSettings.playMusic]);
 
   useEffect(() => {
     if (state.trial && blocksPlayed > gameSettings.trialTetrominoLength)
@@ -182,12 +181,16 @@ export default function Tetris() {
   useEffect(() => {
     if (state.countdown > 0) {
       setTimeout(() => {
+        if (state.countdown === 1) {
+          generateNextTetromino();
+        }
         setState({
           ...state,
           countdown: state.countdown - 1
         });
       }, 1000);
     }
+
     const cell = document.querySelector('.Cell') as HTMLDivElement;
     BLOCK_SIZE = cell.offsetWidth;
   }, [state.countdown]);
@@ -252,18 +255,8 @@ export default function Tetris() {
   }, [rowsCleared]);
 
   useEffect(() => {
-    if (!gameSettings.playMusic) {
-      stop();
-      return;
-    }
-
-    if (isPlayingMusic === gameState.music) {
-      return;
-    }
-
-    setIsPlayingMusic(gameState.music);
-    gameState.music ? playMusic() : stop();
-  }, [gameState.music]);
+    gameSettings.playMusic && gameState.music ? playMusic() : stop();
+  }, [gameState.music, gameSettings.playMusic]);
 
   useInterval(() => {
     if (!state.gameOver || !player.collided) {
@@ -375,9 +368,8 @@ export default function Tetris() {
     }
 
     if (state.trialStage === TRIAL_PLAY) {
-      generateNextTetromino();
       resetGame();
-      resetTetrominos();
+      generateNextTetromino();
       setStage(createStage());
     }
 
@@ -395,12 +387,10 @@ export default function Tetris() {
       startScreen: false,
       countdown: COUNTDOWN_TIME
     });
-    gameDispatch({ type: GameStateActionType.StopMusic });
-    generateNextTetromino();
     resetGame();
+    setBlocksPlayed(1);
     setStage(createStage());
     setGamesPlayed(gamesPlayed + 1);
-    setBlocksPlayed(1);
 
     document.querySelector('section')?.focus();
   };
@@ -413,7 +403,6 @@ export default function Tetris() {
       trial: false,
       trialStage: 0
     });
-    resetGame();
     setStage(createStage());
     setGamesPlayed(0);
     setBlocksPlayed(1);
@@ -487,29 +476,7 @@ export default function Tetris() {
         gameSettings.trialTetrominoLength}
     </div>
   ) : (
-    <div className={css.alignTop}>
-      <div className={css.progress}>
-        <Display
-          content={'Rader: ' + gameState.storableScore.rows}
-          style={{ backgroundColor: '#29cff5' }}
-        />
-        <Display
-          content={'Nivå: ' + gameState.storableScore.level}
-          style={{ backgroundColor: '#49bca1' }}
-        />
-      </div>
-      <ComputasLogo className={css.ComputasLogo} />
-      <div className={css.points}>
-        <Display
-          content={'Høyeste poeng: ' + highScore}
-          style={{ backgroundColor: '#ff5f63' }}
-        />
-        <Display
-          content={'Poeng: ' + gameState.storableScore.score}
-          style={{ backgroundColor: '#fed546' }}
-        />
-      </div>
-    </div>
+    <Header highScore={highScore} />
   );
 
   return (
@@ -535,16 +502,7 @@ export default function Tetris() {
         restart={returnHome}
       />
       <div className={css.Tetris} ref={refPassThrough}>
-        <div
-          {...swipeHandlers}
-          style={{
-            height: '100vh',
-            width: '100vw',
-            position: 'absolute',
-            top: 0,
-            left: 0
-          }}
-        ></div>
+        <div className={css.SwipeHandler} {...swipeHandlers}></div>
         <section
           className={css.Board}
           onKeyDown={(event) => handleKeyPressed(event, state)}

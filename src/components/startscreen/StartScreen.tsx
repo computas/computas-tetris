@@ -1,9 +1,10 @@
 import React from 'react';
 
-import { ReactComponent as TetrisHeader } from '../../svg/tetrisHeader.svg';
-import { ReactComponent as StartFigure } from '../../svg/StartMenu.svg';
 import css from './StartScreen.module.scss';
 import Button, { ButtonSize, ButtonVariant } from '../button/Button';
+import MusicButton from '../button/MusicButton';
+import { ReactComponent as TetrisHeader } from '../../svg/tetrisHeader.svg';
+import { ReactComponent as StartFigure } from '../../svg/StartMenu.svg';
 
 interface StartScreenProps {
   startScreen: boolean;
@@ -23,7 +24,7 @@ const StartScreen = (props: StartScreenProps) => {
   return (
     <>
       <div className={css.StartScreen}>
-        <TetrisHeader className={css.StartScreenHeader} />
+        <TetrisHeader className={css.Header} />
         <div className={css.Button}>
           <Button
             label={'SPILL OG VINN PREMIE!'}
@@ -43,6 +44,7 @@ const StartScreen = (props: StartScreenProps) => {
         <div className={css.FiguresBox}>
           <StartFigure className={css.Figures} />
         </div>
+        <MusicButton />
       </div>
     </>
   );

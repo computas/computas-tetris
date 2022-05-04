@@ -15,7 +15,6 @@ export interface GlobalSettings {
   IncreaseSpeedOnEvery: number;
   InitialSpeed: number;
   MinimumSpeed: number;
-  PlayMusic: boolean;
   ShowNext: boolean;
   Tetrominos: JSON;
   ToplistLength: number;
@@ -64,7 +63,6 @@ const Settings = (): ReactElement | null => {
       IncreaseSpeedOnEvery: gameSettings.increaseSpeedOnEvery,
       InitialSpeed: gameSettings.initialSpeed,
       MinimumSpeed: gameSettings.minimumSpeed,
-      PlayMusic: gameSettings.playMusic,
       ShowNext: gameSettings.showNext,
       Tetrominos: gameSettings.tetrominos,
       ToplistLength: gameSettings.toplistLength,
@@ -183,15 +181,6 @@ const Settings = (): ReactElement | null => {
           checked={gameSettings.showNext}
           label={'Vis neste brikke'}
           name={'ShowNext'}
-          onChange={handleRadioButtonChange}
-        />
-      </div>
-
-      <div className={css.row}>
-        <RadioButton
-          checked={gameSettings.playMusic}
-          label={'Spill musikk'}
-          name={'PlayMusic'}
           onChange={handleRadioButtonChange}
         />
       </div>

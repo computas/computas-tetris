@@ -77,8 +77,9 @@ export const useGameStatus = (
   };
 
   const resetGame = (): void => {
-    gameDispatch({ type: GameStateActionType.GameStarted });
+    resetTetrominos();
     setNewHighScore(false);
+    gameDispatch({ type: GameStateActionType.GameStarted });
   };
 
   const resetTetrominos = (): void => {

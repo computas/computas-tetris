@@ -53,6 +53,18 @@ const stateReducer = (
         ...state,
         ...payload
       };
+
+    case GameSettingsStateActionType.ToggleMusic:
+      return {
+        ...state,
+        playMusic: !state.playMusic
+      };
+
+    default:
+      console.log(
+        'No action handler for',
+        GameSettingsStateActionType[action.type]
+      );
   }
 
   return state;

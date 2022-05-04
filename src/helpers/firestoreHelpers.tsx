@@ -62,7 +62,7 @@ export const fetchRealTimeSettings = (dispatch: any): any => {
         fetchedSettings.InitialSpeed ?? settings.initialSpeed;
       settings.minimumSpeed =
         fetchedSettings.MinimumSpeed ?? settings.minimumSpeed;
-      settings.playMusic = fetchedSettings.PlayMusic ?? settings.playMusic;
+      settings.playMusic = false;
       settings.toplistLength =
         fetchedSettings.ToplistLength ?? settings.toplistLength;
       settings.trialTetrominoLength =

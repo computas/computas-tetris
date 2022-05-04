@@ -6,13 +6,16 @@ import css from './Button.module.scss';
 export enum ButtonSize {
   Normal = 'normal',
   Large = 'large',
-  XL = 'xlarge'
+  XL = 'xlarge',
+  Round = 'round'
 }
 
 export enum ButtonVariant {
-  Default = 'default',
-  Primary = 'primary',
-  Secondary = 'secondary'
+  Default,
+  Primary,
+  Secondary,
+  White,
+  Clear
 }
 
 interface ButtonProps {
@@ -21,18 +24,26 @@ interface ButtonProps {
   onClick?: () => void;
   variant?: ButtonVariant;
   size?: ButtonSize;
+  children?: ReactElement;
 }
 
 const Button = (props: ButtonProps): ReactElement => {
-  const { disabled, label, onClick, size, variant } = props;
+  const { children, disabled, label, onClick, size, variant } = props;
 
   const cssFromSize = () => {
-    if (size === ButtonSize.Large) {
-      return css.large;
-    } else if (size == ButtonSize.XL) {
-      return css.xlarge;
+    switch (size) {
+      case ButtonSize.Large:
+        return css.large;
+
+      case ButtonSize.Round:
+        return css.round;
+
+      case ButtonSize.XL:
+        return css.xlarge;
+
+      default:
+        return css.normal;
     }
-    return css.normal;
   };
 
   const cssFromVariant = () => {
@@ -42,13 +53,20 @@ const Button = (props: ButtonProps): ReactElement => {
 
       case ButtonVariant.Secondary:
         return css.secondary;
+
+      case ButtonVariant.White:
+        return css.white;
+
+      case ButtonVariant.Clear:
+        return css.clear;
     }
 
     return css.default;
   };
 
-  const callback = (): void => {
+  const callback = (event: any): void => {
     if (onClick) {
+      event.stopPropagation();
       onClick();
     }
   };
@@ -57,10 +75,11 @@ const Button = (props: ButtonProps): ReactElement => {
     <button
       className={classnames(css.Button, cssFromSize(), cssFromVariant())}
       disabled={disabled}
-      onClick={callback}
+      onClick={(event) => callback(event)}
       type={'button'}
     >
       <span>{label}</span>
+      {children}
     </button>
   );
 };

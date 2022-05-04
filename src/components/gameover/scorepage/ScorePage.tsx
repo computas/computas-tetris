@@ -1,5 +1,12 @@
+import classNames from 'classnames';
 import React, { useContext, useEffect, useState } from 'react';
 
+import css from './ScorePage.module.scss';
+import Button, { ButtonSize, ButtonVariant } from '../../button/Button';
+import MusicButton from '../../button/MusicButton';
+import TextField from '../../textfield/TextField';
+import { GameStateActionType } from '../../../enums/GameStateActionTypes';
+import { GameStateContext } from '../../../contexts/GameStateContext';
 import { ReactComponent as ComputasLogo } from '../../../svg/computas.svg';
 import { ReactComponent as Block0 } from '../../../svg/Block.svg';
 import { ReactComponent as Block1 } from '../../../svg/Block-1.svg';
@@ -8,12 +15,6 @@ import { ReactComponent as Block3 } from '../../../svg/Block-3.svg';
 import { ReactComponent as Block4 } from '../../../svg/Block-4.svg';
 import { ReactComponent as Block5 } from '../../../svg/Block-6.svg';
 import { ReactComponent as Block6 } from '../../../svg/Block-8.svg';
-import css from './ScorePage.module.scss';
-import Button, { ButtonSize, ButtonVariant } from '../../button/Button';
-import TextField from '../../textfield/TextField';
-import { GameStateActionType } from '../../../enums/GameStateActionTypes';
-import { GameStateContext } from '../../../contexts/GameStateContext';
-import classNames from 'classnames';
 
 interface ScorePageProps {
   rank: string;
@@ -345,6 +346,7 @@ const ScorePage = (props: ScorePageProps) => {
                 onClick={restart}
               />
             </div>
+            <MusicButton />
           </div>
           <div className={css.Tetromino}>
             <Block6 />

@@ -83,7 +83,6 @@ export default function Tetris() {
   const [dropSpeed, setDropSpeed] = useState(0);
   const [blocksPlayed, setBlocksPlayed] = useState(1);
   const [gamesPlayed, setGamesPlayed] = useState(0);
-  const [isPlayingMusic, setIsPlayingMusic] = useState(false);
   const [
     leftPressState,
     rightPressState,
@@ -119,7 +118,8 @@ export default function Tetris() {
   const [playHitFloorSound] = useSound('/assets/sfx/hit-floor.mp3');
   const [playHitWallSound] = useSound('/assets/sfx/hit-wall.mp3');
   const [playMusic, { stop }] = useSound('/assets/sfx/music.mp3', {
-    volume: 0.4
+    volume: 0.4,
+    interrupt: false
   });
   const [playRotateSound] = useSound('/assets/sfx/rotate.mp3', {
     volume: 0.4
@@ -155,7 +155,7 @@ export default function Tetris() {
     return () => {
       stop();
     };
-  }, [playMusic, gameSettings.playMusic]);
+  }, [gameSettings.playMusic]);
 
   useEffect(() => {
     if (state.trial && blocksPlayed > gameSettings.trialTetrominoLength)
@@ -181,12 +181,16 @@ export default function Tetris() {
   useEffect(() => {
     if (state.countdown > 0) {
       setTimeout(() => {
+        if (state.countdown === 1) {
+          generateNextTetromino();
+        }
         setState({
           ...state,
           countdown: state.countdown - 1
         });
       }, 1000);
     }
+
     const cell = document.querySelector('.Cell') as HTMLDivElement;
     BLOCK_SIZE = cell.offsetWidth;
   }, [state.countdown]);
@@ -251,18 +255,8 @@ export default function Tetris() {
   }, [rowsCleared]);
 
   useEffect(() => {
-    if (!gameSettings.playMusic) {
-      stop();
-      return;
-    }
-
-    if (isPlayingMusic === gameState.music) {
-      return;
-    }
-
-    setIsPlayingMusic(gameState.music);
-    gameState.music ? playMusic() : stop();
-  }, [gameState.music]);
+    gameSettings.playMusic && gameState.music ? playMusic() : stop();
+  }, [gameState.music, gameSettings.playMusic]);
 
   useInterval(() => {
     if (!state.gameOver || !player.collided) {
@@ -374,9 +368,8 @@ export default function Tetris() {
     }
 
     if (state.trialStage === TRIAL_PLAY) {
-      generateNextTetromino();
       resetGame();
-      resetTetrominos();
+      generateNextTetromino();
       setStage(createStage());
     }
 
@@ -394,12 +387,10 @@ export default function Tetris() {
       startScreen: false,
       countdown: COUNTDOWN_TIME
     });
-    gameDispatch({ type: GameStateActionType.StopMusic });
-    generateNextTetromino();
     resetGame();
+    setBlocksPlayed(1);
     setStage(createStage());
     setGamesPlayed(gamesPlayed + 1);
-    setBlocksPlayed(1);
 
     document.querySelector('section')?.focus();
   };
@@ -412,7 +403,6 @@ export default function Tetris() {
       trial: false,
       trialStage: 0
     });
-    resetGame();
     setStage(createStage());
     setGamesPlayed(0);
     setBlocksPlayed(1);

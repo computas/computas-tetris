@@ -25,7 +25,9 @@ const Header = (props: HeaderProps): ReactElement => {
           style={{ backgroundColor: '#49bca1' }}
         />
       </div>
-      <ComputasLogo className={css.ComputasLogo} />
+      <div>
+        <ComputasLogo className={css.ComputasLogo} />
+      </div>
       <div>
         <Display
           content={'Høyeste poeng: ' + highScore}

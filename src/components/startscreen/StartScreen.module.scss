@@ -7,26 +7,26 @@
   background-color: var(--background-color);
   text-align: center;
   z-index: 11;
-}
 
-.StartScreenHeader {
-  max-width: 75rem;
-  padding: 4rem 3rem;
-}
+  .Header {
+    max-width: 75rem;
+    padding: 4rem 3rem;
+  }
 
-.Button {
-  padding-bottom: 2.5rem;
-}
+  .Button {
+    padding-bottom: 2.5rem;
+  }
 
-.FiguresBox {
-  display: flex;
-  justify-content: center;
+  .FiguresBox {
+    display: flex;
+    justify-content: center;
 
-  .Figures {
-    position: fixed;
-    bottom: 0;
-    z-index: -1;
-    width: 100%;
-    max-height: calc(100vh - 42rem);
+    .Figures {
+      position: fixed;
+      bottom: 0;
+      z-index: -1;
+      width: 100%;
+      max-height: calc(100vh - 42rem);
+    }
   }
 }

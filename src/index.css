@@ -8,6 +8,9 @@
   --primary-button-color: #fed546;
   --secondary-button-color: #ff5f63;
   --button-label-color: var(--background-color);
+  --input-field-text-color: var(--background-color);
+  --placeholder-color: #757575;
+  --focus-outline-color: var(--primary-color);
 
   --error-color: #ff9597;
   --error-color-support: #fce8e9;

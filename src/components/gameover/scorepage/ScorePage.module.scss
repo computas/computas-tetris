@@ -11,7 +11,7 @@
   text-align: center;
 
   .form {
-    width: 60rem;
+    width: 35.5rem;
     text-align: left;
     font-size: 1.6rem;
     font-weight: 400;
@@ -24,13 +24,14 @@
 
     .formRowColumned {
       display: grid;
-      grid-template-columns: 35rem auto;
-      grid-gap: 2rem;
+      grid-gap: 0.8rem;
       align-items: start;
       margin-top: 2rem;
 
       label.aligned {
-        margin: 2.8rem 0 0;
+        display: grid;
+        grid-template-columns: 3rem auto;
+        align-items: center;
       }
     }
   }
@@ -38,6 +39,10 @@
   .disabled {
     opacity: 0.5;
     pointer-events: none;
+  }
+
+  svg * {
+    stroke: white !important;
   }
 
   .centered {
@@ -59,9 +64,9 @@
 
 .ScorePageDescription {
   color: white;
-  width: 15rem;
+  width: auto;
   margin: 0 auto;
-  font-size: 2rem;
+  font-size: 4rem;
   padding-bottom: 3rem;
 }
 

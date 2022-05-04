@@ -1,0 +1,16 @@
+.Checkbox {
+  display: inline-block;
+  position: relative;
+
+  input {
+    position: absolute;
+    visibility: visible;
+    opacity: 0;
+  }
+
+  .Input {
+    svg * {
+      stroke: var(--background-color);
+    }
+  }
+}

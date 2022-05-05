@@ -1,5 +1,6 @@
-import { STAGE_HEIGHT, STAGE_WIDTH } from 'components/stage/Stage';
+import { CollisionType } from '../enums/CollisionTypes';
 import { Player, Position } from 'models';
+import { STAGE_HEIGHT, STAGE_WIDTH } from 'components/stage/Stage';
 import { Tetromino } from './tetrominos';
 
 export interface Cell {
@@ -35,25 +36,23 @@ export const createStage = (): GameBoard => {
 
 export const canMove = (player: Player, position: Position): boolean => {
   const bb = getTetrominoBB(player.tetromino, position);
-  if (bb[0] < 0 || bb[2] >= STAGE_WIDTH) {
-    return false;
-  }
-
-  return true;
+  return !(bb[0] < 0 || bb[2] >= STAGE_WIDTH);
 };
 
 export const detectCollision = (
   player: Player,
   stage: GameBoard,
   position: Position
-): boolean => {
+): CollisionType => {
   const bb = getTetrominoBB(player.tetromino, { x: 0, y: 0 });
-  if (position.y + bb[3] < 0) {
-    return false;
+  if (position.x + bb[0] < 0) {
+    return CollisionType.LeftEdge;
   }
-
-  if (position.x + bb[0] < 0 || position.x + bb[2] > STAGE_WIDTH) {
-    return true;
+  if (position.x + bb[2] >= STAGE_WIDTH) {
+    return CollisionType.RightEdge;
+  }
+  if (position.y + bb[3] < 0) {
+    return CollisionType.None;
   }
 
   for (let y = bb[1]; y <= bb[3]; y++) {
@@ -69,25 +68,16 @@ export const detectCollision = (
       }
 
       if (yPos >= STAGE_HEIGHT) {
-        return true;
-      }
-
-      if (
-        bb[1] >= 0 &&
-        (position.x + x < 0 ||
-          position.x + x >= STAGE_WIDTH ||
-          position.y + y < 0)
-      ) {
-        return true;
+        return CollisionType.BottomEdge;
       }
 
       if (stage.rows[yPos].cells[position.x + x].locked) {
-        return true;
+        return CollisionType.Tetromino;
       }
     }
   }
 
-  return false;
+  return CollisionType.None;
 };
 
 export const getTetrominoBB = (

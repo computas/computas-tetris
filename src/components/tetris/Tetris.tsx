@@ -12,8 +12,8 @@ import Next from 'components/next/Next';
 import Stage from 'components/stage/Stage';
 import StartScreen from 'components/startscreen/StartScreen';
 import TrialScreen, {
-  TRIAL_PLAY,
-  TRIAL_END
+  TRIAL_END,
+  TRIAL_PLAY
 } from 'components/trial/TrialScreen';
 import {
   calculateLandingRow,
@@ -21,6 +21,7 @@ import {
   createStage,
   detectCollision
 } from 'helpers';
+import { CollisionType } from '../../enums/CollisionTypes';
 import { GameSettingsContext } from '../../contexts/GameSettingsContext';
 import { GameStateActionType } from '../../enums/GameStateActionTypes';
 import { GameStateContext } from '../../contexts/GameStateContext';
@@ -331,8 +332,8 @@ export default function Tetris() {
 
     updatePlayerPosition(
       player.position.x,
-      player.position.y + (didCollide ? 0 : 1),
-      didCollide
+      player.position.y + (didCollide !== CollisionType.None ? 0 : 1),
+      didCollide !== CollisionType.None
     );
   };
 

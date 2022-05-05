@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import css from './ScorePage.module.scss';
 import Button, { ButtonSize, ButtonVariant } from '../../button/Button';
+import Checkbox from '../../checkbox/Checkbox';
 import MusicButton from '../../button/MusicButton';
 import TextField from '../../textfield/TextField';
 import { GameStateActionType } from '../../../enums/GameStateActionTypes';
@@ -202,7 +203,7 @@ const ScorePage = (props: ScorePageProps) => {
     return [];
   };
 
-  const toggleSubscribe = (field: string): void => {
+  const toggleSubscribe = (value: boolean, field: string): void => {
     const updatedStorableScore = {
       ...gameState.storableScore
     };
@@ -240,26 +241,17 @@ const ScorePage = (props: ScorePageProps) => {
         <div className={css.Column}>
           <ComputasLogo
             style={{
-              width: '15rem',
-              height: '15rem',
-              padding: '3rem'
+              width: '21.3rem',
+              height: '21.3rem',
+              padding: '2rem'
             }}
           />
-          <div className={css.ScorePageScore}>
-            <span>
-              Poengsum: <br />
-              {gameState.storableScore.score}
-            </span>
-          </div>
-          <div className={css.ScorePageRank}>
-            <span>Plassering: {rank}</span>
-          </div>
           <div className={css.ScorePageDescription}>Vinn premie!</div>
           <div className={css.form}>
             <TextField
               errorMessage={nameError}
-              label={'Kallenavn'}
-              placeholder={'Kallenavn'}
+              label={'Lagnavn'}
+              placeholder={'Lagnavn'}
               onBlur={(value: string) =>
                 validateTextInput(value, 'Dette feltet kan ikke være tomt')
               }
@@ -271,9 +263,9 @@ const ScorePage = (props: ScorePageProps) => {
                 errorMessage={emailError.email}
                 fieldType={'email'}
                 id={'email'}
-                label={'E-post, spiller 1'}
-                placeholder={'E-post'}
+                label={'E-post - spiller 1'}
                 onChange={(value) => handleTextInput('email', value)}
+                placeholder={'E-post'}
                 value={gameState.storableScore.email}
               />
 
@@ -285,11 +277,11 @@ const ScorePage = (props: ScorePageProps) => {
                     : css.disabled
                 )}
               >
-                <input
-                  type={'checkbox'}
-                  defaultChecked={gameState.storableScore.subscribe}
-                  onClick={() => toggleSubscribe('subscribe')}
-                />{' '}
+                <Checkbox
+                  checked={gameState.storableScore.subscribe}
+                  name={'subscribe'}
+                  onChange={toggleSubscribe}
+                />
                 Jeg ønsker å melde meg på Computas´ nyhetsbrev
               </label>
             </div>
@@ -299,11 +291,11 @@ const ScorePage = (props: ScorePageProps) => {
                 errorMessage={emailError.email2}
                 fieldType={'email'}
                 id={'email2'}
-                label={'E-post, spiller 2'}
-                placeholder={'E-post'}
+                label={'E-post - spiller 2'}
                 onChange={(value) =>
                   handleTextInput('email2', value, { allowEmpty: true })
                 }
+                placeholder={'E-post'}
                 value={gameState.storableScore.email2 ?? ''}
               />
 
@@ -315,11 +307,11 @@ const ScorePage = (props: ScorePageProps) => {
                     : css.disabled
                 )}
               >
-                <input
-                  type={'checkbox'}
-                  defaultChecked={gameState.storableScore.subscribe2}
-                  onClick={() => toggleSubscribe('subscribe2')}
-                />{' '}
+                <Checkbox
+                  checked={gameState.storableScore.subscribe2 ?? false}
+                  name={'subscribe2'}
+                  onChange={toggleSubscribe}
+                />
                 Jeg ønsker å melde meg på Computas´ nyhetsbrev
               </label>
             </div>

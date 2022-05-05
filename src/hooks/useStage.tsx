@@ -31,9 +31,11 @@ export const useStage = (
     renderDropPreview(player, newStage);
     renderTetromino(player, newStage);
 
-    const rows = checkLines(newStage);
-    if (rows.length) {
-      setRowsCleared(rows);
+    const removeLines = checkLines(newStage);
+    if (removeLines.length) {
+      const removed = removeLinesFromStage(newStage, removeLines);
+      setRowsCleared(removed);
+      highlightRows(newStage, removeLines);
     }
 
     setStage(newStage);
@@ -70,7 +72,8 @@ const renderTetromino = (player: Player, stage: GameBoard): void => {
 
       stage.rows[ypos].cells[player.position.x + x] = {
         color: pixel !== 0 ? player.tetromino.color : 0,
-        locked: player.collided
+        locked: player.collided,
+        highlight: false
       };
     }
   }
@@ -113,32 +116,54 @@ const renderDropPreview = (player: Player, stage: GameBoard): void => {
   }
 };
 
-const checkLines = (stage: GameBoard): Row[] => {
-  const keepers: Row[] = [];
-  const removers: Row[] = [];
+const checkLines = (stage: GameBoard): number[] => {
+  const rowsToRemove: number[] = [];
 
   for (let y = 0; y < STAGE_HEIGHT; y++) {
     const row = stage.rows[y];
-    if (row.cells.findIndex((cell) => !cell.locked) !== -1) {
-      keepers.push(row);
+    if (row.cells.findIndex((cell) => !cell.locked) === -1) {
+      rowsToRemove.push(y);
+    }
+  }
+
+  return rowsToRemove;
+};
+
+const removeLinesFromStage = (
+  stage: GameBoard,
+  removeLines: number[]
+): Row[] => {
+  const rows: Row[] = [];
+  const removed: Row[] = [];
+  for (let y = 0; y < STAGE_HEIGHT; y++) {
+    const row = stage.rows[y];
+    if (removeLines.indexOf(y) !== -1) {
+      rows.unshift(generateEmptyRow());
+      removed.push(row);
     } else {
-      removers.push(row);
+      rows.push(row);
     }
   }
 
-  if (!removers.length) {
-    return [];
-  }
+  stage.rows = rows;
 
-  while (keepers.length < STAGE_HEIGHT) {
-    const newRow: Row = { cells: [] };
-    for (let x = 0; x < STAGE_WIDTH; x++) {
-      newRow.cells.push({ color: 0, locked: false });
+  return removed;
+};
+
+const highlightRows = (stage: GameBoard, highlightLines: number[]): void => {
+  stage.rows.forEach((row, line) => {
+    if (highlightLines.indexOf(line) !== -1) {
+      row.cells.forEach((cell) => {
+        cell.highlight = true;
+      });
     }
-    keepers.unshift(newRow);
+  });
+};
+
+const generateEmptyRow = (): Row => {
+  const newRow: Row = { cells: [] };
+  for (let x = 0; x < STAGE_WIDTH; x++) {
+    newRow.cells.push({ color: 0, locked: false, highlight: false });
   }
-
-  stage.rows = keepers;
-
-  return removers;
+  return newRow;
 };

@@ -1,21 +1,21 @@
 import React from 'react';
 
+import './Stage.scss';
+import CellView from 'components/cell/CellView';
+import { GameBoard } from 'helpers/gameHelpers';
+
 export const STAGE_WIDTH = 12;
 export const STAGE_HEIGHT = 20;
-
-import './Stage.scss';
-import Cell from 'components/cell/Cell';
-import { GameBoard } from 'helpers/gameHelpers';
 
 export default function Stage(props: { stage: GameBoard }) {
   const { stage } = props;
 
   return (
     <div className={'Stage'}>
-      {stage.rows.map((row, index) => (
-        <div key={'r-' + index} className="Row">
-          {row.cells.map((cell, index) => (
-            <Cell key={'cl-' + index} color={cell.color} />
+      {stage.rows.map((row, rowIndex) => (
+        <div key={'r-' + rowIndex} className="Row">
+          {row.cells.map((cell, cellIndex) => (
+            <CellView key={'cl-' + rowIndex + '-' + cellIndex} cell={cell} />
           ))}
         </div>
       ))}

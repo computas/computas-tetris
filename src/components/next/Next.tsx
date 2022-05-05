@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React, { ReactElement, useContext } from 'react';
 
 import css from './Next.module.scss';
-import Cell from 'components/cell/Cell';
+import CellView from '../cell/CellView';
 import { GameSettingsContext } from '../../contexts/GameSettingsContext';
 import { Tetromino } from '../../helpers';
 
@@ -37,8 +37,11 @@ const Next = (props: NextProps): ReactElement => {
       <div className={css.tetromino}>
         {renderStage.map((row, index) => (
           <div key={'p' + index} className={css.row}>
-            {row.map((cell, n) => (
-              <Cell key={'c' + index + '_' + n} color={cell} />
+            {row.map((color, n) => (
+              <CellView
+                key={'c' + index + '_' + n}
+                cell={{ color: color, locked: false, highlight: false }}
+              />
             ))}
           </div>
         ))}

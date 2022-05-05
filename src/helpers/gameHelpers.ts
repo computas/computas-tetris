@@ -6,6 +6,7 @@ import { Tetromino } from './tetrominos';
 export interface Cell {
   color: number;
   locked: boolean;
+  highlight: boolean;
 }
 
 export interface Row {
@@ -24,7 +25,7 @@ export const createStage = (): GameBoard => {
   while (initialBoard.rows.length < STAGE_HEIGHT) {
     const initialRow: Row = { cells: [] };
     while (initialRow.cells.length < STAGE_WIDTH) {
-      initialRow.cells.push({ color: 0, locked: false });
+      initialRow.cells.push({ color: 0, locked: false, highlight: false });
     }
 
     initialBoard.rows.push(initialRow);

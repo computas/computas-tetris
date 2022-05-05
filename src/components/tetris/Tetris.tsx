@@ -368,7 +368,7 @@ export default function Tetris() {
       gameDispatch({ type: GameStateActionType.StopMusic });
     }
 
-    if (state.trialStage === TRIAL_PLAY) {
+    if (state.trial && state.trialStage === 1) {
       resetGame();
       generateNextTetromino();
       setStage(createStage());

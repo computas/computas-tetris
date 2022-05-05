@@ -16,6 +16,7 @@ const GameOver = (props: GameOverProps) => {
   const { gameOver, restart } = props;
   const { gameState } = useContext(GameStateContext);
   const [showScores, setShowScores] = useState(false);
+  const [showEntered, setShowEntered] = useState(false);
   const [currentRank, setCurrentRank] = useState(1);
 
   useEffect(() => {
@@ -28,6 +29,10 @@ const GameOver = (props: GameOverProps) => {
       }, GAME_OVER_DISPLAY_DURATION);
     }
   }, [gameOver]);
+
+  // useEffect(() => {
+  //   console.log('entered');
+  // }, [showEntered]);
 
   const findRank = (score: number): number => {
     let rank = gameState.scoreList.findIndex((item) => item.score <= score) + 1;
@@ -43,8 +48,11 @@ const GameOver = (props: GameOverProps) => {
 
   const participate = () => {
     saveScore(gameState.storableScore).then(() => {
-      //alert('Dere er nå med i konkurransen!');
-      restart();
+      setShowEntered(true);
+      setTimeout(() => {
+        setShowEntered(false);
+        restart();
+      }, 2000);
     });
   };
 
@@ -59,6 +67,13 @@ const GameOver = (props: GameOverProps) => {
         participate={participate}
         restart={restart}
       />
+      {showEntered && (
+        <div className={css.Entered}>
+          <span className={css.OverlayText}>
+            Dere er nå med i konkurransen!
+          </span>
+        </div>
+      )}
     </div>
   ) : (
     <div className={css.GameOver}>

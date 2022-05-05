@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { CollisionType } from '../enums/CollisionTypes';
 import {
   detectCollision,
   GameBoard,
@@ -47,9 +48,50 @@ export const usePlayer = (): [
   const rotatePlayer = (stage: GameBoard, dir: number): void => {
     const clonedPlayer = JSON.parse(JSON.stringify(player));
     clonedPlayer.tetromino.shape = rotate(clonedPlayer.tetromino, dir);
+    const bb = getTetrominoBB(clonedPlayer.tetromino, { x: 0, y: 0 });
 
-    if (detectCollision(clonedPlayer, stage, clonedPlayer.position)) {
-      return;
+    const collision = detectCollision(
+      clonedPlayer,
+      stage,
+      clonedPlayer.position
+    );
+
+    if (collision) {
+      let forceMoveDistance = 0;
+      if (collision === CollisionType.LeftEdge) {
+        forceMoveDistance = clonedPlayer.position.x;
+      }
+      if (collision === CollisionType.RightEdge) {
+        forceMoveDistance = bb[2] + 1 - (STAGE_WIDTH - clonedPlayer.position.x);
+      }
+      if (collision === CollisionType.Tetromino) {
+        const origPos = player.position;
+        const checkPos = [-1, 1, -2, 2];
+        let stuck = true;
+        for (let i = 0; i < 4; i++) {
+          clonedPlayer.position.x = origPos.x + checkPos[i];
+          const coll = detectCollision(
+            clonedPlayer,
+            stage,
+            clonedPlayer.position
+          );
+          if (!coll) {
+            stuck = false;
+            break;
+          }
+        }
+
+        if (stuck) {
+          return;
+        }
+      }
+
+      if (forceMoveDistance) {
+        clonedPlayer.position.x -= forceMoveDistance;
+        if (detectCollision(clonedPlayer, stage, clonedPlayer.position)) {
+          return;
+        }
+      }
     }
 
     setPlayer(clonedPlayer);

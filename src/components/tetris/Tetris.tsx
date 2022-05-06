@@ -84,6 +84,7 @@ export default function Tetris() {
   const [dropSpeed, setDropSpeed] = useState(0);
   const [blocksPlayed, setBlocksPlayed] = useState(1);
   const [gamesPlayed, setGamesPlayed] = useState(0);
+  const [isWallHit, setIsWallHit] = useState(false);
   const [
     leftPressState,
     rightPressState,
@@ -125,7 +126,7 @@ export default function Tetris() {
   const [playRotateSound] = useSound('/assets/sfx/rotate.mp3', {
     volume: 0.4
   });
-  const [playRemoveLineSound] = useSound('/assets/sfx/remove1.mp3');
+  const [playRemoveRowSound] = useSound('/assets/sfx/remove1.mp3');
   const [playYouLoseSound] = useSound('/assets/sfx/you-lose.mp3');
   const [playYouWinSound] = useSound('/assets/sfx/you-win.mp3');
   const navigate = useNavigate();
@@ -230,6 +231,12 @@ export default function Tetris() {
   }, [player.position.x]);
 
   useEffect(() => {
+    if (isWallHit) {
+      playHitWallSound();
+    }
+  }, [isWallHit]);
+
+  useEffect(() => {
     if (
       state.trial &&
       state.trialStage > TRIAL_PLAY &&
@@ -251,7 +258,7 @@ export default function Tetris() {
 
   useEffect(() => {
     if (rowsCleared.length > 0) {
-      playRemoveLineSound();
+      playRemoveRowSound();
     }
   }, [rowsCleared]);
 
@@ -276,7 +283,7 @@ export default function Tetris() {
         x: player.position.x + dir
       })
     ) {
-      playHitWallSound();
+      setIsWallHit(true);
       return;
     }
 
@@ -289,6 +296,7 @@ export default function Tetris() {
       return;
     }
 
+    setIsWallHit(false);
     updatePlayerPosition(player.position.x + dir, player.position.y, false);
   };
 

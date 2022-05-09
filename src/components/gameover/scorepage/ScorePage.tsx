@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import css from './ScorePage.module.scss';
 import Button, { ButtonSize, ButtonVariant } from '../../button/Button';
+import Checkbox from '../../checkbox/Checkbox';
 import MusicButton from '../../button/MusicButton';
 import TextField from '../../textfield/TextField';
 import { GameStateActionType } from '../../../enums/GameStateActionTypes';
@@ -27,6 +28,7 @@ const ScorePage = (props: ScorePageProps) => {
   const { gameState, gameDispatch } = useContext(GameStateContext);
   const [showHigh, setShowHigh] = useState(true);
   const [prevScore, setPrevScore] = useState(0);
+  const [wantToParticipate, setWantToParticipate] = useState(false);
   const [nameError, setNameError] = useState('');
   const [emailError, setEmailError] = useState({ email: '', email2: '' });
   const [isSaving, setIsSaving] = useState(false);
@@ -163,6 +165,11 @@ const ScorePage = (props: ScorePageProps) => {
   };
 
   const validateAndParticipate = (): void => {
+    if (!wantToParticipate) {
+      setWantToParticipate(true);
+      return;
+    }
+
     if (
       validateTextInput(
         gameState.storableScore.name,
@@ -202,7 +209,7 @@ const ScorePage = (props: ScorePageProps) => {
     return [];
   };
 
-  const toggleSubscribe = (field: string): void => {
+  const toggleSubscribe = (value: boolean, field: string): void => {
     const updatedStorableScore = {
       ...gameState.storableScore
     };
@@ -237,111 +244,124 @@ const ScorePage = (props: ScorePageProps) => {
             <Block1 />
           </div>
         </div>
-        <div className={css.Column}>
+        <div className={css.FormColumn}>
           <ComputasLogo
             style={{
-              width: '15rem',
-              height: '15rem',
-              padding: '3rem'
+              width: '21.3rem',
+              height: '21.3rem',
+              padding: '2rem',
+              justifySelf: 'center'
             }}
           />
-          <div className={css.ScorePageScore}>
-            <span>
-              Poengsum: <br />
-              {gameState.storableScore.score}
-            </span>
-          </div>
-          <div className={css.ScorePageRank}>
-            <span>Plassering: {rank}</span>
-          </div>
-          <div className={css.ScorePageDescription}>Vinn premie!</div>
+          {!wantToParticipate ? (
+            <div>
+              <div className={css.ScorePageScore}>
+                <span>
+                  Poengsum: <br />
+                  {gameState.storableScore.score}
+                </span>
+              </div>
+              <div className={css.ScorePageRank}>
+                <span>Plassering: {rank}</span>
+              </div>
+              <h2 className={css.ScorePageText}>
+                Bli med i<br /> konkurransen og
+                <br /> vinn premie!
+              </h2>
+            </div>
+          ) : (
+            <>
+              <div className={css.form}>
+                <div className={css.ScorePageDescription}>Vinn premie!</div>
+                <TextField
+                  errorMessage={nameError}
+                  label={'Lagnavn'}
+                  placeholder={'Lagnavn'}
+                  onBlur={(value: string) =>
+                    validateTextInput(value, 'Dette feltet kan ikke være tomt')
+                  }
+                  onChange={(value) => handleTextInput('name', value)}
+                  value={gameState.storableScore.name}
+                />
+                <div className={css.formRowColumned}>
+                  <TextField
+                    errorMessage={emailError.email}
+                    fieldType={'email'}
+                    id={'email'}
+                    label={'E-post - spiller 1'}
+                    onChange={(value) => handleTextInput('email', value)}
+                    placeholder={'E-post'}
+                    value={gameState.storableScore.email}
+                  />
+
+                  <label
+                    className={classNames(
+                      css.aligned,
+                      isValidEmail(gameState.storableScore.email ?? '')
+                        ? undefined
+                        : css.disabled
+                    )}
+                  >
+                    <Checkbox
+                      checked={gameState.storableScore.subscribe}
+                      name={'subscribe'}
+                      onChange={toggleSubscribe}
+                    />
+                    Jeg ønsker å melde meg på Computas´ nyhetsbrev
+                  </label>
+                </div>
+
+                <div className={css.formRowColumned}>
+                  <TextField
+                    errorMessage={emailError.email2}
+                    fieldType={'email'}
+                    id={'email2'}
+                    label={'E-post - spiller 2'}
+                    onChange={(value) =>
+                      handleTextInput('email2', value, { allowEmpty: true })
+                    }
+                    placeholder={'E-post'}
+                    value={gameState.storableScore.email2 ?? ''}
+                  />
+
+                  <label
+                    className={classNames(
+                      css.aligned,
+                      isValidEmail(gameState.storableScore.email2 ?? '')
+                        ? undefined
+                        : css.disabled
+                    )}
+                  >
+                    <Checkbox
+                      checked={gameState.storableScore.subscribe2 ?? false}
+                      name={'subscribe2'}
+                      onChange={toggleSubscribe}
+                    />
+                    Jeg ønsker å melde meg på Computas´ nyhetsbrev
+                  </label>
+                </div>
+
+                <p>
+                  Vi sender e-post til vinnerne av konkurransen når premien kan
+                  hentes
+                </p>
+              </div>
+            </>
+          )}
+
           <div className={css.form}>
-            <TextField
-              errorMessage={nameError}
-              label={'Kallenavn'}
-              placeholder={'Kallenavn'}
-              onBlur={(value: string) =>
-                validateTextInput(value, 'Dette feltet kan ikke være tomt')
-              }
-              onChange={(value) => handleTextInput('name', value)}
-              value={gameState.storableScore.name}
-            />
-            <div className={css.formRowColumned}>
-              <TextField
-                errorMessage={emailError.email}
-                fieldType={'email'}
-                id={'email'}
-                label={'E-post, spiller 1'}
-                placeholder={'E-post'}
-                onChange={(value) => handleTextInput('email', value)}
-                value={gameState.storableScore.email}
-              />
-
-              <label
-                className={classNames(
-                  css.aligned,
-                  isValidEmail(gameState.storableScore.email ?? '')
-                    ? undefined
-                    : css.disabled
-                )}
-              >
-                <input
-                  type={'checkbox'}
-                  defaultChecked={gameState.storableScore.subscribe}
-                  onClick={() => toggleSubscribe('subscribe')}
-                />{' '}
-                Jeg ønsker å melde meg på Computas´ nyhetsbrev
-              </label>
-            </div>
-
-            <div className={css.formRowColumned}>
-              <TextField
-                errorMessage={emailError.email2}
-                fieldType={'email'}
-                id={'email2'}
-                label={'E-post, spiller 2'}
-                placeholder={'E-post'}
-                onChange={(value) =>
-                  handleTextInput('email2', value, { allowEmpty: true })
-                }
-                value={gameState.storableScore.email2 ?? ''}
-              />
-
-              <label
-                className={classNames(
-                  css.aligned,
-                  isValidEmail(gameState.storableScore.email2 ?? '')
-                    ? undefined
-                    : css.disabled
-                )}
-              >
-                <input
-                  type={'checkbox'}
-                  defaultChecked={gameState.storableScore.subscribe2}
-                  onClick={() => toggleSubscribe('subscribe2')}
-                />{' '}
-                Jeg ønsker å melde meg på Computas´ nyhetsbrev
-              </label>
-            </div>
-
-            <p>
-              Vi sender e-post til vinnerne av konkurransen når premien kan
-              hentes
-            </p>
-
             <div className={css.centered}>
               <Button
                 disabled={isSaving}
                 label={'VI VIL VINNE!'}
                 onClick={validateAndParticipate}
-                size={ButtonSize.Large}
+                size={ButtonSize.XL}
                 variant={ButtonVariant.Primary}
               />
-              <br />
-              <br />
               <Button
                 disabled={isSaving}
                 label={'GLEM OSS'}
+                size={ButtonSize.Large}
                 variant={ButtonVariant.Secondary}
                 onClick={restart}
               />

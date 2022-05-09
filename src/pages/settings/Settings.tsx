@@ -1,7 +1,7 @@
 import React, { ReactElement, useContext, useEffect } from 'react';
 
 import css from './Settings.module.scss';
-import RadioButton from '../../components/radiobutton/RadioButton';
+import Checkbox from '../../components/checkbox/Checkbox';
 import Slider from '../../components/slider/Slider';
 import TetrominoAvailability from './TetrominoAvailability';
 import { fetchRealTimeSettings, saveSettings } from '../../helpers';
@@ -70,7 +70,7 @@ const Settings = (): ReactElement | null => {
     };
   };
 
-  const handleRadioButtonChange = (checked: boolean, name: string): void => {
+  const handleCheckboxChange = (checked: boolean, name: string): void => {
     const updatedSettings: any = {};
     updatedSettings[name] = checked;
     saveSettings(getGlobalSettings(), updatedSettings);
@@ -177,12 +177,14 @@ const Settings = (): ReactElement | null => {
       </div>
 
       <div className={css.row}>
-        <RadioButton
-          checked={gameSettings.showNext}
-          label={'Vis neste brikke'}
-          name={'ShowNext'}
-          onChange={handleRadioButtonChange}
-        />
+        <div className={css.columned}>
+          <span>Vis neste brikke</span>
+          <Checkbox
+            checked={gameSettings.showNext}
+            name={'ShowNext'}
+            onChange={handleCheckboxChange}
+          />
+        </div>
       </div>
 
       <hr />
@@ -190,7 +192,7 @@ const Settings = (): ReactElement | null => {
       <div className={css.row}>
         <label>Tetromino-tilgjengeligjøring </label>
         <p>
-          Her kan man justere hvordan brikker introduseres i spillet. <br />
+          Her kan man justere rekkefølgen brikker introduseres i spillet. <br />
           Dersom antall brikker eller linjer er satt til noe annet enn null, vil
           det som slår først til trigge introduksjon av den brikken.
         </p>

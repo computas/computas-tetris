@@ -19,12 +19,16 @@
   input[type='text'],
   input[type='email'] {
     width: 100%;
-    padding: 1.5rem 1.5rem;
+    padding: 1.1rem 1.5rem;
     border: none;
     border-radius: 1rem;
     font-size: 1.8rem;
     user-select: text;
-    outline: none;
+    background: white;
+
+    &:focus {
+      outline: 0.2rem solid var(--focus-outline-color);
+    }
   }
 
   &.error {

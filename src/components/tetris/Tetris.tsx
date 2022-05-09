@@ -12,8 +12,8 @@ import Next from 'components/next/Next';
 import Stage from 'components/stage/Stage';
 import StartScreen from 'components/startscreen/StartScreen';
 import TrialScreen, {
-  TRIAL_PLAY,
-  TRIAL_END
+  TRIAL_END,
+  TRIAL_PLAY
 } from 'components/trial/TrialScreen';
 import {
   calculateLandingRow,
@@ -21,6 +21,7 @@ import {
   createStage,
   detectCollision
 } from 'helpers';
+import { CollisionType } from '../../enums/CollisionTypes';
 import { GameSettingsContext } from '../../contexts/GameSettingsContext';
 import { GameStateActionType } from '../../enums/GameStateActionTypes';
 import { GameStateContext } from '../../contexts/GameStateContext';
@@ -83,6 +84,7 @@ export default function Tetris() {
   const [dropSpeed, setDropSpeed] = useState(0);
   const [blocksPlayed, setBlocksPlayed] = useState(1);
   const [gamesPlayed, setGamesPlayed] = useState(0);
+  const [isWallHit, setIsWallHit] = useState(false);
   const [
     leftPressState,
     rightPressState,
@@ -124,7 +126,7 @@ export default function Tetris() {
   const [playRotateSound] = useSound('/assets/sfx/rotate.mp3', {
     volume: 0.4
   });
-  const [playRemoveLineSound] = useSound('/assets/sfx/remove1.mp3');
+  const [playRemoveRowSound] = useSound('/assets/sfx/remove1.mp3');
   const [playYouLoseSound] = useSound('/assets/sfx/you-lose.mp3');
   const [playYouWinSound] = useSound('/assets/sfx/you-win.mp3');
   const navigate = useNavigate();
@@ -229,6 +231,12 @@ export default function Tetris() {
   }, [player.position.x]);
 
   useEffect(() => {
+    if (isWallHit) {
+      playHitWallSound();
+    }
+  }, [isWallHit]);
+
+  useEffect(() => {
     if (
       state.trial &&
       state.trialStage > TRIAL_PLAY &&
@@ -250,7 +258,7 @@ export default function Tetris() {
 
   useEffect(() => {
     if (rowsCleared.length > 0) {
-      playRemoveLineSound();
+      playRemoveRowSound();
     }
   }, [rowsCleared]);
 
@@ -275,7 +283,7 @@ export default function Tetris() {
         x: player.position.x + dir
       })
     ) {
-      playHitWallSound();
+      setIsWallHit(true);
       return;
     }
 
@@ -288,6 +296,7 @@ export default function Tetris() {
       return;
     }
 
+    setIsWallHit(false);
     updatePlayerPosition(player.position.x + dir, player.position.y, false);
   };
 
@@ -331,8 +340,8 @@ export default function Tetris() {
 
     updatePlayerPosition(
       player.position.x,
-      player.position.y + (didCollide ? 0 : 1),
-      didCollide
+      player.position.y + (didCollide !== CollisionType.None ? 0 : 1),
+      didCollide !== CollisionType.None
     );
   };
 
@@ -367,7 +376,7 @@ export default function Tetris() {
       gameDispatch({ type: GameStateActionType.StopMusic });
     }
 
-    if (state.trialStage === TRIAL_PLAY) {
+    if (state.trial && state.trialStage === 1) {
       resetGame();
       generateNextTetromino();
       setStage(createStage());

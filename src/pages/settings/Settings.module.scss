@@ -28,6 +28,11 @@
       margin-top: 2rem;
     }
 
+    .columned {
+      display: grid;
+      grid-template-columns: 20rem 40rem 5rem;
+    }
+
     > label {
       display: block;
       font-weight: 600;

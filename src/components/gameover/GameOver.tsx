@@ -45,7 +45,7 @@ const GameOver = (props: GameOverProps) => {
     return rank;
   };
 
-  const participate = () => {
+  const participate = (): void => {
     saveScore(gameState.storableScore).then(() => {
       setShowEntered(true);
       setTimeout(() => {
@@ -61,6 +61,10 @@ const GameOver = (props: GameOverProps) => {
       setShowForget(false);
       restart();
     }, 3000);
+  };
+
+  const skip = (): void => {
+    setShowScores(true);
   };
 
   if (!gameOver) {
@@ -92,7 +96,7 @@ const GameOver = (props: GameOverProps) => {
       )}
     </div>
   ) : (
-    <div className={css.GameOver}>
+    <div className={css.GameOver} onClick={skip}>
       <span className={css.GameOverText}>GAME OVER</span>
     </div>
   );

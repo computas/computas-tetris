@@ -9,11 +9,20 @@ interface SliderProps {
   min: number;
   name: string;
   onChange?: (value: number, name: string) => void;
+  step?: number;
   value: number;
 }
 
-const Slider = (props: SliderProps): ReactElement => {
-  const { help, label, max, min, name, onChange, value } = props;
+const Slider = ({
+  help,
+  label,
+  max,
+  min,
+  name,
+  onChange,
+  step = 1,
+  value
+}: SliderProps): ReactElement => {
   const [currentValue, setCurrentValue] = useState(0);
 
   useEffect(() => {
@@ -49,6 +58,7 @@ const Slider = (props: SliderProps): ReactElement => {
         type={'range'}
         min={min}
         max={max}
+        step={step}
         value={currentValue}
         onChange={(event) => handleSliderChange(Number(event.target.value))}
         onTouchEnd={onRelease}

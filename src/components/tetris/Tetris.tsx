@@ -84,6 +84,7 @@ export default function Tetris() {
   const [dropSpeed, setDropSpeed] = useState(0);
   const [blocksPlayed, setBlocksPlayed] = useState(1);
   const [gamesPlayed, setGamesPlayed] = useState(0);
+  const [hasSwiped, setHasSwiped] = useState(false);
   const [isWallHit, setIsWallHit] = useState(false);
   const [
     leftPressState,
@@ -436,7 +437,14 @@ export default function Tetris() {
       return;
     }
 
-    const newBlockSwipe = Math.floor(event.deltaX / BLOCK_SIZE);
+    if (gameSettings.swipeSingleBlock && hasSwiped) {
+      return;
+    }
+
+    const newBlockSwipe = Math.floor(
+      (event.deltaX * gameSettings.swipeSensitivity) / BLOCK_SIZE
+    );
+
     if (newBlockSwipe !== blockSwipes) {
       if (newBlockSwipe > blockSwipes) {
         movePlayer(RIGHT);
@@ -445,6 +453,7 @@ export default function Tetris() {
         movePlayer(LEFT);
       }
       setBlockSwipes(newBlockSwipe);
+      setHasSwiped(true);
     }
   };
 
@@ -458,6 +467,9 @@ export default function Tetris() {
         (touch.clientY - touchStartPosition.y) /
         (event.timeStamp - touchStartPosition.timeStamp + 1)
     };
+
+    setBlockSwipes(0);
+    setHasSwiped(false);
 
     const axis = {
       x: Math.abs(delta.x),

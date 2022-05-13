@@ -150,7 +150,7 @@ const Settings = (): ReactElement | null => {
         <label>Sveiping</label>
         <Slider
           label={'Følsomhet'}
-          max={1.0}
+          max={2.0}
           min={0.1}
           step={0.1}
           name={'SwipeSensitivity'}
@@ -161,7 +161,7 @@ const Settings = (): ReactElement | null => {
 
       <div className={css.row}>
         <div className={css.columned}>
-          <span>Kolonnevis</span>
+          <span>En kolonne per sveip</span>
           <Checkbox
             checked={gameSettings.swipeSingleBlock}
             name={'SwipeSingleBlock'}

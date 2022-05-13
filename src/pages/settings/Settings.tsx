@@ -148,6 +148,7 @@ const Settings = (): ReactElement | null => {
 
       <div className={css.row}>
         <label>Sveiping</label>
+        <p>Her kan man justere hvordan kontrollen på brikkene oppleves</p>
         <Slider
           label={'Følsomhet'}
           max={2.0}

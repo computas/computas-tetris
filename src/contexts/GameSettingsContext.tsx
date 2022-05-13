@@ -9,9 +9,12 @@ export interface GameSettingsState {
   minimumSpeed: number;
   playMusic: boolean;
   showNext: boolean;
+  swipeSensitivity: number;
+  swipeSingleBlock: boolean;
   tetrominos: any;
   toplistLength: number;
   trialTetrominoLength: number;
+  trialTetrominos: string[];
 }
 
 interface GameSettingsStateAction {
@@ -31,9 +34,12 @@ const initialGameSettingsState: GameSettingsState = {
   minimumSpeed: 50,
   playMusic: false,
   showNext: true,
+  swipeSensitivity: 1.0,
+  swipeSingleBlock: false,
   tetrominos: {},
   toplistLength: 0,
-  trialTetrominoLength: 5
+  trialTetrominoLength: 5,
+  trialTetrominos: ['I', 'I', 'I']
 };
 
 const initialContextValue: contextValue = {

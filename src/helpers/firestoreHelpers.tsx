@@ -13,8 +13,7 @@ import { firestore } from '../index';
 import { GameSettingsState } from '../contexts/GameSettingsContext';
 import { GameSettingsStateActionType } from '../enums/GameSettingsStateActionTypes';
 import { GameStateActionType } from '../enums/GameStateActionTypes';
-import { GlobalSettings } from '../pages/settings/Settings';
-import { Score } from '../models';
+import { GlobalSettings, Score } from 'models';
 
 const initialGameSettings: GameSettingsState = {
   increaseSpeedFactor: 10,
@@ -23,9 +22,12 @@ const initialGameSettings: GameSettingsState = {
   minimumSpeed: 30,
   playMusic: false,
   showNext: true,
+  swipeSensitivity: 1.0,
+  swipeSingleBlock: false,
   tetrominos: {},
   toplistLength: 0,
-  trialTetrominoLength: 5
+  trialTetrominoLength: 5,
+  trialTetrominos: ['I', 'I', 'I', 'L', 'L']
 };
 
 export const fetchRealTimeScoreList = (dispatch: any): any => {
@@ -63,12 +65,19 @@ export const fetchRealTimeSettings = (dispatch: any): any => {
       settings.minimumSpeed =
         fetchedSettings.MinimumSpeed ?? settings.minimumSpeed;
       settings.playMusic = false;
+      settings.swipeSensitivity = fetchedSettings.SwipeSensitivity ?? 1.0;
+      settings.swipeSingleBlock = fetchedSettings.SwipeSingleBlock ?? false;
       settings.toplistLength =
         fetchedSettings.ToplistLength ?? settings.toplistLength;
       settings.trialTetrominoLength =
         fetchedSettings.TrialTetrominoLength ?? settings.trialTetrominoLength;
       settings.showNext = fetchedSettings.ShowNext ?? settings.showNext;
       settings.tetrominos = fetchedSettings.Tetrominos ?? { none: 'available' };
+      settings.trialTetrominos = fetchedSettings.TrialTetrominos ?? [
+        'I',
+        'J',
+        'T'
+      ];
     });
 
     dispatch({

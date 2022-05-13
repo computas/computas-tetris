@@ -8,18 +8,7 @@ import { fetchRealTimeSettings, saveSettings } from '../../helpers';
 import {
   GameSettingsContext,
   GameSettingsState
-} from '../../contexts/GameSettingsContext';
-
-export interface GlobalSettings {
-  IncreaseSpeedFactor: number;
-  IncreaseSpeedOnEvery: number;
-  InitialSpeed: number;
-  MinimumSpeed: number;
-  ShowNext: boolean;
-  Tetrominos: JSON;
-  ToplistLength: number;
-  TrialTetrominoLength: number;
-}
+} from 'contexts/GameSettingsContext';
 
 export interface TetrominoSetting {
   count: number;
@@ -64,9 +53,12 @@ const Settings = (): ReactElement | null => {
       InitialSpeed: gameSettings.initialSpeed,
       MinimumSpeed: gameSettings.minimumSpeed,
       ShowNext: gameSettings.showNext,
+      SwipeSensitivity: gameSettings.swipeSensitivity,
+      SwipeSingleBlock: gameSettings.swipeSingleBlock,
       Tetrominos: gameSettings.tetrominos,
       ToplistLength: gameSettings.toplistLength,
-      TrialTetrominoLength: gameSettings.trialTetrominoLength
+      TrialTetrominoLength: gameSettings.trialTetrominoLength,
+      TrialTetrominos: gameSettings.trialTetrominos
     };
   };
 
@@ -150,6 +142,32 @@ const Settings = (): ReactElement | null => {
           value={gameSettings.increaseSpeedFactor}
           onChange={handleSliderChange}
         />
+      </div>
+
+      <hr />
+
+      <div className={css.row}>
+        <label>Sveiping</label>
+        <Slider
+          label={'Følsomhet'}
+          max={1.0}
+          min={0.1}
+          step={0.1}
+          name={'SwipeSensitivity'}
+          value={gameSettings.swipeSensitivity}
+          onChange={handleSliderChange}
+        />
+      </div>
+
+      <div className={css.row}>
+        <div className={css.columned}>
+          <span>Kolonnevis</span>
+          <Checkbox
+            checked={gameSettings.swipeSingleBlock}
+            name={'SwipeSingleBlock'}
+            onChange={handleCheckboxChange}
+          />
+        </div>
       </div>
 
       <hr />

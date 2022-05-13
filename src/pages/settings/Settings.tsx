@@ -153,8 +153,10 @@ const Settings = (): ReactElement | null => {
           label={'Følsomhet'}
           max={2.0}
           min={0.1}
-          step={0.1}
           name={'SwipeSensitivity'}
+          scale={100}
+          step={0.1}
+          unit={'%'}
           value={gameSettings.swipeSensitivity}
           onChange={handleSliderChange}
         />
@@ -174,27 +176,21 @@ const Settings = (): ReactElement | null => {
       <hr />
 
       <div className={css.row}>
-        <Slider
-          label={'Antall brikker i prøverunden'}
-          min={1}
-          max={20}
-          name={'TrialTetrominoLength'}
-          value={gameSettings.trialTetrominoLength}
-          onChange={handleSliderChange}
-        />
+        <label>Tetromino-tilgjengeligjøring </label>
+        <p>
+          Her kan man justere rekkefølgen brikker introduseres i spillet.
+          <br />
+          Dersom antall brikker eller linjer er satt til noe annet enn null, vil
+          det som slår til først trigge introduksjon av den brikken.
+        </p>
+        {getTetrominoAvailability(gameSettings).map((tetromino) => (
+          <TetrominoAvailability
+            key={tetromino.id}
+            onChange={handleAvailabilityChange}
+            tetromino={tetromino}
+          />
+        ))}
       </div>
-
-      <div className={css.row}>
-        <Slider
-          label={'Antall på Topplisten'}
-          min={1}
-          max={100}
-          name={'ToplistLength'}
-          value={gameSettings.toplistLength}
-          onChange={handleSliderChange}
-        />
-      </div>
-
       <div className={css.row}>
         <div className={css.columned}>
           <span>Vis neste brikke</span>
@@ -209,19 +205,31 @@ const Settings = (): ReactElement | null => {
       <hr />
 
       <div className={css.row}>
-        <label>Tetromino-tilgjengeligjøring </label>
-        <p>
-          Her kan man justere rekkefølgen brikker introduseres i spillet. <br />
-          Dersom antall brikker eller linjer er satt til noe annet enn null, vil
-          det som slår først til trigge introduksjon av den brikken.
-        </p>
-        {getTetrominoAvailability(gameSettings).map((tetromino) => (
-          <TetrominoAvailability
-            key={tetromino.id}
-            onChange={handleAvailabilityChange}
-            tetromino={tetromino}
-          />
-        ))}
+        <label>Prøverunde</label>
+        <p></p>
+        <Slider
+          label={'Antall brikker i prøverunden'}
+          min={1}
+          max={20}
+          name={'TrialTetrominoLength'}
+          value={gameSettings.trialTetrominoLength}
+          onChange={handleSliderChange}
+        />
+      </div>
+
+      <hr />
+
+      <div className={css.row}>
+        <label>Annet</label>
+        <p></p>
+        <Slider
+          label={'Antall på Topplisten'}
+          min={1}
+          max={100}
+          name={'ToplistLength'}
+          value={gameSettings.toplistLength}
+          onChange={handleSliderChange}
+        />
       </div>
     </div>
   );

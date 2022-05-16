@@ -20,6 +20,7 @@ const initialGameSettings: GameSettingsState = {
   increaseSpeedOnEvery: 1,
   initialSpeed: 500,
   minimumSpeed: 30,
+  numberOfWinners: 1,
   playMusic: false,
   showNext: true,
   swipeSensitivity: 1.0,
@@ -64,6 +65,8 @@ export const fetchRealTimeSettings = (dispatch: any): any => {
         fetchedSettings.InitialSpeed ?? settings.initialSpeed;
       settings.minimumSpeed =
         fetchedSettings.MinimumSpeed ?? settings.minimumSpeed;
+      settings.numberOfWinners =
+        fetchedSettings.NumberOfWinners ?? settings.numberOfWinners;
       settings.playMusic = false;
       settings.showNext = fetchedSettings.ShowNext ?? settings.showNext;
       settings.swipeSensitivity = fetchedSettings.SwipeSensitivity ?? 1.0;

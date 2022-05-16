@@ -12,8 +12,8 @@ export interface GameSettingsState {
   swipeSensitivity: number;
   swipeSingleBlock: boolean;
   tetrominos: any;
+  timestamp: number;
   toplistLength: number;
-  trialTetrominoLength: number;
   trialTetrominos: string[];
 }
 
@@ -37,14 +37,36 @@ const initialGameSettingsState: GameSettingsState = {
   swipeSensitivity: 1.0,
   swipeSingleBlock: false,
   tetrominos: {},
+  timestamp: new Date().getTime(),
   toplistLength: 0,
-  trialTetrominoLength: 5,
-  trialTetrominos: ['I', 'I', 'I']
+  trialTetrominos: []
 };
 
 const initialContextValue: contextValue = {
   gameSettings: initialGameSettingsState,
   settingsDispatch: null
+};
+
+const changeTrialTetromino = (
+  tetrominos: string[],
+  index: number
+): string[] => {
+  const trialTetrominos: string[] = [...tetrominos];
+  const ids = 'IJLOSTZ';
+  const tetrominoIndex = ids.indexOf(tetrominos[index]);
+  const newTetromino =
+    tetrominoIndex + 1 <= ids.length - 1 ? tetrominoIndex + 1 : 0;
+  trialTetrominos[index] = ids[newTetromino];
+
+  return trialTetrominos;
+};
+
+const deleteTrialTetromino = (
+  tetrominos: string[],
+  index: number
+): string[] => {
+  tetrominos.splice(index, 1);
+  return tetrominos;
 };
 
 const stateReducer = (
@@ -64,6 +86,30 @@ const stateReducer = (
       return {
         ...state,
         playMusic: !state.playMusic
+      };
+
+    case GameSettingsStateActionType.AddTrialTetromino:
+      return {
+        ...state,
+        trialTetrominos: [...state.trialTetrominos, 'I']
+      };
+
+    case GameSettingsStateActionType.ChangeTrialTetromino:
+      return {
+        ...state,
+        trialTetrominos: changeTrialTetromino(
+          state.trialTetrominos,
+          payload.index
+        )
+      };
+
+    case GameSettingsStateActionType.DeleteTrialTetromino:
+      return {
+        ...state,
+        trialTetrominos: deleteTrialTetromino(
+          [...state.trialTetrominos],
+          payload.index
+        )
       };
 
     default:

@@ -9,6 +9,7 @@ import {
   GameSettingsContext,
   GameSettingsState
 } from 'contexts/GameSettingsContext';
+import TetrominoListSelector from './TetrominoListSelector';
 
 export interface TetrominoSetting {
   count: number;
@@ -57,9 +58,12 @@ const Settings = (): ReactElement | null => {
       SwipeSingleBlock: gameSettings.swipeSingleBlock,
       Tetrominos: gameSettings.tetrominos,
       ToplistLength: gameSettings.toplistLength,
-      TrialTetrominoLength: gameSettings.trialTetrominoLength,
       TrialTetrominos: gameSettings.trialTetrominos
     };
+  };
+
+  const handleChangeTrialTetrominos = (): void => {
+    saveSettings(getGlobalSettings(), {});
   };
 
   const handleCheckboxChange = (checked: boolean, name: string): void => {
@@ -97,6 +101,8 @@ const Settings = (): ReactElement | null => {
       </p>
 
       <div className={css.row}>
+        <label>Vanskelighet</label>
+        <p></p>
         <Slider
           help={'Lavere er raskere'}
           label={'Starthastighet'}
@@ -153,8 +159,10 @@ const Settings = (): ReactElement | null => {
           label={'Følsomhet'}
           max={2.0}
           min={0.1}
-          step={0.1}
           name={'SwipeSensitivity'}
+          scale={100}
+          step={0.1}
+          unit={'%'}
           value={gameSettings.swipeSensitivity}
           onChange={handleSliderChange}
         />
@@ -174,27 +182,21 @@ const Settings = (): ReactElement | null => {
       <hr />
 
       <div className={css.row}>
-        <Slider
-          label={'Antall brikker i prøverunden'}
-          min={1}
-          max={20}
-          name={'TrialTetrominoLength'}
-          value={gameSettings.trialTetrominoLength}
-          onChange={handleSliderChange}
-        />
+        <label>Brikker</label>
+        <p>
+          Her kan man justere rekkefølgen brikker introduseres i spillet.
+          <br />
+          Dersom antall brikker eller linjer er satt til noe annet enn null, vil
+          det som slår til først trigge introduksjon av den brikken.
+        </p>
+        {getTetrominoAvailability(gameSettings).map((tetromino) => (
+          <TetrominoAvailability
+            key={tetromino.id}
+            onChange={handleAvailabilityChange}
+            tetromino={tetromino}
+          />
+        ))}
       </div>
-
-      <div className={css.row}>
-        <Slider
-          label={'Antall på Topplisten'}
-          min={1}
-          max={100}
-          name={'ToplistLength'}
-          value={gameSettings.toplistLength}
-          onChange={handleSliderChange}
-        />
-      </div>
-
       <div className={css.row}>
         <div className={css.columned}>
           <span>Vis neste brikke</span>
@@ -209,19 +211,32 @@ const Settings = (): ReactElement | null => {
       <hr />
 
       <div className={css.row}>
-        <label>Tetromino-tilgjengeligjøring </label>
-        <p>
-          Her kan man justere rekkefølgen brikker introduseres i spillet. <br />
-          Dersom antall brikker eller linjer er satt til noe annet enn null, vil
-          det som slår først til trigge introduksjon av den brikken.
-        </p>
-        {getTetrominoAvailability(gameSettings).map((tetromino) => (
-          <TetrominoAvailability
-            key={tetromino.id}
-            onChange={handleAvailabilityChange}
-            tetromino={tetromino}
+        <label>Prøverunde</label>
+        <p></p>
+      </div>
+      <div className={css.row}>
+        <div className={css.columned}>
+          <span>Brikker</span>
+          <TetrominoListSelector
+            tetrominos={gameSettings.trialTetrominos}
+            onChange={handleChangeTrialTetrominos}
           />
-        ))}
+        </div>
+      </div>
+
+      <hr />
+
+      <div className={css.row}>
+        <label>Annet</label>
+        <p></p>
+        <Slider
+          label={'Antall på Topplisten'}
+          min={1}
+          max={100}
+          name={'ToplistLength'}
+          value={gameSettings.toplistLength}
+          onChange={handleSliderChange}
+        />
       </div>
     </div>
   );

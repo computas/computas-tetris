@@ -9,7 +9,9 @@ interface SliderProps {
   min: number;
   name: string;
   onChange?: (value: number, name: string) => void;
+  scale?: number;
   step?: number;
+  unit?: string;
   value: number;
 }
 
@@ -20,7 +22,9 @@ const Slider = ({
   min,
   name,
   onChange,
+  scale = 1,
   step = 1,
+  unit = '',
   value
 }: SliderProps): ReactElement => {
   const [currentValue, setCurrentValue] = useState(0);
@@ -64,7 +68,9 @@ const Slider = ({
         onTouchEnd={onRelease}
         onMouseUp={onRelease}
       />
-      <span>{currentValue}</span>
+      <span>
+        {Math.floor(currentValue * scale)} {unit}
+      </span>
     </div>
   );
 };

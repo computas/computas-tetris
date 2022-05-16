@@ -161,7 +161,7 @@ export default function Tetris() {
   }, [gameSettings.playMusic]);
 
   useEffect(() => {
-    if (state.trial && blocksPlayed > gameSettings.trialTetrominoLength)
+    if (state.trial && blocksPlayed > gameSettings.trialTetrominos.length)
       progressTrial();
   }, [blocksPlayed]);
 
@@ -185,7 +185,7 @@ export default function Tetris() {
     if (state.countdown > 0) {
       setTimeout(() => {
         if (state.countdown === 1) {
-          generateNextTetromino();
+          generateNextTetromino(state.trial);
         }
         setState({
           ...state,
@@ -220,7 +220,7 @@ export default function Tetris() {
         gameOver();
       } else {
         playHitFloorSound();
-        generateNextTetromino();
+        generateNextTetromino(state.trial);
       }
     }
   }, [player.collided]);
@@ -378,8 +378,7 @@ export default function Tetris() {
     }
 
     if (state.trial && state.trialStage === 1) {
-      resetGame();
-      generateNextTetromino();
+      resetGame(state.trial);
       setStage(createStage());
     }
 
@@ -494,7 +493,7 @@ export default function Tetris() {
       {'Prøverunde - Brikke ' +
         blocksPlayed +
         ' av ' +
-        gameSettings.trialTetrominoLength}
+        gameSettings.trialTetrominos.length}
     </div>
   ) : (
     <Header highScore={highScore} />

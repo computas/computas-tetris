@@ -15,6 +15,7 @@ export enum ButtonVariant {
   Primary,
   Secondary,
   White,
+  Dark,
   Clear
 }
 
@@ -56,6 +57,9 @@ const Button = (props: ButtonProps): ReactElement => {
 
       case ButtonVariant.White:
         return css.white;
+
+      case ButtonVariant.Dark:
+        return css.dark;
 
       case ButtonVariant.Clear:
         return css.clear;

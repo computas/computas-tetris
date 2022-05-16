@@ -70,6 +70,14 @@ export const Tetrominos: Tetromino[] = [
   }
 ];
 
+export const getTetrominoNamed = (name: string): Tetromino => {
+  const index = 'IJLOSTZ'.indexOf(name);
+  if (index === -1) {
+    return Tetrominos[0];
+  }
+  return Tetrominos[index];
+};
+
 export const randomTetromino = (
   availability: TetrominoSetting[],
   count: number,

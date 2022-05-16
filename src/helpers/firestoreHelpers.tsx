@@ -25,8 +25,8 @@ const initialGameSettings: GameSettingsState = {
   swipeSensitivity: 1.0,
   swipeSingleBlock: false,
   tetrominos: {},
+  timestamp: new Date().getTime(),
   toplistLength: 0,
-  trialTetrominoLength: 5,
   trialTetrominos: ['I', 'I', 'I', 'L', 'L']
 };
 
@@ -65,13 +65,11 @@ export const fetchRealTimeSettings = (dispatch: any): any => {
       settings.minimumSpeed =
         fetchedSettings.MinimumSpeed ?? settings.minimumSpeed;
       settings.playMusic = false;
+      settings.showNext = fetchedSettings.ShowNext ?? settings.showNext;
       settings.swipeSensitivity = fetchedSettings.SwipeSensitivity ?? 1.0;
       settings.swipeSingleBlock = fetchedSettings.SwipeSingleBlock ?? false;
       settings.toplistLength =
         fetchedSettings.ToplistLength ?? settings.toplistLength;
-      settings.trialTetrominoLength =
-        fetchedSettings.TrialTetrominoLength ?? settings.trialTetrominoLength;
-      settings.showNext = fetchedSettings.ShowNext ?? settings.showNext;
       settings.tetrominos = fetchedSettings.Tetrominos ?? { none: 'available' };
       settings.trialTetrominos = fetchedSettings.TrialTetrominos ?? [
         'I',

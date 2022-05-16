@@ -8,6 +8,5 @@ export interface GlobalSettings {
   SwipeSingleBlock: boolean;
   Tetrominos: JSON;
   ToplistLength: number;
-  TrialTetrominoLength: number;
   TrialTetrominos: string[];
 }

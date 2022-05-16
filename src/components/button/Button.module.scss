@@ -41,6 +41,11 @@
     background: white;
   }
 
+  &.dark {
+    background: var(--background-color);
+    color: white;
+  }
+
   &.clear {
     background: transparent;
   }

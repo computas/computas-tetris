@@ -1,4 +1,4 @@
-import React, { ReactElement, useContext, useEffect } from 'react';
+import React, { ReactElement, useContext, useEffect, useState } from 'react';
 
 import css from './Settings.module.scss';
 import Checkbox from '../../components/checkbox/Checkbox';
@@ -9,6 +9,7 @@ import {
   GameSettingsContext,
   GameSettingsState
 } from 'contexts/GameSettingsContext';
+import TetrominoListSelector from './TetrominoListSelector';
 
 export interface TetrominoSetting {
   count: number;
@@ -57,9 +58,12 @@ const Settings = (): ReactElement | null => {
       SwipeSingleBlock: gameSettings.swipeSingleBlock,
       Tetrominos: gameSettings.tetrominos,
       ToplistLength: gameSettings.toplistLength,
-      TrialTetrominoLength: gameSettings.trialTetrominoLength,
       TrialTetrominos: gameSettings.trialTetrominos
     };
+  };
+
+  const handleChangeTrialTetrominos = (): void => {
+    saveSettings(getGlobalSettings(), {});
   };
 
   const handleCheckboxChange = (checked: boolean, name: string): void => {
@@ -97,6 +101,8 @@ const Settings = (): ReactElement | null => {
       </p>
 
       <div className={css.row}>
+        <label>Vanskelighet</label>
+        <p></p>
         <Slider
           help={'Lavere er raskere'}
           label={'Starthastighet'}
@@ -176,7 +182,7 @@ const Settings = (): ReactElement | null => {
       <hr />
 
       <div className={css.row}>
-        <label>Tetromino-tilgjengeligjøring </label>
+        <label>Brikker</label>
         <p>
           Her kan man justere rekkefølgen brikker introduseres i spillet.
           <br />
@@ -207,14 +213,15 @@ const Settings = (): ReactElement | null => {
       <div className={css.row}>
         <label>Prøverunde</label>
         <p></p>
-        <Slider
-          label={'Antall brikker i prøverunden'}
-          min={1}
-          max={20}
-          name={'TrialTetrominoLength'}
-          value={gameSettings.trialTetrominoLength}
-          onChange={handleSliderChange}
-        />
+      </div>
+      <div className={css.row}>
+        <div className={css.columned}>
+          <span>Brikker</span>
+          <TetrominoListSelector
+            tetrominos={gameSettings.trialTetrominos}
+            onChange={handleChangeTrialTetrominos}
+          />
+        </div>
       </div>
 
       <hr />

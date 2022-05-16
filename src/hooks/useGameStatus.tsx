@@ -5,7 +5,8 @@ import {
   fetchRealTimeSettings,
   randomTetromino,
   Row,
-  Tetromino
+  Tetromino,
+  getTetrominoNamed
 } from 'helpers';
 import { GameSettingsContext } from '../contexts/GameSettingsContext';
 import { GameStateActionType } from '../enums/GameStateActionTypes';
@@ -22,7 +23,14 @@ const initialTetrominosList: Tetromino[] = [
 
 export const useGameStatus = (
   rowsCleared: Row[]
-): [number, boolean, Tetromino[], () => void, () => void, () => void] => {
+): [
+  number,
+  boolean,
+  Tetromino[],
+  (isTrial?: boolean) => void,
+  (isTrial?: boolean) => void,
+  (isTrial?: boolean) => void
+] => {
   const { gameState, gameDispatch } = useContext(GameStateContext);
   const { gameSettings, settingsDispatch } = useContext(GameSettingsContext);
   const [highScore, setHighScore] = useState(0);
@@ -76,21 +84,45 @@ export const useGameStatus = (
     setHighScore(highest);
   };
 
-  const resetGame = (): void => {
-    resetTetrominos();
+  const resetGame = (isTrial = false): void => {
+    resetTetrominos(isTrial);
     setNewHighScore(false);
     gameDispatch({ type: GameStateActionType.GameStarted });
   };
 
-  const resetTetrominos = (): void => {
+  const resetTetrominos = (isTrial = false): void => {
+    if (isTrial) {
+      const tetrominos: Tetromino[] = [
+        getTetrominoNamed(gameSettings.trialTetrominos[0])
+      ];
+
+      if (gameSettings.trialTetrominos.length > 0) {
+        tetrominos.push(getTetrominoNamed(gameSettings.trialTetrominos[1]));
+      }
+
+      setTetrominos(tetrominos);
+      return;
+    }
+
     setTetrominos([
       randomTetromino(getTetrominoAvailability(gameSettings), 0, 0),
       randomTetromino(getTetrominoAvailability(gameSettings), 1, 0)
     ]);
   };
 
-  const generateNextTetromino = (): void => {
+  const generateNextTetromino = (isTrial = false): void => {
     incrementTetrominoCount();
+
+    if (isTrial) {
+      setTetrominos([
+        tetrominos[1],
+        getTetrominoNamed(
+          gameSettings.trialTetrominos[gameState.storableScore.tetrominoCount]
+        )
+      ]);
+      return;
+    }
+
     setTetrominos([
       tetrominos[1],
       randomTetromino(

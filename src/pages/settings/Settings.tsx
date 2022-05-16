@@ -1,4 +1,4 @@
-import React, { ReactElement, useContext, useEffect, useState } from 'react';
+import React, { ReactElement, useContext, useEffect } from 'react';
 
 import css from './Settings.module.scss';
 import Checkbox from '../../components/checkbox/Checkbox';

@@ -5,7 +5,31 @@
   text-align: center;
 
   .Buttons {
-    margin: 10rem 0 4rem;
+    margin: 2rem 0 4rem;
+  }
+
+  .Columned {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+  }
+
+  .Winners {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      background: var(--tertiary-color);
+      text-align: left;
+      font-size: 2rem;
+
+      + li {
+        margin-top: 0.5rem;
+      }
+    }
   }
 
   .Winner {
@@ -16,9 +40,11 @@
     padding: 2rem;
     background: gold;
     color: var(--background-color);
+    animation: fadeOut 5s linear;
+    animation-fill-mode: forwards;
 
     h2 {
-      margin: 2rem 0 1rem;
+      margin: 0;
       font-size: 4rem;
     }
 
@@ -30,6 +56,7 @@
 
   .Drawing {
     animation: spin 3s linear infinite;
+    animation-fill-mode: forwards;
   }
 }
 
@@ -47,5 +74,17 @@
   100% {
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }

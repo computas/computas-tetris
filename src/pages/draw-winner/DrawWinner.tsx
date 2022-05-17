@@ -2,10 +2,11 @@ import React, { ReactElement, useContext, useEffect, useState } from 'react';
 
 import css from './DrawWinner.module.scss';
 import Button, { ButtonSize } from '../../components/button/Button';
-import { fetchRealTimeScoreList } from '../../helpers';
+import { fetchRealTimeScoreList, fetchRealTimeSettings } from '../../helpers';
 import { GameStateActionType } from '../../enums/GameStateActionTypes';
 import { GameStateContext } from '../../contexts/GameStateContext';
 import { ReactComponent as RainbowPizza } from '../../svg/Rainbow-Pizza.svg';
+import { GameSettingsContext } from '../../contexts/GameSettingsContext';
 
 enum DrawState {
   Initialized,
@@ -13,37 +14,63 @@ enum DrawState {
   Done
 }
 
+interface Winner {
+  name: string;
+  email: string;
+  email2: string;
+}
+
+const initialWinner: Winner = {
+  name: '',
+  email: '',
+  email2: ''
+};
+const initialWinnerState: Winner[] = [];
+
 const DrawWinner = (): ReactElement => {
   const { gameState, gameDispatch } = useContext(GameStateContext);
+  const { gameSettings, settingsDispatch } = useContext(GameSettingsContext);
   const [drawState, setDrawState] = useState(DrawState.Initialized);
-  const [todaysWinner, setTodaysWinner] = useState({
-    name: '',
-    email: '',
-    email2: ''
-  });
+  const [winner, setWinner] = useState(initialWinner);
+  const [winners, setWinners] = useState(initialWinnerState);
 
   useEffect(() => {
+    const unsubscribeSettings = fetchRealTimeSettings(settingsDispatch);
     const unsubscribeScoreList = fetchRealTimeScoreList(gameDispatch);
 
     return () => {
       gameDispatch({ type: GameStateActionType.ResetScoreList });
       unsubscribeScoreList();
+      unsubscribeSettings();
     };
   }, []);
 
-  const drawWinner = (): void => {
+  const startDrawWinner = (): void => {
     setDrawState(DrawState.Drawing);
     setTimeout(() => {
+      const winner = drawWinner();
+      setWinner(winner);
+      setWinners([...winners, winner]);
       showWinner();
     }, 2000);
+  };
+
+  const drawWinner = (): Winner => {
     const winnerIndex =
       1 + Math.floor(Math.random() * (gameState.scoreList.length - 2));
-    const winner = gameState.scoreList[winnerIndex];
-    setTodaysWinner({
-      name: winner.name,
-      email: winner.email,
-      email2: winner.email2 ?? ''
-    });
+    const winnerEntry = gameState.scoreList[winnerIndex];
+    return {
+      name: winnerEntry.name,
+      email: winnerEntry.email,
+      email2: winnerEntry.email2 ?? ''
+    };
+  };
+
+  const canDraw = (): boolean => {
+    return (
+      drawState !== DrawState.Drawing &&
+      winners.length < gameSettings.numberOfWinners
+    );
   };
 
   const showWinner = (): void => {
@@ -56,31 +83,55 @@ const DrawWinner = (): ReactElement => {
 
   return (
     <div className={css.DrawWinner}>
-      <h1>Trekk en vinner</h1>
+      <h1>Trekning</h1>
       <p>
         Det er {gameState.scoreList.length} registrerte spill som er med i
         trekningen.
       </p>
-      {drawState === DrawState.Initialized && (
+      <div className={css.Columned}>
+        <div></div>
+        <div className={drawState === DrawState.Drawing ? css.Drawing : ''}>
+          <RainbowPizza />
+        </div>
+        <div>
+          <h2>
+            🥇
+            <br />
+            {gameState.scoreList[0].score} poeng
+          </h2>
+          <ul className={css.Winners}>
+            <li>
+              <b>{gameState.scoreList[0].name}</b>
+            </li>
+          </ul>
+          {winners.length > 0 && (
+            <>
+              <h3>Vinnere</h3>
+              <ul className={css.Winners}>
+                {winners.map((winner, index) => (
+                  <li key={index}>{winner.name}</li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+      </div>
+
+      {canDraw() && (
         <div className={css.Buttons}>
           <Button
-            label={'Trekk dagens vinner'}
+            label={'Trekk en vinner'}
             size={ButtonSize.XL}
-            onClick={drawWinner}
+            onClick={startDrawWinner}
           />
-        </div>
-      )}
-      {drawState === DrawState.Drawing && (
-        <div className={css.Drawing}>
-          <RainbowPizza />
+          <br />
+          <br />
+          {gameSettings.numberOfWinners - winners.length} igjen
         </div>
       )}
       {drawState === DrawState.Done && (
         <div className={css.Winner}>
-          Dagens vinner
-          <h2>{todaysWinner.name}</h2>
-          <span>{todaysWinner.email}</span>
-          <span>{todaysWinner.email2}</span>
+          <h2>{winner.name}</h2>
         </div>
       )}
     </div>

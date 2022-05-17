@@ -30,6 +30,7 @@ const initialWinnerState: Winner[] = [];
 const DrawWinner = (): ReactElement => {
   const { gameState, gameDispatch } = useContext(GameStateContext);
   const { gameSettings, settingsDispatch } = useContext(GameSettingsContext);
+  const [available, setAvailable] = useState([0]);
   const [drawState, setDrawState] = useState(DrawState.Initialized);
   const [winner, setWinner] = useState(initialWinner);
   const [winners, setWinners] = useState(initialWinnerState);
@@ -45,6 +46,14 @@ const DrawWinner = (): ReactElement => {
     };
   }, []);
 
+  useEffect(() => {
+    if (gameState.scoreList.length > 0) {
+      const people = gameState.scoreList.map((_, index) => index);
+      people.shift();
+      setAvailable(people);
+    }
+  }, [gameState.scoreList]);
+
   const startDrawWinner = (): void => {
     setDrawState(DrawState.Drawing);
     setTimeout(() => {
@@ -56,9 +65,11 @@ const DrawWinner = (): ReactElement => {
   };
 
   const drawWinner = (): Winner => {
-    const winnerIndex =
-      1 + Math.floor(Math.random() * (gameState.scoreList.length - 2));
-    const winnerEntry = gameState.scoreList[winnerIndex];
+    const winnerIndex = Math.floor(Math.random() * (available.length - 1));
+    available.splice(winnerIndex, 1);
+    setAvailable(available);
+
+    const winnerEntry = gameState.scoreList[available[winnerIndex]];
     return {
       name: winnerEntry.name,
       email: winnerEntry.email,

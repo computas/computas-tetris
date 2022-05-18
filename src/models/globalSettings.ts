@@ -3,6 +3,7 @@ export interface GlobalSettings {
   IncreaseSpeedOnEvery: number;
   InitialSpeed: number;
   MinimumSpeed: number;
+  NumberOfScoreWinners: number;
   NumberOfWinners: number;
   ShowNext: boolean;
   SwipeSensitivity: number;

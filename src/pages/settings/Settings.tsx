@@ -53,6 +53,7 @@ const Settings = (): ReactElement | null => {
       IncreaseSpeedOnEvery: gameSettings.increaseSpeedOnEvery,
       InitialSpeed: gameSettings.initialSpeed,
       MinimumSpeed: gameSettings.minimumSpeed,
+      NumberOfScoreWinners: gameSettings.numberOfScoreWinners,
       NumberOfWinners: gameSettings.numberOfWinners,
       ShowNext: gameSettings.showNext,
       SwipeSensitivity: gameSettings.swipeSensitivity,
@@ -236,6 +237,18 @@ const Settings = (): ReactElement | null => {
           max={100}
           name={'ToplistLength'}
           value={gameSettings.toplistLength}
+          onChange={handleSliderChange}
+        />
+      </div>
+
+      <div className={css.row}>
+        <Slider
+          label={'Antall vinnere'}
+          help={'Fra toppen av highscore-listen'}
+          min={0}
+          max={10}
+          name={'NumberOfScoreWinners'}
+          value={gameSettings.numberOfScoreWinners}
           onChange={handleSliderChange}
         />
       </div>

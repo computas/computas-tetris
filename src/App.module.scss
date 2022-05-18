@@ -1,0 +1,20 @@
+.Centered {
+  display: grid;
+  width: 100vw;
+  height: 100vh;
+  align-items: center;
+  justify-items: center;
+
+  .Header {
+    display: block;
+    width: 75rem;
+    max-width: 75rem;
+    padding: 4rem 3rem;
+  }
+
+  .SignIn {
+    display: grid;
+    width: 100%;
+    justify-items: center;
+  }
+}

@@ -4,16 +4,18 @@ import { createRoot } from 'react-dom/client';
 import { getAnalytics } from 'firebase/analytics';
 import { getFirestore } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
+import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 
 import './index.css';
 import App from './App';
+import DrawWinner from './pages/draw-winner/DrawWinner';
 import ExportEmails from './pages/export-emails/ExportEmails';
 import Highscores from './pages/highscores/Highscores';
 import reportWebVitals from './reportWebVitals';
 import Settings from './pages/settings/Settings';
+import SignOut from './pages/signout/SignOut';
 import { GameSettingsProvider } from './contexts/GameSettingsContext';
 import { GameStateProvider } from './contexts/GameStateContext';
-import DrawWinner from './pages/draw-winner/DrawWinner';
 
 const rootContainer = document.getElementById('root');
 const root = createRoot(rootContainer as HTMLElement);
@@ -40,6 +42,7 @@ root.render(
             <Route path="/export-emails" element={<ExportEmails />} />
             <Route path="/draw-winner" element={<DrawWinner />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/signout" element={<SignOut />} />
           </Routes>
         </BrowserRouter>
       </GameStateProvider>
@@ -49,6 +52,8 @@ root.render(
 
 export const app = initializeApp(firebaseConfig);
 export const firestore = getFirestore(app);
+export const provider = new GoogleAuthProvider();
+export const auth = getAuth(app);
 
 getAnalytics(app);
 

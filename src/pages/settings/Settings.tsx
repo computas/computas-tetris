@@ -4,6 +4,7 @@ import css from './Settings.module.scss';
 import Checkbox from '../../components/checkbox/Checkbox';
 import Slider from '../../components/slider/Slider';
 import TetrominoAvailability from './TetrominoAvailability';
+import { auth } from '../../index';
 import { fetchRealTimeSettings, saveSettings } from '../../helpers';
 import {
   GameSettingsContext,
@@ -89,6 +90,10 @@ const Settings = (): ReactElement | null => {
     };
     saveSettings(getGlobalSettings(), updatedSettings);
   };
+
+  if (!auth.currentUser) {
+    return <div>No access - sign in</div>;
+  }
 
   return (
     <div className={css.Settings}>

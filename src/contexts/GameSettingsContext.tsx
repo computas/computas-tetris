@@ -7,6 +7,7 @@ export interface GameSettingsState {
   increaseSpeedOnEvery: number;
   initialSpeed: number;
   minimumSpeed: number;
+  numberOfWinners: number;
   playMusic: boolean;
   showNext: boolean;
   swipeSensitivity: number;
@@ -32,6 +33,7 @@ const initialGameSettingsState: GameSettingsState = {
   increaseSpeedOnEvery: 1,
   initialSpeed: 500,
   minimumSpeed: 50,
+  numberOfWinners: 1,
   playMusic: false,
   showNext: true,
   swipeSensitivity: 1.0,

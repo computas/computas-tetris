@@ -9,17 +9,19 @@ import {
   updateDoc
 } from 'firebase/firestore';
 
+import { DrawWinnerActionType } from '../enums/DrawWinnerActionType';
 import { firestore } from '../index';
 import { GameSettingsState } from '../contexts/GameSettingsContext';
 import { GameSettingsStateActionType } from '../enums/GameSettingsStateActionTypes';
 import { GameStateActionType } from '../enums/GameStateActionTypes';
-import { GlobalSettings, Score } from 'models';
+import { GlobalSettings, Score, Winner } from 'models';
 
 const initialGameSettings: GameSettingsState = {
   increaseSpeedFactor: 10,
   increaseSpeedOnEvery: 1,
   initialSpeed: 500,
   minimumSpeed: 30,
+  numberOfScoreWinners: 1,
   numberOfWinners: 1,
   playMusic: false,
   showNext: true,
@@ -65,6 +67,8 @@ export const fetchRealTimeSettings = (dispatch: any): any => {
         fetchedSettings.InitialSpeed ?? settings.initialSpeed;
       settings.minimumSpeed =
         fetchedSettings.MinimumSpeed ?? settings.minimumSpeed;
+      settings.numberOfScoreWinners =
+        fetchedSettings.NumberOfScoreWinners ?? settings.numberOfScoreWinners;
       settings.numberOfWinners =
         fetchedSettings.NumberOfWinners ?? settings.numberOfWinners;
       settings.playMusic = false;
@@ -88,6 +92,24 @@ export const fetchRealTimeSettings = (dispatch: any): any => {
   });
 };
 
+export const fetchWinners = (dispatch: any): any => {
+  const collRef = collection(firestore, 'Winners');
+  return onSnapshot(query(collRef), (snapshot) => {
+    const winners: Winner[] = [];
+    snapshot.docChanges().forEach((entry) => {
+      const winner = entry.doc.data() as Winner;
+      winners.push(winner);
+    });
+
+    dispatch({
+      type: DrawWinnerActionType.Loaded,
+      payload: {
+        winners
+      }
+    });
+  });
+};
+
 export const saveSettings = async (
   settings: GlobalSettings,
   updatedSettings: any
@@ -105,11 +127,18 @@ export const saveSettings = async (
 
 export const saveScore = async (score: Score) => {
   const collRef = collection(firestore, 'Scores');
-  const status = await addDoc(collRef, {
+  await addDoc(collRef, {
     ...score,
     created: Timestamp.now()
   });
-  console.log('SAVED', status);
+};
+
+export const saveWinner = async (winner: Winner) => {
+  const collRef = collection(firestore, 'Winners');
+  await addDoc(collRef, {
+    ...winner,
+    created: Timestamp.now()
+  });
 };
 
 export const getScoreFromEntry = (doc: DocumentData): Score => {

@@ -14,6 +14,7 @@ import Highscores from './pages/highscores/Highscores';
 import reportWebVitals from './reportWebVitals';
 import Settings from './pages/settings/Settings';
 import SignOut from './pages/signout/SignOut';
+import { DrawWinnersProvider } from './contexts/DrawWinnersContext';
 import { GameSettingsProvider } from './contexts/GameSettingsContext';
 import { GameStateProvider } from './contexts/GameStateContext';
 
@@ -35,16 +36,18 @@ root.render(
   <React.StrictMode>
     <GameSettingsProvider>
       <GameStateProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<App />} />
-            <Route path="/highscores" element={<Highscores />} />
-            <Route path="/export-emails" element={<ExportEmails />} />
-            <Route path="/draw-winner" element={<DrawWinner />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/signout" element={<SignOut />} />
-          </Routes>
-        </BrowserRouter>
+        <DrawWinnersProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<App />} />
+              <Route path="/highscores" element={<Highscores />} />
+              <Route path="/export-emails" element={<ExportEmails />} />
+              <Route path="/draw-winner" element={<DrawWinner />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/signout" element={<SignOut />} />
+            </Routes>
+          </BrowserRouter>
+        </DrawWinnersProvider>
       </GameStateProvider>
     </GameSettingsProvider>
   </React.StrictMode>
